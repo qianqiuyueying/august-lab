@@ -1,0 +1,31 @@
+{
+  "name": "spa_extension",
+  "version": "1.0.0",
+  "description": "支持React、Vue、Angular等单页应用框架的产品类型扩展",
+  "author": "SPA Extension Team",
+  "homepage": "https://example.com/extensions/spa",
+  "repository": "https://github.com/example/spa-extension",
+  "license": "MIT",
+  "keywords": ["spa", "react", "vue", "angular", "single-page-application"],
+  "requirements": {
+    "python": ">=3.8",
+    "system_version": ">=1.0.0"
+  },
+  "config": {
+    "enable_router": true,
+    "enable_dev_tools": false,
+    "enable_hot_reload": false,
+    "framework": "auto",
+    "max_memory": "256MB"
+  },
+  "permissions": [
+    "file_access",
+    "network_access",
+    "storage_access"
+  ],
+  "assets": [
+    "icons/spa.svg",
+    "templates/spa.html",
+    "scripts/spa-helper.js"
+  ]
+}

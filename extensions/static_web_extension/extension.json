@@ -1,0 +1,31 @@
+{
+  "name": "static_web_extension",
+  "version": "1.0.0",
+  "description": "支持HTML、CSS、JavaScript静态网站的产品类型扩展",
+  "author": "Static Web Extension Team",
+  "homepage": "https://example.com/extensions/static-web",
+  "repository": "https://github.com/example/static-web-extension",
+  "license": "MIT",
+  "keywords": ["static", "html", "css", "javascript", "website"],
+  "requirements": {
+    "python": ">=3.8",
+    "system_version": ">=1.0.0"
+  },
+  "config": {
+    "enable_responsive": true,
+    "enable_seo": true,
+    "enable_pwa": false,
+    "theme": "auto",
+    "max_memory": "64MB",
+    "cache_enabled": true
+  },
+  "permissions": [
+    "file_access",
+    "storage_access"
+  ],
+  "assets": [
+    "icons/static.svg",
+    "templates/static.html",
+    "scripts/static-helper.js"
+  ]
+}

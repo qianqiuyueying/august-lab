@@ -1,0 +1,32 @@
+{
+  "name": "game_extension",
+  "version": "1.0.0",
+  "description": "支持Canvas和WebGL游戏应用的产品类型扩展",
+  "author": "Game Extension Team",
+  "homepage": "https://example.com/extensions/game",
+  "repository": "https://github.com/example/game-extension",
+  "license": "MIT",
+  "keywords": ["game", "canvas", "webgl", "unity", "phaser"],
+  "requirements": {
+    "python": ">=3.8",
+    "system_version": ">=1.0.0"
+  },
+  "config": {
+    "enable_fullscreen": true,
+    "enable_sound": true,
+    "performance_mode": "medium",
+    "auto_pause_on_blur": true,
+    "memory_limit": "512MB",
+    "target_fps": 60
+  },
+  "permissions": [
+    "file_access",
+    "network_access",
+    "storage_access"
+  ],
+  "assets": [
+    "icons/game.svg",
+    "templates/game.html",
+    "scripts/game-monitor.js"
+  ]
+}

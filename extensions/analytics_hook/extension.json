@@ -1,0 +1,26 @@
+{
+  "name": "analytics_hook",
+  "version": "1.0.0",
+  "description": "产品访问分析钩子扩展，自动收集和分析产品使用数据",
+  "author": "Analytics Team",
+  "homepage": "https://example.com/extensions/analytics",
+  "repository": "https://github.com/example/analytics-hook",
+  "license": "MIT",
+  "keywords": ["analytics", "tracking", "statistics", "hook"],
+  "requirements": {
+    "python": ">=3.8",
+    "system_version": ">=1.0.0"
+  },
+  "config": {
+    "enable_detailed_tracking": true,
+    "track_user_interactions": true,
+    "track_performance": true,
+    "anonymize_ip": true,
+    "retention_days": 90
+  },
+  "permissions": [
+    "database_access",
+    "network_access"
+  ],
+  "assets": []
+}

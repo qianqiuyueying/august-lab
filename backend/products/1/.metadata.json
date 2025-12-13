@@ -1,0 +1,11 @@
+{
+  "product_id": 1,
+  "upload_time": "2025-12-12T08:29:09.337328",
+  "file_hash": "db2f35b20127df03cbb3e293da723ca313d8e2125aafaa2e498763117f37b5c2",
+  "extracted_files": [
+    "index.html",
+    "script.js",
+    "style.css"
+  ],
+  "entry_file": "index.html"
+}

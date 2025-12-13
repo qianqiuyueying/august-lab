@@ -1,0 +1,30 @@
+{
+  "name": "tool_extension",
+  "version": "1.0.0",
+  "description": "支持在线工具、计算器等实用应用的产品类型扩展",
+  "author": "Tool Extension Team",
+  "homepage": "https://example.com/extensions/tool",
+  "repository": "https://github.com/example/tool-extension",
+  "license": "MIT",
+  "keywords": ["tool", "calculator", "utility", "online-tool"],
+  "requirements": {
+    "python": ">=3.8",
+    "system_version": ">=1.0.0"
+  },
+  "config": {
+    "enable_fullscreen": false,
+    "enable_responsive": true,
+    "auto_save_state": true,
+    "theme": "light",
+    "max_memory": "128MB"
+  },
+  "permissions": [
+    "storage_access",
+    "local_storage"
+  ],
+  "assets": [
+    "icons/tool.svg",
+    "templates/tool.html",
+    "scripts/tool-helper.js"
+  ]
+}
