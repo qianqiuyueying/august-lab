@@ -7,7 +7,7 @@ export interface ValidationRule {
   max?: number
   pattern?: RegExp
   enum?: any[]
-  custom?: (value: any) => boolean | string
+  custom?: (value: any, config?: any) => boolean | string
   message?: string
 }
 

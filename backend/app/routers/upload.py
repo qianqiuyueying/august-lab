@@ -4,6 +4,7 @@ import os
 import uuid
 from typing import List
 import shutil
+from pathlib import Path
 
 from .auth import get_current_user
 
@@ -14,8 +15,8 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
 def get_file_extension(filename: str) -> str:
-    """获取文件扩展名"""
-    return os.path.splitext(filename)[1].lower()
+    """获取文件扩展名（跨平台）"""
+    return Path(filename).suffix.lower()
 
 def is_allowed_file(filename: str) -> bool:
     """检查文件格式是否允许"""
@@ -47,12 +48,12 @@ async def upload_image(
     file_extension = get_file_extension(file.filename)
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     
-    # 确保上传目录存在
-    upload_dir = "uploads/images"
-    os.makedirs(upload_dir, exist_ok=True)
+    # 确保上传目录存在（使用跨平台路径）
+    upload_dir = Path("uploads") / "images"
+    upload_dir.mkdir(parents=True, exist_ok=True)
     
     # 保存文件
-    file_path = os.path.join(upload_dir, unique_filename)
+    file_path = upload_dir / unique_filename
     
     try:
         with open(file_path, "wb") as buffer:
@@ -73,8 +74,8 @@ async def upload_image(
         
     except Exception as e:
         # 如果保存失败，删除可能已创建的文件
-        if os.path.exists(file_path):
-            os.remove(file_path)
+        if file_path.exists():
+            file_path.unlink()
         
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -88,16 +89,16 @@ async def delete_image(
 ):
     """删除图片文件（需要认证）"""
     
-    file_path = os.path.join("uploads/images", filename)
+    file_path = Path("uploads") / "images" / filename
     
-    if not os.path.exists(file_path):
+    if not file_path.exists():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="文件不存在"
         )
     
     try:
-        os.remove(file_path)
+        file_path.unlink()
         return JSONResponse(
             content={"message": "文件删除成功"}
         )

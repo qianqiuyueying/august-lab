@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import  api  from '../../shared/api'
+import type { ProductFeedbackPublic } from '../../shared/types'
 
 export interface ProductFeedback {
   id: number
@@ -163,6 +164,33 @@ export function useProductFeedback() {
     }
   }
 
+  const getPublicFeedback = async (
+    productId: number,
+    options: {
+      feedback_type?: string
+      skip?: number
+      limit?: number
+    } = {}
+  ): Promise<ProductFeedbackPublic[]> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const params = new URLSearchParams()
+      if (options.feedback_type) params.append('feedback_type', options.feedback_type)
+      if (options.skip) params.append('skip', options.skip.toString())
+      if (options.limit) params.append('limit', options.limit.toString())
+
+      const response = await api.get(`/products/${productId}/feedback/public?${params}`)
+      return response.data
+    } catch (err: any) {
+      error.value = err.response?.data?.detail || '获取公开反馈失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     loading,
     error,
@@ -171,6 +199,7 @@ export function useProductFeedback() {
     getFeedbackDetail,
     updateFeedback,
     deleteFeedback,
-    getFeedbackStats
+    getFeedbackStats,
+    getPublicFeedback
   }
 }

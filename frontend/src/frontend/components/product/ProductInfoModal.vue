@@ -2,102 +2,108 @@
   <el-dialog
     v-model="visible"
     title="产品信息"
-    width="500px"
+    width="800px"
+    :close-on-click-modal="false"
     @close="handleClose"
   >
     <div v-if="product" class="product-info-modal">
-      <!-- 产品基本信息 -->
-      <div class="info-section">
-        <div class="section-header">
-          <h3>基本信息</h3>
-        </div>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">产品名称:</span>
-            <span class="value">{{ product.title }}</span>
+      <el-tabs v-model="activeTab" class="product-tabs">
+        <!-- 基本信息标签页 -->
+        <el-tab-pane label="基本信息" name="basic">
+          <div class="tab-content">
+            <!-- 产品基本信息 -->
+            <div class="info-section">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">产品名称</span>
+                  <span class="value">{{ product.title }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">产品类型</span>
+                  <el-tag :type="getTypeTagType(product.product_type)" size="small">
+                    {{ getTypeLabel(product.product_type) }}
+                  </el-tag>
+                </div>
+                <div class="info-item">
+                  <span class="label">版本号</span>
+                  <span class="value">v{{ product.version }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">访问次数</span>
+                  <span class="value">{{ product.view_count || 0 }} 次</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 产品描述 -->
+            <div v-if="product.description" class="info-section">
+              <h4 class="section-title">产品描述</h4>
+              <p class="description">{{ product.description }}</p>
+            </div>
+            
+            <!-- 技术栈 -->
+            <div v-if="product.tech_stack?.length" class="info-section">
+              <h4 class="section-title">技术栈</h4>
+              <div class="tech-stack">
+                <el-tag
+                  v-for="tech in product.tech_stack"
+                  :key="tech"
+                  size="small"
+                  class="tech-tag"
+                >
+                  {{ tech }}
+                </el-tag>
+              </div>
+            </div>
+            
+            <!-- 外部链接 -->
+            <div v-if="product.project_url || product.github_url" class="info-section">
+              <h4 class="section-title">相关链接</h4>
+              <div class="links">
+                <el-button
+                  v-if="product.project_url"
+                  type="primary"
+                  size="small"
+                  @click="openLink(product.project_url)"
+                >
+                  <el-icon><Link /></el-icon>
+                  <span>项目主页</span>
+                </el-button>
+                <el-button
+                  v-if="product.github_url"
+                  size="small"
+                  @click="openLink(product.github_url)"
+                >
+                  <el-icon><Link /></el-icon>
+                  <span>源码仓库</span>
+                </el-button>
+              </div>
+            </div>
           </div>
-          <div class="info-item">
-            <span class="label">产品类型:</span>
-            <el-tag :type="getTypeTagType(product.product_type)" size="small">
-              {{ getTypeLabel(product.product_type) }}
-            </el-tag>
+        </el-tab-pane>
+        
+        <!-- 使用说明标签页 -->
+        <el-tab-pane label="使用说明" name="usage">
+          <div class="tab-content">
+            <div class="usage-tips">
+              <ul>
+                <li>点击刷新按钮可以重新加载产品</li>
+                <li>点击全屏按钮可以全屏体验产品</li>
+                <li>产品在安全的沙箱环境中运行</li>
+                <li>您的使用数据将用于改进产品体验</li>
+              </ul>
+            </div>
           </div>
-          <div class="info-item">
-            <span class="label">版本号:</span>
-            <span class="value">v{{ product.version }}</span>
+        </el-tab-pane>
+        
+        <!-- 用户反馈标签页 -->
+        <el-tab-pane label="用户反馈" name="feedback">
+          <div class="tab-content">
+            <ProductFeedbackList v-if="product.id" :product-id="product.id" />
+            <div v-else class="text-gray-500 text-sm">产品ID无效</div>
           </div>
-          <div class="info-item">
-            <span class="label">访问次数:</span>
-            <span class="value">{{ product.view_count || 0 }} 次</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 产品描述 -->
-      <div v-if="product.description" class="info-section">
-        <div class="section-header">
-          <h3>产品描述</h3>
-        </div>
-        <p class="description">{{ product.description }}</p>
-      </div>
-      
-      <!-- 技术栈 -->
-      <div v-if="product.tech_stack?.length" class="info-section">
-        <div class="section-header">
-          <h3>技术栈</h3>
-        </div>
-        <div class="tech-stack">
-          <el-tag
-            v-for="tech in product.tech_stack"
-            :key="tech"
-            size="small"
-            class="tech-tag"
-          >
-            {{ tech }}
-          </el-tag>
-        </div>
-      </div>
-      
-      <!-- 外部链接 -->
-      <div v-if="product.project_url || product.github_url" class="info-section">
-        <div class="section-header">
-          <h3>相关链接</h3>
-        </div>
-        <div class="links">
-          <el-button
-            v-if="product.project_url"
-            type="primary"
-            size="small"
-            @click="openLink(product.project_url)"
-          >
-            <el-icon><Link /></el-icon>
-            <span>项目主页</span>
-          </el-button>
-          <el-button
-            v-if="product.github_url"
-            size="small"
-            @click="openLink(product.github_url)"
-          >
-            <el-icon><Link /></el-icon>
-            <span>源码仓库</span>
-          </el-button>
-        </div>
-      </div>
-      
-      <!-- 使用说明 -->
-      <div class="info-section">
-        <div class="section-header">
-          <h3>使用说明</h3>
-        </div>
-        <div class="usage-tips">
-          <ul>
-            <li>点击刷新按钮可以重新加载产品</li>
-            <li>点击全屏按钮可以全屏体验产品</li>
-            <li>产品在安全的沙箱环境中运行</li>
-            <li>您的使用数据将用于改进产品体验</li>
-          </ul>
-        </div>
-      </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     
     <template #footer>
@@ -113,10 +119,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Link, Share } from '@element-plus/icons-vue'
-import type { Product } from '../../shared/types'
+import { copyToClipboard } from '../../../shared/utils'
+import ProductFeedbackList from './ProductFeedbackList.vue'
+import type { Product } from '../../../shared/types'
 
 interface Props {
   modelValue: boolean
@@ -132,10 +140,15 @@ const emit = defineEmits<Emits>()
 
 // 响应式数据
 const visible = ref(false)
+const activeTab = ref('basic')
 
 // 监听器
 watch(() => props.modelValue, (val) => {
   visible.value = val
+  // 打开弹窗时重置到第一个标签页
+  if (val) {
+    activeTab.value = 'basic'
+  }
 })
 
 watch(visible, (val) => {
@@ -154,24 +167,53 @@ const openLink = (url: string) => {
 const shareProduct = async () => {
   if (!props.product) return
   
+  const shareUrl = window.location.href
   const shareData = {
     title: props.product.title,
     text: props.product.description || '来体验这个有趣的产品！',
-    url: window.location.href
+    url: shareUrl
   }
   
   try {
-    if (navigator.share) {
+    // 优先使用 Web Share API（如果支持）
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       await navigator.share(shareData)
       ElMessage.success('分享成功')
-    } else {
-      // 降级到复制链接
-      await navigator.clipboard.writeText(window.location.href)
-      ElMessage.success('链接已复制到剪贴板')
+      return
     }
-  } catch (error) {
+    
+    // 降级到复制链接到剪贴板
+    const success = await copyToClipboard(shareUrl)
+    if (success) {
+      ElMessage.success('链接已复制到剪贴板')
+    } else {
+      // 如果复制失败，显示链接让用户手动复制
+      ElMessage({
+        message: `链接已准备，请手动复制：${shareUrl}`,
+        type: 'info',
+        duration: 5000,
+        showClose: true
+      })
+    }
+  } catch (error: any) {
+    // 如果用户取消分享，不显示错误
+    if (error.name === 'AbortError') {
+      return
+    }
+    
     console.error('分享失败:', error)
-    ElMessage.error('分享失败')
+    
+    // 尝试降级到复制链接
+    try {
+      const success = await copyToClipboard(shareUrl)
+      if (success) {
+        ElMessage.success('链接已复制到剪贴板')
+      } else {
+        ElMessage.error('分享失败，请手动复制链接')
+      }
+    } catch (copyError) {
+      ElMessage.error('分享失败，请手动复制链接')
+    }
   }
 }
 
@@ -202,21 +244,31 @@ const getTypeTagType = (type: string) => {
   padding: 0;
 }
 
+.product-tabs {
+  min-height: 400px;
+}
+
+.tab-content {
+  padding: 8px 0;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 .info-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .info-section:last-child {
   margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
-.section-header {
-  margin-bottom: 16px;
-}
-
-.section-header h3 {
-  margin: 0;
-  font-size: 16px;
+.section-title {
+  margin: 0 0 12px 0;
+  font-size: 15px;
   font-weight: 600;
   color: #1f2937;
 }
@@ -224,19 +276,21 @@ const getTypeTagType = (type: string) => {
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 16px 24px;
 }
 
 .info-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .label {
-  font-size: 14px;
-  color: #6b7280;
-  min-width: 80px;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .value {
@@ -247,9 +301,13 @@ const getTypeTagType = (type: string) => {
 
 .description {
   font-size: 14px;
-  color: #374151;
-  line-height: 1.6;
+  color: #4b5563;
+  line-height: 1.7;
   margin: 0;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 3px solid #3b82f6;
 }
 
 .tech-stack {
@@ -268,12 +326,17 @@ const getTypeTagType = (type: string) => {
   flex-wrap: wrap;
 }
 
+.usage-tips {
+  padding: 8px 0;
+}
+
 .usage-tips ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
   font-size: 14px;
-  color: #6b7280;
-  line-height: 1.6;
+  color: #4b5563;
+  line-height: 2;
+  list-style-type: disc;
 }
 
 .usage-tips li {
@@ -288,6 +351,20 @@ const getTypeTagType = (type: string) => {
   text-align: right;
 }
 
+/* 标签页样式优化 */
+:deep(.el-tabs__header) {
+  margin-bottom: 20px;
+}
+
+:deep(.el-tabs__item) {
+  font-weight: 500;
+  padding: 0 20px;
+}
+
+:deep(.el-tabs__content) {
+  padding: 0;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .el-dialog {
@@ -297,12 +374,16 @@ const getTypeTagType = (type: string) => {
   
   .info-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
   }
   
   .links {
     flex-direction: column;
     align-items: stretch;
+  }
+  
+  .tab-content {
+    max-height: 400px;
   }
 }
 </style>

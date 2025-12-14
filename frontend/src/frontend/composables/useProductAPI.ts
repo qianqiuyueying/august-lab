@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { api } from '../../shared/api'
+import api from '../../shared/api'
 
 export interface ProductAPIConfig {
   product_id: number
@@ -21,10 +21,16 @@ export interface ProductAPICall {
 }
 
 export interface ProductAPIToken {
+  id?: number
   token: string
+  full_token?: string  // 完整token，仅用于显示
   expires_at: string
   permissions: string[]
   product_id: number
+  is_active?: boolean
+  created_at?: string
+  last_used_at?: string
+  usage_count?: number
 }
 
 export function useProductAPI() {
@@ -65,6 +71,21 @@ export function useProductAPI() {
       return response.data.valid
     } catch (err: any) {
       error.value = err.response?.data?.detail || '验证API令牌失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getAPITokens = async (productId: number): Promise<ProductAPIToken[]> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await api.get(`/products/${productId}/api/tokens`)
+      return response.data
+    } catch (err: any) {
+      error.value = err.response?.data?.detail || '获取API令牌列表失败'
       throw err
     } finally {
       loading.value = false
@@ -190,6 +211,7 @@ export function useProductAPI() {
     error,
     generateAPIToken,
     validateAPIToken,
+    getAPITokens,
     revokeAPIToken,
     getAPIConfig,
     updateAPIConfig,

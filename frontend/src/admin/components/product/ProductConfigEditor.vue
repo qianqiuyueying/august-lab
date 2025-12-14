@@ -411,8 +411,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, reactive, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useProductConfig } from '../../frontend/composables/useProductConfig'
-import type { Product } from '../../shared/types'
+import { useProductConfig } from '../../../frontend/composables/useProductConfig'
+import type { Product } from '../../../shared/types'
 
 interface Props {
   product?: Product
@@ -433,8 +433,8 @@ const {
   createDefaultConfig,
   loadConfigFromProduct,
   validateConfig,
-  exportConfig,
-  importConfig,
+  exportConfig: exportConfigCore,
+  importConfig: importConfigCore,
   resetConfig
 } = useProductConfig()
 
@@ -676,7 +676,7 @@ const resetToDefault = async () => {
 }
 
 const exportConfig = () => {
-  const configString = exportConfig(configForm as any)
+  const configString = exportConfigCore(configForm as any)
   
   // 创建下载链接
   const blob = new Blob([configString], { type: 'application/json' })
@@ -696,7 +696,7 @@ const importConfig = () => {
 }
 
 const doImportConfig = () => {
-  const result = importConfig(importJson.value)
+  const result = importConfigCore(importJson.value)
   
   if (result.success && result.config) {
     Object.assign(configForm, result.config)

@@ -64,7 +64,7 @@
         @gesture="onGesture"
         @error="onError"
       >
-        <template #default="{ deviceInfo, layout }">
+        <template #default>
           <ProductIframe
             v-if="product && productUrl"
             :src="productUrl"
@@ -312,8 +312,8 @@ import {
 } from '@element-plus/icons-vue'
 import ResponsiveProductContainer from './ResponsiveProductContainer.vue'
 import ProductIframe from './ProductIframe.vue'
-import { useResponsiveDesign } from '../composables/useResponsiveDesign'
-import type { Product } from '../../shared/types'
+import { useResponsiveDesign } from '../../composables/useResponsiveDesign'
+import type { Product } from '../../../shared/types'
 
 interface Props {
   product?: Product
@@ -403,10 +403,28 @@ const scaleRange = computed({
 // 方法
 const goBack = () => {
   emit('back')
-  if (window.history.length > 1) {
+  
+  // 智能返回逻辑：与ProductContainer保持一致
+  const referrer = document.referrer
+  const currentOrigin = window.location.origin
+  const hasHistory = window.history.length > 1
+  const isFromSameOrigin = referrer && referrer.startsWith(currentOrigin)
+  
+  // 如果有历史记录且来源是当前域名，使用浏览器后退
+  if (hasHistory && isFromSameOrigin) {
     router.go(-1)
-  } else {
+    return
+  }
+  
+  // 根据路由查询参数中的from字段返回
+  const from = route.query.from as string
+  if (from === 'portfolio') {
     router.push('/portfolio')
+  } else if (from === 'home') {
+    router.push('/')
+  } else {
+    // 默认返回到产品列表
+    router.push({ path: '/portfolio', query: { tab: 'products' } })
   }
 }
 

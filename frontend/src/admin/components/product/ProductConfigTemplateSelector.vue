@@ -335,8 +335,8 @@
 import { ref, computed, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, UploadFilled } from '@element-plus/icons-vue'
-import { templateManager, type ConfigTemplate } from '../../frontend/utils/configTemplates'
-import type { ProductConfigSchema } from '../../frontend/composables/useProductConfig'
+import { templateManager, type ConfigTemplate } from '../../../frontend/utils/configTemplates'
+import type { ProductConfigSchema } from '../../../frontend/composables/useProductConfig'
 
 interface Props {
   currentConfig?: ProductConfigSchema

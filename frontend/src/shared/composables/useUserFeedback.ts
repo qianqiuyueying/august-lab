@@ -93,7 +93,6 @@ export function useUserFeedback() {
       type: options.type || 'info',
       duration: options.duration || 3000,
       showClose: options.showClose || false,
-      center: options.center || false,
       onClose: options.onClose
     })
   }
@@ -218,8 +217,8 @@ export function useUserFeedback() {
       successMessage = '操作成功',
       errorMessage = '操作失败',
       operationKey = `operation_${Date.now()}`,
-      showSuccess = true,
-      showError = true
+      showSuccess: shouldShowSuccess = true,
+      showError: shouldShowError = true
     } = options
 
     try {
@@ -230,7 +229,7 @@ export function useUserFeedback() {
       const result = await asyncFn()
 
       // 显示成功消息
-      if (showSuccess) {
+      if (shouldShowSuccess) {
         showSuccess(successMessage)
       }
 
@@ -239,7 +238,7 @@ export function useUserFeedback() {
       console.error('操作失败:', error)
       
       // 显示错误消息
-      if (showError) {
+      if (shouldShowError) {
         const message = error.message || errorMessage
         showError(message)
       }

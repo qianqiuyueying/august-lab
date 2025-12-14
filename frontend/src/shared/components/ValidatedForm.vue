@@ -181,12 +181,22 @@ const elRules = computed<FormRules>(() => {
       max: rule.max,
       pattern: rule.pattern,
       message: rule.message,
-      validator: rule.validator ? (rule, value, callback) => {
+      validator: rule.validator ? (validationRule, value, callback) => {
         const result = rule.validator!(value)
         if (result === true) {
           callback()
         } else {
-          callback(new Error(typeof result === 'string' ? result : rule.message))
+          let errorMessage: string
+          if (typeof result === 'string') {
+            errorMessage = result
+          } else if (typeof rule.message === 'string') {
+            errorMessage = rule.message
+          } else if (rule.message && typeof rule.message === 'function') {
+            errorMessage = (rule.message as (value: any) => string)(value) || '验证失败'
+          } else {
+            errorMessage = '验证失败'
+          }
+          callback(new Error(errorMessage))
         }
       } : undefined,
       trigger: ['blur', 'change']

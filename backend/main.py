@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.database import engine, Base
 from app import models  # 导入模型以确保它们被注册到 Base.metadata
@@ -58,15 +58,28 @@ from pathlib import Path
 backend_dir = Path(__file__).parent  # backend 目录
 
 # 从配置读取路径，如果是相对路径则基于backend目录
-if os.path.isabs(settings.UPLOAD_DIR):
-    uploads_dir = Path(settings.UPLOAD_DIR)
+# 使用 pathlib.Path 处理路径，自动支持跨平台
+upload_dir_path = Path(settings.UPLOAD_DIR)
+if upload_dir_path.is_absolute():
+    uploads_dir = upload_dir_path
 else:
-    uploads_dir = backend_dir.parent / settings.UPLOAD_DIR.lstrip("./")
+    # 处理相对路径，移除开头的 ./ 或 .\ 等（跨平台兼容）
+    upload_dir_str = settings.UPLOAD_DIR.lstrip("./").lstrip(".\\").lstrip(".")
+    # 如果还有路径分隔符，移除它
+    if upload_dir_str.startswith(('/', '\\')):
+        upload_dir_str = upload_dir_str[1:]
+    uploads_dir = backend_dir.parent / upload_dir_str
 
-if os.path.isabs(settings.PRODUCTS_DIR):
-    products_dir = Path(settings.PRODUCTS_DIR)
+products_dir_path = Path(settings.PRODUCTS_DIR)
+if products_dir_path.is_absolute():
+    products_dir = products_dir_path
 else:
-    products_dir = backend_dir.parent / settings.PRODUCTS_DIR.lstrip("./")
+    # 处理相对路径，移除开头的 ./ 或 .\ 等（跨平台兼容）
+    products_dir_str = settings.PRODUCTS_DIR.lstrip("./").lstrip(".\\").lstrip(".")
+    # 如果还有路径分隔符，移除它
+    if products_dir_str.startswith(('/', '\\')):
+        products_dir_str = products_dir_str[1:]
+    products_dir = backend_dir.parent / products_dir_str
 
 # 确保目录存在
 uploads_dir.mkdir(parents=True, exist_ok=True)
@@ -104,7 +117,7 @@ async def health_check():
     return {
         "status": "healthy" if db_healthy else "unhealthy",
         "database": "connected" if db_healthy else "disconnected",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 if __name__ == "__main__":

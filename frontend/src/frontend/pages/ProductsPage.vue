@@ -1,22 +1,36 @@
 <template>
-  <div class="products-page">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="container">
-        <h1 class="page-title">我的产品</h1>
-        <p class="page-description">
-          探索我开发的各种Web应用和工具，点击即可在线体验
-        </p>
+  <div class="products-page min-h-screen">
+    <!-- 页面头部 - 大胆设计 -->
+    <div class="page-header relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+        <div class="absolute inset-0 opacity-30">
+          <div class="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+          <div class="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full blur-3xl"></div>
+        </div>
+      </div>
+      
+      <div class="container relative z-10">
+        <div class="text-center py-20">
+          <div class="inline-block mb-4">
+            <span class="text-sm font-bold text-pink-400 uppercase tracking-wider">Products</span>
+          </div>
+          <h1 class="text-6xl md:text-7xl font-black text-white mb-6 leading-tight">
+            我的<span class="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">产品</span>
+          </h1>
+          <p class="text-xl text-white/80 max-w-2xl mx-auto">
+            探索我开发的各种Web应用和工具，点击即可在线体验
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- 产品筛选和搜索 -->
-    <div class="products-filters">
+    <!-- 产品筛选和搜索 - 玻璃态设计 -->
+    <div class="products-filters sticky top-0 z-50 backdrop-blur-xl bg-white/10 border-b border-white/20">
       <div class="container">
-        <div class="filters-row">
+        <div class="filters-row py-6">
           <div class="filter-group">
-            <label>产品类型：</label>
-            <select v-model="selectedType" @change="filterProducts">
+            <label class="text-white/90 font-medium">产品类型</label>
+            <select v-model="selectedType" @change="filterProducts" class="filter-select">
               <option value="">全部</option>
               <option value="static">静态网站</option>
               <option value="spa">单页应用</option>
@@ -26,8 +40,8 @@
           </div>
           
           <div class="filter-group">
-            <label>技术栈：</label>
-            <select v-model="selectedTech" @change="filterProducts">
+            <label class="text-white/90 font-medium">技术栈</label>
+            <select v-model="selectedTech" @change="filterProducts" class="filter-select">
               <option value="">全部</option>
               <option v-for="tech in availableTechs" :key="tech" :value="tech">
                 {{ tech }}
@@ -35,22 +49,27 @@
             </select>
           </div>
           
-          <div class="search-group">
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="搜索产品..."
-              @input="filterProducts"
-              class="search-input"
-            />
+          <div class="search-group flex-1">
+            <div class="relative">
+              <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="搜索产品..."
+                @input="filterProducts"
+                class="search-input"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 产品网格 -->
-    <div class="products-content">
-      <div class="container">
+    <div class="products-content bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+      <div class="container py-12">
         <!-- 加载状态 -->
         <div v-if="isLoading" class="loading-state">
           <div class="loading-spinner"></div>
@@ -75,80 +94,85 @@
         <!-- 产品列表 -->
         <div v-else class="products-grid">
           <div
-            v-for="product in filteredProducts"
+            v-for="(product, index) in filteredProducts"
             :key="product.id"
-            class="product-card"
+            class="product-card group"
+            :style="{ animationDelay: `${index * 50}ms` }"
             @click="launchProduct(product)"
           >
-            <!-- 产品预览图 -->
-            <div class="product-preview">
-              <img
-                v-if="product.preview_image"
-                :src="product.preview_image"
-                :alt="product.title"
-                class="preview-image"
-              />
-              <div v-else class="preview-placeholder">
-                <div class="placeholder-icon">
-                  {{ getProductIcon(product.product_type) }}
+            <div class="h-full bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl hover:bg-white/20 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] cursor-pointer">
+              <!-- 产品预览图 -->
+              <div class="product-preview relative overflow-hidden bg-gradient-to-br from-pink-500/20 to-purple-500/20 aspect-video">
+                <img
+                  v-if="product.preview_image"
+                  :src="product.preview_image"
+                  :alt="product.title"
+                  class="preview-image w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div v-else class="preview-placeholder w-full h-full bg-gradient-to-br from-pink-500/30 to-purple-500/30 flex items-center justify-center">
+                  <div class="placeholder-icon text-6xl opacity-80">
+                    {{ getProductIcon(product.product_type) }}
+                  </div>
+                </div>
+                
+                <!-- 产品类型标签 -->
+                <div class="product-type-badge absolute top-4 right-4 px-4 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-md bg-black/30 border border-white/20">
+                  {{ getProductTypeLabel(product.product_type) }}
+                </div>
+                
+                <!-- 启动按钮 -->
+                <div class="launch-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                  <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <button class="launch-btn bg-white text-purple-600 px-6 py-3 rounded-xl font-bold shadow-2xl transform scale-90 group-hover:scale-100 transition-transform duration-300 flex items-center gap-2">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-6V7a2 2 0 00-2-2H5a2 2 0 00-2 2v3m2 13h10a2 2 0 002-2v-3m-2-13h10a2 2 0 012 2v3" />
+                      </svg>
+                      立即体验
+                    </button>
+                  </div>
                 </div>
               </div>
-              
-              <!-- 产品类型标签 -->
-              <div class="product-type-badge" :class="`type-${product.product_type}`">
-                {{ getProductTypeLabel(product.product_type) }}
-              </div>
-              
-              <!-- 启动按钮 -->
-              <div class="launch-overlay">
-                <button class="launch-btn">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-6V7a2 2 0 00-2-2H5a2 2 0 00-2 2v3m2 13h10a2 2 0 002-2v-3m-2-13h10a2 2 0 012 2v3" />
-                  </svg>
-                  立即体验
-                </button>
-              </div>
-            </div>
 
-            <!-- 产品信息 -->
-            <div class="product-info">
-              <h3 class="product-title">{{ product.title }}</h3>
-              <p class="product-description">{{ product.description }}</p>
-              
-              <!-- 技术栈标签 -->
-              <div v-if="product.tech_stack?.length" class="tech-tags">
-                <span
-                  v-for="tech in product.tech_stack.slice(0, 3)"
-                  :key="tech"
-                  class="tech-tag"
-                >
-                  {{ tech }}
-                </span>
-                <span v-if="product.tech_stack.length > 3" class="tech-more">
-                  +{{ product.tech_stack.length - 3 }}
-                </span>
-              </div>
-              
-              <!-- 产品统计 -->
-              <div class="product-stats">
-                <span class="stat-item">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  {{ product.view_count || 0 }}
-                </span>
+              <!-- 产品信息 -->
+              <div class="product-info p-6 bg-white/5">
+                <h3 class="product-title text-xl font-bold text-white mb-3 group-hover:text-pink-300 transition-colors">{{ product.title }}</h3>
+                <p class="product-description text-white/70 text-sm leading-relaxed mb-4 line-clamp-2">{{ product.description }}</p>
                 
-                <span class="stat-item">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {{ formatDate(product.created_at) }}
-                </span>
+                <!-- 技术栈标签 -->
+                <div v-if="product.tech_stack?.length" class="tech-tags mb-4">
+                  <span
+                    v-for="tech in product.tech_stack.slice(0, 3)"
+                    :key="tech"
+                    class="tech-tag px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full border border-white/30"
+                  >
+                    {{ tech }}
+                  </span>
+                  <span v-if="product.tech_stack.length > 3" class="tech-more px-3 py-1 bg-white/10 text-white/60 text-xs font-medium rounded-full">
+                    +{{ product.tech_stack.length - 3 }}
+                  </span>
+                </div>
+                
+                <!-- 产品统计 -->
+                <div class="product-stats flex items-center justify-between pt-4 border-t border-white/20">
+                  <span class="stat-item flex items-center gap-1.5 text-xs text-white/60">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    {{ product.view_count || 0 }} 次体验
+                  </span>
+                  
+                  <span class="stat-item flex items-center gap-1.5 text-xs text-white/60">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ formatDate(product.created_at) }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -207,7 +231,7 @@ const filteredProducts = computed(() => {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(product =>
       product.title.toLowerCase().includes(query) ||
-      product.description.toLowerCase().includes(query) ||
+      (product.description?.toLowerCase().includes(query) ?? false) ||
       product.tech_stack?.some(tech => tech.toLowerCase().includes(query))
     )
   }
@@ -236,8 +260,11 @@ const filterProducts = () => {
 }
 
 const launchProduct = (product: Product) => {
-  // 跳转到产品详情页
-  router.push(`/product/${product.id}`)
+  // 跳转到产品详情页，传递来源信息
+  router.push({
+    path: `/product/${product.id}`,
+    query: { from: 'products' }
+  })
 }
 
 const getProductIcon = (type: string) => {
@@ -278,13 +305,15 @@ onMounted(() => {
 <style scoped>
 .products-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0f172a;
 }
 
 .page-header {
-  padding: 4rem 0 2rem;
+  padding: 5rem 0 3rem;
   text-align: center;
   color: white;
+  position: relative;
+  z-index: 10;
 }
 
 .container {
@@ -294,24 +323,28 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to right, #ffffff, #e0e7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .page-description {
   font-size: 1.25rem;
-  opacity: 0.9;
+  opacity: 0.95;
   max-width: 600px;
   margin: 0 auto;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
 .products-filters {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem 0;
-  margin-bottom: 2rem;
+  position: relative;
 }
 
 .filters-row {
@@ -333,13 +366,33 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.filter-group select {
-  padding: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.375rem;
+.filter-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  min-width: 150px;
+}
+
+.filter-select:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.filter-select option {
+  background: #1e293b;
+  color: white;
 }
 
 .filter-group select option {
@@ -352,13 +405,31 @@ onMounted(() => {
 }
 
 .search-input {
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.375rem;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   backdrop-filter: blur(10px);
-  width: 250px;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .search-input::placeholder {
@@ -367,13 +438,15 @@ onMounted(() => {
 
 .products-content {
   padding-bottom: 4rem;
+  position: relative;
+  z-index: 10;
 }
 
 .loading-state,
 .error-state,
 .empty-state {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 6rem 2rem;
   color: white;
 }
 
@@ -421,17 +494,7 @@ onMounted(() => {
 }
 
 .product-card {
-  background: white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 
 .product-preview {
@@ -495,18 +558,25 @@ onMounted(() => {
   background: white;
   color: #374151;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  padding: 0.875rem 2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(10px);
+}
+
+.product-card:hover .launch-btn {
+  transform: translateY(0) scale(1.05);
 }
 
 .launch-btn:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .launch-btn svg {
@@ -515,91 +585,47 @@ onMounted(() => {
 }
 
 .product-info {
-  padding: 1.5rem;
+  position: relative;
 }
 
-.product-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.product-description {
-  color: #6b7280;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.tech-tag {
-  background: #f3f4f6;
-  color: #374151;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.tech-more {
-  background: #e5e7eb;
-  color: #6b7280;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-}
-
-.product-stats {
-  display: flex;
-  gap: 1rem;
-  color: #9ca3af;
-  font-size: 0.875rem;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.stat-item svg {
-  width: 1rem;
-  height: 1rem;
+/* 动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .page-title {
-    font-size: 2rem;
-  }
-  
   .filters-row {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
   
-  .search-group {
-    margin-left: 0;
+  .filter-group {
+    width: 100%;
   }
   
-  .search-input {
+  .filter-select {
     width: 100%;
   }
   
   .products-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .product-card {
-    margin: 0 1rem;
+    gap: 1.5rem;
   }
 }
 </style>

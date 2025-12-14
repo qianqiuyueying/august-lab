@@ -293,7 +293,7 @@
           <div class="admin-reply">
             {{ selectedFeedback.admin_reply }}
           </div>
-          <div class="reply-time">
+          <div v-if="selectedFeedback.replied_at" class="reply-time">
             回复时间: {{ formatDateTime(selectedFeedback.replied_at) }}
           </div>
         </div>
@@ -311,7 +311,7 @@
           </el-button>
           <el-button
             type="primary"
-            @click="replyToFeedback(selectedFeedback)"
+            @click="selectedFeedback && replyToFeedback(selectedFeedback)"
           >
             回复反馈
           </el-button>
@@ -388,7 +388,7 @@ import {
   Refresh
 } from '@element-plus/icons-vue'
 import { useProductFeedback } from '../../../frontend/composables/useProductFeedback'
-import type { ProductFeedback, ProductFeedbackStats } from '../../shared/types'
+import type { ProductFeedback, ProductFeedbackStats } from '../../../shared/types'
 
 interface Props {
   productId?: number

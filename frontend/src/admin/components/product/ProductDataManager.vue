@@ -348,8 +348,8 @@ import {
   Search,
   CopyDocument
 } from '@element-plus/icons-vue'
-import { useProductStorage } from '../../frontend/composables/useProductStorage'
-import type { ProductStorageRecord, ProductStorageStats } from '../../frontend/composables/useProductStorage'
+import { useProductStorage } from '../../../frontend/composables/useProductStorage'
+import type { ProductStorageRecord, ProductStorageStats } from '../../../frontend/composables/useProductStorage'
 
 interface Props {
   productId: number
@@ -385,7 +385,11 @@ const storageQuota = reactive({
   usage_percentage: 0
 })
 
-const dataForm = reactive({
+const dataForm = reactive<{
+  key: string
+  dataType: 'text' | 'number' | 'boolean' | 'json'
+  content: string | number | boolean
+}>({
   key: '',
   dataType: 'json',
   content: ''

@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { api } from '../../shared/api'
+import api from '../../shared/api'
 
 export interface ProductUser {
   id: string

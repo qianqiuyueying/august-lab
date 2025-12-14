@@ -3,24 +3,28 @@
     <div class="monitor-header">
       <div class="header-left">
         <h3 class="monitor-title">
-          <el-icon class="status-icon" :class="{ active: isActive }">
-            <VideoPlay v-if="isActive" />
-            <VideoPause v-else />
+          <el-icon class="status-icon">
+            <Refresh />
           </el-icon>
-          实时监控
+          产品监控
         </h3>
-        <span class="status-text">
-          {{ isActive ? '监控中' : '已暂停' }}
+        <span class="status-text" v-if="lastUpdateTime">
+          最后更新: {{ formatLastUpdateTime(lastUpdateTime) }}
+        </span>
+        <span class="status-text" v-else>
+          点击刷新获取数据
         </span>
       </div>
       
       <div class="header-actions">
         <el-button
-          @click="toggleMonitoring"
-          :type="isActive ? 'danger' : 'primary'"
+          @click="fetchNewData"
+          type="primary"
           size="small"
+          :loading="loading"
+          :icon="Refresh"
         >
-          {{ isActive ? '暂停' : '开始' }}
+          刷新数据
         </el-button>
         
         <el-button @click="clearData" size="small">
@@ -109,10 +113,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { 
-  VideoPlay, 
-  VideoPause, 
+  Refresh,
   User, 
   Warning, 
   Clock, 
@@ -135,77 +138,48 @@ interface RealTimeActivity {
 interface Props {
   productId?: number
   maxActivities?: number
-  updateInterval?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  maxActivities: 50,
-  updateInterval: 2000
+  maxActivities: 50
 })
 
 // 使用产品监控 composable
 const { 
   getProductErrors, 
   getProductPerformance,
-  getSystemStatus,
-  loading,
-  error
+  loading
 } = useProductMonitoring()
 
 // 响应式数据
-const isActive = ref(false)
 const autoScroll = ref(true)
 const onlineUsers = ref(0)
 const currentVisits = ref(0)
 const errorRate = ref(0)
 const avgResponseTime = ref(0)
 const activities = ref<RealTimeActivity[]>([])
+const lastUpdateTime = ref<Date | null>(null)
 
 // 模板引用
 const streamContainer = ref<HTMLElement>()
 
-// 定时器
-let monitoringTimer: number | null = null
-let metricsTimer: number | null = null
-
-// 方法
-const toggleMonitoring = () => {
-  if (isActive.value) {
-    stopMonitoring()
-  } else {
-    startMonitoring()
-  }
-}
-
-const startMonitoring = () => {
-  isActive.value = true
-  
-  // 开始监控活动
-  monitoringTimer = window.setInterval(() => {
-    fetchRealTimeData()
-  }, props.updateInterval)
-  
-  // 开始更新指标
-  metricsTimer = window.setInterval(() => {
-    updateMetrics()
-  }, 1000)
-  
-  // 立即获取一次数据
-  fetchRealTimeData()
-  updateMetrics()
-}
-
-const stopMonitoring = () => {
-  isActive.value = false
-  
-  if (monitoringTimer) {
-    clearInterval(monitoringTimer)
-    monitoringTimer = null
+// 方法：手动获取新数据
+const fetchNewData = async () => {
+  if (!props.productId) {
+    return
   }
   
-  if (metricsTimer) {
-    clearInterval(metricsTimer)
-    metricsTimer = null
+  try {
+    // 同时获取活动数据和指标数据
+    await Promise.all([
+      fetchRealTimeData(),
+      updateMetrics()
+    ])
+    
+    // 更新最后更新时间
+    lastUpdateTime.value = new Date()
+  } catch (err) {
+    console.error('获取数据失败:', err)
   }
 }
 
@@ -231,7 +205,7 @@ const fetchRealTimeData = async () => {
     const newActivities: RealTimeActivity[] = []
     
     // 处理错误数据
-    errors.forEach((err, index) => {
+    errors.forEach((err) => {
       newActivities.push({
         id: `error-${err.id}`,
         type: 'error',
@@ -243,7 +217,7 @@ const fetchRealTimeData = async () => {
     })
     
     // 处理性能数据
-    performanceLogs.forEach((perf, index) => {
+    performanceLogs.forEach((perf) => {
       newActivities.push({
         id: `perf-${perf.id}`,
         type: 'performance',
@@ -354,15 +328,22 @@ const formatTime = (timestamp: Date) => {
   })
 }
 
-// 生命周期
-onMounted(() => {
-  // 自动开始监控
-  startMonitoring()
-})
-
-onUnmounted(() => {
-  stopMonitoring()
-})
+const formatLastUpdateTime = (timestamp: Date) => {
+  const now = new Date()
+  const diff = now.getTime() - timestamp.getTime()
+  
+  if (diff < 1000) return '刚刚'
+  if (diff < 60000) return `${Math.floor(diff / 1000)}秒前`
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
+  
+  return timestamp.toLocaleString('zh-CN', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
 
 <style scoped>
@@ -399,13 +380,8 @@ onUnmounted(() => {
 }
 
 .status-icon {
-  color: #6b7280;
+  color: #3b82f6;
   transition: color 0.3s;
-}
-
-.status-icon.active {
-  color: #10b981;
-  animation: pulse 2s infinite;
 }
 
 .status-text {

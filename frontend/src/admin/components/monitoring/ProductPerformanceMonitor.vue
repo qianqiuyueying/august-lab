@@ -481,7 +481,7 @@ const loadPerformanceData = async () => {
       const product = products.value.find(p => p.id === log.product_id)
       const details = log.details || {}
       
-      const responseTime = details.loadTime || details.responseTime || 0
+      const responseTime = details.loadTime || details.renderTime || 0
       const memoryUsage = details.memoryUsage || 0
       const cpuUsage = 0 // 后端暂无CPU使用率
       const errorCount = details.errorCount || 0
@@ -550,14 +550,43 @@ const drawPerformanceChart = () => {
   // 清空画布
   ctx.clearRect(0, 0, 600, 300)
   
-  // 生成模拟数据
-  const data = Array.from({ length: 24 }, (_, i) => ({
-    time: i,
-    value: Math.floor(Math.random() * 200) + 100
-  }))
+  // 使用真实的性能记录数据
+  let data: Array<{ time: number; value: number }> = []
   
-  const maxValue = Math.max(...data.map(d => d.value))
-  const minValue = Math.min(...data.map(d => d.value))
+  if (performanceRecords.value.length > 0) {
+    // 根据选定的指标获取数据
+    const records = performanceRecords.value.slice(0, 24).reverse() // 取最近24条，并反转以时间顺序显示
+    
+    data = records.map((record, index) => {
+      let value = 0
+      switch (selectedMetric.value) {
+        case 'response_time':
+          value = record.responseTime
+          break
+        case 'memory_usage':
+          value = record.memoryUsage / (1024 * 1024) // 转换为MB
+          break
+        case 'error_count':
+          value = record.errorCount
+          break
+        default:
+          value = record.responseTime
+      }
+      return {
+        time: index,
+        value: value
+      }
+    })
+  } else {
+    // 如果没有数据，显示空图表
+    data = Array.from({ length: 24 }, (_, i) => ({
+      time: i,
+      value: 0
+    }))
+  }
+  
+  const maxValue = Math.max(...data.map(d => d.value), 1) // 确保至少为1，避免除零
+  const minValue = Math.min(...data.map(d => d.value), 0)
   const range = maxValue - minValue || 1
   
   // 绘制网格

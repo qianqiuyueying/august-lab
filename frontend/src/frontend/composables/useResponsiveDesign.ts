@@ -1,6 +1,18 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import type { Product } from '../../shared/types'
 
+// 扩展 CSSStyleDeclaration 接口以支持 WebKit 和 Mozilla 特定属性
+declare global {
+  interface CSSStyleDeclaration {
+    webkitOverflowScrolling?: string
+    overflowScrolling?: string
+    webkitTouchCallout?: string
+    webkitTapHighlightColor?: string
+    webkitFontSmoothing?: string
+    mozOsxFontSmoothing?: string
+  }
+}
+
 // 设备类型定义
 export type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'large-desktop'
 

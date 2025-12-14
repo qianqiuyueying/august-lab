@@ -84,17 +84,22 @@
     </main>
     
     <!-- 页脚 -->
-    <footer class="bg-white border-t border-gray-200 section-padding">
+    <footer class="bg-white border-t border-gray-200 py-6">
       <ResponsiveContainer size="xl">
         <div class="text-center">
-          <div class="flex items-center justify-center space-x-2 mb-4">
-            <div class="w-6 h-6 bg-primary-600 rounded-md flex items-center justify-center">
+          <div class="flex items-center justify-center space-x-2 mb-2">
+            <div class="w-5 h-5 bg-primary-600 rounded-md flex items-center justify-center">
               <span class="text-white font-bold text-xs">A</span>
             </div>
-            <span class="text-lg font-semibold text-gray-900">August.Lab</span>
+            <span class="text-base font-semibold text-gray-900">August.Lab</span>
           </div>
-          <p class="text-gray-600 text-sm">
+          <p class="text-gray-600 text-xs">
             © {{ new Date().getFullYear() }} August.Lab. All rights reserved.
+          </p>
+          <p class="text-gray-500 text-xs mt-1">
+            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-primary-600 transition-colors">
+              冀ICP备2025117309号
+            </a>
           </p>
         </div>
       </ResponsiveContainer>
@@ -115,8 +120,7 @@ const mobileMenuOpen = ref(false)
 
 const navItems = [
   { name: '首页', path: '/' },
-  { name: '作品', path: '/portfolio' },
-  { name: '产品', path: '/products' },
+  { name: '作品集', path: '/portfolio' },
   { name: '博客', path: '/blog' },
   { name: '关于我', path: '/about' }
 ]

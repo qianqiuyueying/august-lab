@@ -20,14 +20,29 @@
           router
           class="border-none"
         >
-          <el-menu-item 
-            v-for="item in menuItems" 
-            :key="item.index"
-            :index="item.index"
-          >
-            <el-icon><component :is="item.icon" /></el-icon>
-            <template #title>{{ item.title }}</template>
-          </el-menu-item>
+          <template v-for="item in menuItems" :key="item.index">
+            <!-- 有子菜单的项 -->
+            <el-sub-menu v-if="item.children" :index="item.index">
+              <template #title>
+                <el-icon><component :is="item.icon" /></el-icon>
+                <span>{{ item.title }}</span>
+              </template>
+              <el-menu-item 
+                v-for="child in item.children" 
+                :key="child.index"
+                :index="child.index"
+              >
+                <el-icon><component :is="child.icon" /></el-icon>
+                <template #title>{{ child.title }}</template>
+              </el-menu-item>
+            </el-sub-menu>
+            
+            <!-- 普通菜单项 -->
+            <el-menu-item v-else :index="item.index">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <template #title>{{ item.title }}</template>
+            </el-menu-item>
+          </template>
         </el-menu>
       </el-aside>
       
@@ -114,6 +129,15 @@ import {
   Tools
 } from '@element-plus/icons-vue'
 import { authAPI } from '../../shared/api'
+import type { Component } from 'vue'
+
+// 定义菜单项类型
+interface MenuItem {
+  index: string
+  icon: Component
+  title: string
+  children?: MenuItem[]
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -134,36 +158,57 @@ const pageTitle = computed(() => {
     '/admin/extensions': '扩展管理',
     '/admin/profile': '个人信息管理'
   }
+  // 支持匹配父路径
+  if (route.path.startsWith('/admin/portfolio')) {
+    return '作品管理'
+  }
+  if (route.path.startsWith('/admin/products') || route.path.startsWith('/admin/analytics') || route.path.startsWith('/admin/monitoring')) {
+    return titleMap[route.path] || '产品管理'
+  }
   return titleMap[route.path] || '管理后台'
 })
 
 const sidebarWidth = computed(() => collapsed.value ? '64px' : '250px')
 
-const menuItems = [
+const menuItems: MenuItem[] = [
   {
     index: '/admin',
     icon: House,
     title: '仪表盘'
   },
   {
-    index: '/admin/portfolio',
+    index: 'portfolio-group',
     icon: Briefcase,
-    title: '作品管理'
+    title: '作品集管理',
+    children: [
+      {
+        index: '/admin/portfolio',
+        icon: Briefcase,
+        title: '作品管理'
+      },
+      {
+        index: '/admin/products',
+        icon: Box,
+        title: '产品管理'
+      }
+    ]
   },
   {
-    index: '/admin/products',
-    icon: Box,
-    title: '产品管理'
-  },
-  {
-    index: '/admin/analytics',
+    index: 'product-analytics-group',
     icon: Setting,
-    title: '产品分析'
-  },
-  {
-    index: '/admin/monitoring',
-    icon: Warning,
-    title: '产品监控'
+    title: '产品分析',
+    children: [
+      {
+        index: '/admin/analytics',
+        icon: Setting,
+        title: '产品分析'
+      },
+      {
+        index: '/admin/monitoring',
+        icon: Warning,
+        title: '产品监控'
+      }
+    ]
   },
   {
     index: '/admin/blog',

@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, Field, validator, HttpUrl
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
 from typing import List, Optional, Union, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 import re
 from .validators import (
     validate_url, validate_github_url, validate_linkedin_url, validate_twitter_url,
@@ -285,7 +287,7 @@ class Product(ProductBase):
     model_config = ConfigDict(from_attributes=True)
     
     id: int
-    file_path: Optional[str] = None
+    file_path: Optional[str] = None  # 已废弃：路径现在完全基于ID计算，不再存储
     created_at: datetime
     updated_at: datetime
 
@@ -339,7 +341,7 @@ class ProductLog(ProductLogBase):
 class ProductUploadResponse(BaseModel):
     message: str
     product_id: int
-    file_path: str
+    file_path: str  # 已废弃：保留以兼容API响应格式，但不再使用
     extracted_files: List[str]
 
 class ProductAnalytics(BaseModel):
@@ -417,6 +419,27 @@ class ProductFeedback(ProductFeedbackBase):
     created_at: datetime
     updated_at: datetime
     replied_at: Optional[datetime] = None
+
+class ProductFeedbackPublic(BaseModel):
+    """公开的反馈信息（不包含敏感信息，符合隐私保护要求）"""
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    product_id: int
+    feedback_type: str
+    rating: Optional[int] = None
+    title: str
+    content: str
+    status: str
+    admin_reply: Optional[str] = None
+    created_at: datetime
+    replied_at: Optional[datetime] = None
+    
+    # 不包含以下敏感信息：
+    # - user_name（用户姓名）
+    # - user_email（用户邮箱）
+    # - ip_address（IP地址）
+    # - user_agent（用户代理）
 
 class ProductFeedbackStats(BaseModel):
     product_id: int

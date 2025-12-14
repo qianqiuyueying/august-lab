@@ -284,16 +284,39 @@ class ExtensionRegistry:
         """获取扩展"""
         return self.extensions.get(name)
     
-    def get_product_type_extension(self, type_name: str) -> Optional[ProductTypeExtension]:
-        """获取产品类型扩展"""
-        return self.product_types.get(type_name)
+    def get_product_type_extension(self, type_name: str, extension_configs: Dict[str, Any] = None) -> Optional[ProductTypeExtension]:
+        """获取产品类型扩展（如果启用）"""
+        extension = self.product_types.get(type_name)
+        if not extension:
+            return None
+        
+        # 检查扩展是否启用
+        if extension_configs is not None:
+            metadata = extension.get_metadata()
+            config = extension_configs.get(metadata.name, {})
+            if not config.get('enabled', True):
+                return None
+        
+        return extension
     
-    def get_available_product_types(self) -> List[ProductTypeDefinition]:
-        """获取可用的产品类型"""
+    def get_available_product_types(self, extension_configs: Dict[str, Any] = None) -> List[ProductTypeDefinition]:
+        """获取可用的产品类型（只返回启用的）"""
         types = []
         for extension in self.product_types.values():
+            # 检查扩展是否启用
+            if extension_configs is not None:
+                metadata = extension.get_metadata()
+                config = extension_configs.get(metadata.name, {})
+                if not config.get('enabled', True):
+                    continue  # 跳过禁用的扩展
+            
             types.append(extension.get_product_type_definition())
         return types
+    
+    def is_extension_enabled(self, extension_name: str, extension_configs: Dict[str, Any]) -> bool:
+        """检查扩展是否启用"""
+        config = extension_configs.get(extension_name, {})
+        return config.get('enabled', True)  # 默认启用
     
     def execute_hooks(self, hook_type: HookType, context: Dict[str, Any]) -> Dict[str, Any]:
         """执行钩子"""
@@ -775,76 +798,121 @@ class ProductExtensionService:
     
     def validate_product_with_extensions(self, product_type: str, product_data: Dict[str, Any], 
                                        files: Dict[str, bytes]) -> tuple[bool, List[str]]:
-        """使用扩展验证产品"""
+        """使用扩展验证产品（只使用启用的扩展）"""
         errors = []
         
-        # 使用产品类型扩展验证
-        type_extension = self.registry.get_product_type_extension(product_type)
+        # 使用产品类型扩展验证（检查是否启用）
+        type_extension = self.registry.get_product_type_extension(product_type, self.extension_configs)
         if type_extension:
             is_valid, error_msg = type_extension.validate_product_files(files)
             if not is_valid:
                 errors.append(error_msg)
         
-        # 使用验证器扩展
+        # 使用验证器扩展（只使用启用的）
         for validator in self.registry.validators.values():
+            metadata = validator.get_metadata()
+            config = self.extension_configs.get(metadata.name, {})
+            if not config.get('enabled', True):
+                continue  # 跳过禁用的验证器
+            
             try:
                 is_valid, validator_errors = validator.validate_product(product_data, files)
                 if not is_valid:
                     errors.extend(validator_errors)
             except Exception as e:
-                errors.append(f"验证器 {validator.get_metadata().name} 执行失败: {str(e)}")
+                errors.append(f"验证器 {metadata.name} 执行失败: {str(e)}")
         
         return len(errors) == 0, errors
     
     def process_product_with_extensions(self, product_type: str, product_data: Dict[str, Any], 
                                       files: Dict[str, bytes]) -> tuple[Dict[str, Any], Dict[str, bytes]]:
-        """使用扩展处理产品"""
+        """使用扩展处理产品（只使用启用的扩展）"""
         result_data = product_data.copy()
         result_files = files.copy()
         
-        # 使用产品类型扩展处理
-        type_extension = self.registry.get_product_type_extension(product_type)
+        # 使用产品类型扩展处理（检查是否启用）
+        type_extension = self.registry.get_product_type_extension(product_type, self.extension_configs)
         if type_extension:
             result_files = type_extension.process_product_files(result_files)
         
-        # 使用处理器扩展
+        # 使用处理器扩展（只使用启用的）
         for processor in self.registry.processors.values():
+            metadata = processor.get_metadata()
+            config = self.extension_configs.get(metadata.name, {})
+            if not config.get('enabled', True):
+                continue  # 跳过禁用的处理器
+            
             try:
                 result_data, result_files = processor.process_product(result_data, result_files)
             except Exception as e:
-                logger.error(f"处理器 {processor.get_metadata().name} 执行失败: {str(e)}")
+                logger.error(f"处理器 {metadata.name} 执行失败: {str(e)}")
         
         return result_data, result_files
     
     def render_product_with_extensions(self, product_id: int, product_type: str, 
                                      config: Dict[str, Any]) -> Optional[str]:
-        """使用扩展渲染产品"""
-        # 查找对应的渲染器
-        type_extension = self.registry.get_product_type_extension(product_type)
+        """使用扩展渲染产品（只使用启用的扩展）"""
+        # 查找对应的渲染器（检查产品类型扩展是否启用）
+        type_extension = self.registry.get_product_type_extension(product_type, self.extension_configs)
         if type_extension:
             type_def = type_extension.get_product_type_definition()
             if type_def.renderer_class:
                 renderer = self.registry.renderers.get(type_def.renderer_class)
                 if renderer:
-                    try:
-                        return renderer.render_product(product_id, config)
-                    except Exception as e:
-                        logger.error(f"渲染器 {type_def.renderer_class} 执行失败: {str(e)}")
+                    # 检查渲染器是否启用
+                    renderer_metadata = renderer.get_metadata()
+                    renderer_config = self.extension_configs.get(renderer_metadata.name, {})
+                    if renderer_config.get('enabled', True):
+                        try:
+                            return renderer.render_product(product_id, config)
+                        except Exception as e:
+                            logger.error(f"渲染器 {type_def.renderer_class} 执行失败: {str(e)}")
         
         return None
     
     def execute_hooks(self, hook_type: HookType, context: Dict[str, Any]) -> Dict[str, Any]:
-        """执行钩子"""
-        return self.registry.execute_hooks(hook_type, context)
+        """执行钩子（只执行启用的钩子）"""
+        if hook_type not in self.registry.hooks:
+            return context
+        
+        result_context = context.copy()
+        
+        for hook in self.registry.hooks[hook_type]:
+            # 检查钩子是否启用
+            metadata = hook.get_metadata()
+            config = self.extension_configs.get(metadata.name, {})
+            if not config.get('enabled', True):
+                continue  # 跳过禁用的钩子
+            
+            try:
+                result_context = hook.execute(result_context)
+            except Exception as e:
+                logger.error(f"执行钩子 {metadata.name} 失败: {str(e)}")
+        
+        return result_context
     
     def process_middlewares(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
-        """处理中间件"""
-        return self.registry.process_middlewares(request_data)
+        """处理中间件（只处理启用的中间件）"""
+        result_data = request_data.copy()
+        
+        for middleware in self.registry.middlewares:
+            # 检查中间件是否启用
+            metadata = middleware.get_metadata()
+            config = self.extension_configs.get(metadata.name, {})
+            if not config.get('enabled', True):
+                continue  # 跳过禁用的中间件
+            
+            try:
+                result_data = middleware.process_request(result_data)
+            except Exception as e:
+                logger.error(f"处理中间件 {metadata.name} 失败: {str(e)}")
+        
+        return result_data
     
     def get_available_product_types(self) -> List[Dict[str, Any]]:
-        """获取可用的产品类型"""
+        """获取可用的产品类型（只返回启用的）"""
         types = []
-        for type_def in self.registry.get_available_product_types():
+        for type_def in self.registry.get_available_product_types(self.extension_configs):
             types.append(type_def.to_dict())
         return types
 

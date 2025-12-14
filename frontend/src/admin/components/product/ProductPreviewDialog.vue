@@ -38,7 +38,8 @@
               @click="toggleFullscreen"
             >
               <el-icon>
-                <component :is="isFullscreen ? 'Aim' : 'FullScreen'" />
+                <Aim v-if="isFullscreen" />
+                <FullScreen v-else />
               </el-icon>
               {{ isFullscreen ? '退出全屏' : '全屏' }}
             </el-button>

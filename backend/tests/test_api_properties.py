@@ -14,6 +14,7 @@ import uuid
 import json
 import os
 import tempfile
+from pathlib import Path
 from PIL import Image
 import io
 import sys
@@ -325,8 +326,8 @@ def test_property_14_file_upload_processing_integrity_valid_images(client, dimen
     
     # 验证文件实际存在
     uploaded_filename = response_data["filename"]
-    file_path = os.path.join("uploads/images", uploaded_filename)
-    assert os.path.exists(file_path)
+    file_path = Path("uploads") / "images" / uploaded_filename
+    assert file_path.exists()
     
     # 验证文件内容完整性
     with open(file_path, "rb") as f:
@@ -334,9 +335,9 @@ def test_property_14_file_upload_processing_integrity_valid_images(client, dimen
     
     assert len(saved_data) == len(image_data)
     
-    # 清理测试文件
+    # 清理测试文件（跨平台）
     try:
-        os.remove(file_path)
+        file_path.unlink()
     except:
         pass
 

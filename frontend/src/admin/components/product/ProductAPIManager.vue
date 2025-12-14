@@ -125,7 +125,15 @@
       >
         <el-table-column prop="token" label="令牌" width="200">
           <template #default="{ row }">
-            <code class="token-display">{{ maskToken(row.token) }}</code>
+            <code class="token-display">{{ row.token || maskToken(row.full_token || '') }}</code>
+          </template>
+        </el-table-column>
+        
+        <el-table-column prop="is_active" label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.is_active ? 'success' : 'danger'" size="small">
+              {{ row.is_active ? '活跃' : '已撤销' }}
+            </el-tag>
           </template>
         </el-table-column>
         
@@ -344,8 +352,8 @@ import {
   CopyDocument,
   Plus
 } from '@element-plus/icons-vue'
-import { useProductAPI } from '../../frontend/composables/useProductAPI'
-import type { ProductAPIConfig, ProductAPICall, ProductAPIToken } from '../../frontend/composables/useProductAPI'
+import { useProductAPI } from '../../../frontend/composables/useProductAPI'
+import type { ProductAPIConfig, ProductAPICall, ProductAPIToken } from '../../../frontend/composables/useProductAPI'
 
 interface Props {
   productId: number
@@ -405,6 +413,7 @@ const callsPagination = reactive({
 const {
   generateAPIToken,
   validateAPIToken,
+  getAPITokens,
   revokeAPIToken,
   getAPIConfig,
   updateAPIConfig,
@@ -548,7 +557,9 @@ const revokeToken = async (token: ProductAPIToken) => {
       }
     )
     
-    await revokeAPIToken(props.productId, token.token)
+    // 使用完整token或token字段
+    const tokenToRevoke = token.full_token || token.token
+    await revokeAPIToken(props.productId, tokenToRevoke)
     
     // 重新加载令牌列表
     loadAPITokens()
@@ -565,9 +576,8 @@ const loadAPITokens = async () => {
   loadingTokens.value = true
   
   try {
-    // 这里需要实现获取令牌列表的API
-    // 暂时使用模拟数据
-    apiTokens.value = []
+    const tokens = await getAPITokens(props.productId)
+    apiTokens.value = tokens
   } catch (error: any) {
     ElMessage.error(error.message || '加载API令牌失败')
   } finally {

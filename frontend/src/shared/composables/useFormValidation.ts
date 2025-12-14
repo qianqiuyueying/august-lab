@@ -101,7 +101,7 @@ export const validators = {
 // 表单验证组合式函数
 export function useFormValidation<T extends Record<string, any>>(
   initialValues: T,
-  validationRules: Record<keyof T, ValidationRule[]> = {}
+  validationRules: Partial<Record<keyof T, ValidationRule[]>> = {}
 ) {
   // 表单数据
   const formData = reactive<T>({ ...initialValues })
@@ -125,9 +125,10 @@ export function useFormValidation<T extends Record<string, any>>(
 
   // 初始化字段
   Object.keys(initialValues).forEach(key => {
-    fields[key as keyof T] = {
-      value: formData[key],
-      rules: validationRules[key as keyof T] || [],
+    const fieldKey = key as keyof T
+    ;(fields as any)[fieldKey] = {
+      value: (formData as any)[fieldKey],
+      rules: validationRules[fieldKey] || [],
       error: null,
       touched: false,
       validating: false
@@ -136,13 +137,13 @@ export function useFormValidation<T extends Record<string, any>>(
 
   // 验证单个字段
   const validateField = async (fieldName: keyof T): Promise<boolean> => {
-    const field = fields[fieldName]
+    const field = (fields as any)[fieldName]
     if (!field) return true
 
     field.validating = true
     field.error = null
 
-    const value = formData[fieldName]
+    const value = (formData as any)[fieldName]
     const rules = field.rules
 
     for (const rule of rules) {
@@ -205,7 +206,7 @@ export function useFormValidation<T extends Record<string, any>>(
     // 更新错误状态
     formState.errors = {}
     Object.keys(fields).forEach(key => {
-      const field = fields[key as keyof T]
+      const field = (fields as any)[key as keyof T]
       if (field.error) {
         formState.errors[key] = field.error
       }
@@ -217,8 +218,9 @@ export function useFormValidation<T extends Record<string, any>>(
   // 重置表单
   const resetForm = () => {
     Object.keys(initialValues).forEach(key => {
-      formData[key as keyof T] = initialValues[key as keyof T]
-      const field = fields[key as keyof T]
+      const fieldKey = key as keyof T
+      ;(formData as any)[fieldKey] = initialValues[fieldKey]
+      const field = (fields as any)[fieldKey]
       if (field) {
         field.error = null
         field.touched = false
@@ -236,8 +238,8 @@ export function useFormValidation<T extends Record<string, any>>(
 
   // 设置字段值
   const setFieldValue = (fieldName: keyof T, value: any) => {
-    formData[fieldName] = value
-    const field = fields[fieldName]
+    ;(formData as any)[fieldName] = value
+    const field = (fields as any)[fieldName]
     if (field) {
       field.touched = true
       formState.touched = true
@@ -248,7 +250,7 @@ export function useFormValidation<T extends Record<string, any>>(
 
   // 设置字段错误
   const setFieldError = (fieldName: keyof T, error: string | null) => {
-    const field = fields[fieldName]
+    const field = (fields as any)[fieldName]
     if (field) {
       field.error = error
       if (error) {
@@ -261,7 +263,7 @@ export function useFormValidation<T extends Record<string, any>>(
 
   // 标记字段为已触摸
   const touchField = (fieldName: keyof T) => {
-    const field = fields[fieldName]
+    const field = (fields as any)[fieldName]
     if (field) {
       field.touched = true
       formState.touched = true
@@ -304,7 +306,7 @@ export function useFormValidation<T extends Record<string, any>>(
       }
 
       // 执行提交
-      await onSubmit(formData)
+      await onSubmit({ ...formData } as T)
       
       formState.submitCount++
       lastSubmitTime.value = Date.now()
@@ -331,9 +333,9 @@ export function useFormValidation<T extends Record<string, any>>(
   // 监听表单数据变化
   Object.keys(formData).forEach(key => {
     watch(
-      () => formData[key as keyof T],
-      (newValue) => {
-        const field = fields[key as keyof T]
+      () => (formData as any)[key as keyof T],
+      () => {
+        const field = (fields as any)[key as keyof T]
         if (field && field.touched) {
           // 延迟验证，避免输入时频繁验证
           setTimeout(() => {
@@ -350,7 +352,7 @@ export function useFormValidation<T extends Record<string, any>>(
   const fieldErrors = computed(() => {
     const errors: Record<string, string> = {}
     Object.keys(fields).forEach(key => {
-      const field = fields[key as keyof T]
+      const field = (fields as any)[key as keyof T]
       if (field.error && field.touched) {
         errors[key] = field.error
       }
@@ -381,10 +383,22 @@ export function useFormValidation<T extends Record<string, any>>(
     submitForm,
     
     // 工具方法
-    getFieldError: (fieldName: keyof T) => fields[fieldName]?.error || null,
-    isFieldValid: (fieldName: keyof T) => !fields[fieldName]?.error,
-    isFieldTouched: (fieldName: keyof T) => fields[fieldName]?.touched || false,
-    isFieldValidating: (fieldName: keyof T) => fields[fieldName]?.validating || false
+    getFieldError: (fieldName: keyof T) => {
+      const field = (fields as Record<string, FieldValidation>)[fieldName as string]
+      return field?.error || null
+    },
+    isFieldValid: (fieldName: keyof T) => {
+      const field = (fields as Record<string, FieldValidation>)[fieldName as string]
+      return !field?.error
+    },
+    isFieldTouched: (fieldName: keyof T) => {
+      const field = (fields as Record<string, FieldValidation>)[fieldName as string]
+      return field?.touched || false
+    },
+    isFieldValidating: (fieldName: keyof T) => {
+      const field = (fields as Record<string, FieldValidation>)[fieldName as string]
+      return field?.validating || false
+    }
   }
 }
 
@@ -393,7 +407,7 @@ export function useConfirmDialog() {
   const showConfirm = (
     message: string,
     title = '确认操作',
-    options: {
+    _options: {
       confirmButtonText?: string
       cancelButtonText?: string
       type?: 'warning' | 'info' | 'success' | 'error'

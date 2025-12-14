@@ -7,7 +7,7 @@ API错误处理和响应标准化模块
 import logging
 import traceback
 from typing import Any, Dict, Optional, Union
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError, ResponseValidationError
@@ -177,7 +177,7 @@ def create_error_response(
         "error": {
             "code": error_code,
             "message": message,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat(),
             "error_id": error_id or str(uuid.uuid4())
         }
     }
