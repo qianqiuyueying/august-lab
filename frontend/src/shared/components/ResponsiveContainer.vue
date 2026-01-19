@@ -70,11 +70,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { currentBreakpoint } = useResponsive()
 
-// 容器大小映射
+// 容器大小映射 - 实验室紧凑专业宽度
 const sizeMap = {
   sm: 'max-w-2xl',
   md: 'max-w-4xl',
-  lg: 'max-w-7xl',
+  lg: 'max-w-lab', // 1152px - 实验室内容区宽度
   xl: 'max-w-8xl',
   full: 'max-w-full',
 }

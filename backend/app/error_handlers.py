@@ -76,7 +76,7 @@ class StandardAPIError(Exception):
         self.status_code = status_code
         self.details = details or {}
         self.error_id = error_id or str(uuid.uuid4())
-        self.timestamp = datetime.utcnow()
+        self.timestamp = datetime.now(timezone.utc)
         super().__init__(self.message)
 
 class ValidationAPIError(StandardAPIError):
@@ -177,7 +177,7 @@ def create_error_response(
         "error": {
             "code": error_code,
             "message": message,
-            "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "error_id": error_id or str(uuid.uuid4())
         }
     }
@@ -387,7 +387,7 @@ def create_success_response(
     response_content = {
         "success": True,
         "message": message,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     
     if data is not None:

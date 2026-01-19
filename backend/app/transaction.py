@@ -103,15 +103,26 @@ def transactional(rollback_on_exception: bool = True, max_retries: int = 3):
                         detail="数据库操作失败"
                     )
                 
+                except HTTPException:
+                    # HTTP异常应该直接重新抛出，不要转换
+                    if rollback_on_exception:
+                        db_session.rollback()
+                    raise
+                
                 except Exception as e:
                     # 其他异常
                     if rollback_on_exception:
                         db_session.rollback()
-                        logger.error(f"未知错误，事务已回滚: {func.__name__}, 错误: {str(e)}")
+                    
+                    # 记录详细的异常信息
+                    import traceback
+                    error_msg = str(e) if str(e) else repr(e)
+                    error_traceback = traceback.format_exc()
+                    logger.error(f"未知错误，事务已回滚: {func.__name__}, 错误: {error_msg}\n{error_traceback}")
                     
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="服务器内部错误"
+                        detail=f"服务器内部错误: {error_msg}"
                     )
         
         return wrapper

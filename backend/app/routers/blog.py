@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ..database import get_db
 from ..models import Blog as BlogModel
@@ -80,7 +80,7 @@ def create_blog(
     
     # 如果是发布状态，设置发布时间
     if blog_dict.get("is_published"):
-        blog_dict["published_at"] = datetime.utcnow()
+        blog_dict["published_at"] = datetime.now(timezone.utc)
     
     blog = BlogModel(**blog_dict)
     db.add(blog)
@@ -111,7 +111,7 @@ def update_blog(
     
     # 如果从未发布变为发布，设置发布时间
     if update_data.get("is_published") and not blog.is_published:
-        update_data["published_at"] = datetime.utcnow()
+        update_data["published_at"] = datetime.now(timezone.utc)
     
     for field, value in update_data.items():
         setattr(blog, field, value)

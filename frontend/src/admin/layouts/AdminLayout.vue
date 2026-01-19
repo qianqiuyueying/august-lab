@@ -1,15 +1,21 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div
+    class="min-h-screen"
+    :class="isDark ? 'bg-slate-900 text-gray-100' : 'bg-gray-100 text-gray-900'"
+  >
     <el-container class="min-h-screen">
       <!-- 侧边栏 -->
-      <el-aside :width="sidebarWidth" class="bg-white shadow-sm transition-all duration-300">
+      <el-aside
+        :width="sidebarWidth"
+        :class="['shadow-sm transition-all duration-300', isDark ? 'bg-slate-800 border-r border-slate-700/50' : 'bg-white']"
+      >
         <!-- 侧边栏头部 -->
-        <div class="p-4 border-b border-gray-200">
+        <div :class="['p-4 border-b', isDark ? 'border-slate-700/50' : 'border-gray-200']">
           <div class="flex items-center" :class="collapsed ? 'justify-center' : 'space-x-2'">
-            <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+            <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center shadow-md">
               <span class="text-white font-bold text-sm">A</span>
             </div>
-            <span v-if="!collapsed" class="text-lg font-semibold text-gray-900">管理后台</span>
+            <span v-if="!collapsed" :class="['text-lg font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">管理后台</span>
           </div>
         </div>
         
@@ -19,6 +25,9 @@
           :collapse="collapsed"
           router
           class="border-none"
+          :background-color="isDark ? '#1e293b' : '#ffffff'"
+          :text-color="isDark ? '#d1d5db' : '#303133'"
+          :active-text-color="isDark ? '#60a5fa' : '#409eff'"
         >
           <template v-for="item in menuItems" :key="item.index">
             <!-- 有子菜单的项 -->
@@ -48,32 +57,49 @@
       
       <el-container>
         <!-- 顶部栏 -->
-        <el-header class="bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6">
+        <el-header
+          :class="[
+            'shadow-sm border-b flex items-center justify-between px-6',
+            isDark ? 'bg-slate-800 border-slate-700/50 text-gray-100' : 'bg-white border-gray-200 text-gray-900'
+          ]"
+        >
           <div class="flex items-center space-x-4">
             <!-- 侧边栏折叠按钮 -->
             <el-button 
               type="text" 
               @click="toggleSidebar"
-              class="text-gray-600 hover:text-gray-900"
+              :class="isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
             >
               <el-icon size="18">
-                <component :is="collapsed ? 'Expand' : 'Fold'" />
+                <component :is="collapsed ? Expand : Fold" />
               </el-icon>
             </el-button>
             
             <!-- 页面标题 -->
-            <div class="text-lg font-medium text-gray-900">
+            <div :class="['text-lg font-medium', isDark ? 'text-gray-100' : 'text-gray-900']">
               {{ pageTitle }}
             </div>
           </div>
           
           <!-- 右侧操作区 -->
           <div class="flex items-center space-x-4">
+            <!-- 深色/浅色模式切换 -->
+            <el-button
+              type="text"
+              @click="toggleTheme"
+              :class="isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
+            >
+              <el-icon>
+                <component :is="isDark ? Sunny : Moon" />
+              </el-icon>
+              <span class="ml-1">{{ isDark ? '浅色模式' : '深色模式' }}</span>
+            </el-button>
+
             <!-- 前台预览按钮 -->
             <el-button 
               type="text" 
               @click="goToFrontend"
-              class="text-gray-600 hover:text-primary-600"
+              :class="isDark ? 'text-gray-300 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'"
             >
               <el-icon><Monitor /></el-icon>
               <span class="ml-1">预览网站</span>
@@ -81,12 +107,12 @@
             
             <!-- 用户下拉菜单 -->
             <el-dropdown>
-              <div class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+              <div :class="['flex items-center space-x-2 cursor-pointer px-2 py-1 rounded', isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50']">
                 <el-avatar :size="32" :src="userInfo.avatar">
                   {{ userInfo.name.charAt(0) }}
                 </el-avatar>
-                <span class="text-sm text-gray-700">{{ userInfo.name }}</span>
-                <el-icon class="text-gray-400"><ArrowDown /></el-icon>
+                <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">{{ userInfo.name }}</span>
+                <el-icon :class="isDark ? 'text-gray-400' : 'text-gray-400'"><ArrowDown /></el-icon>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -101,7 +127,10 @@
         </el-header>
         
         <!-- 主要内容 -->
-        <el-main class="p-6 overflow-auto">
+        <el-main
+          class="p-6 overflow-auto"
+          :class="isDark ? 'bg-slate-900 text-gray-100' : 'bg-gray-50 text-gray-900'"
+        >
           <router-view />
         </el-main>
       </el-container>
@@ -126,9 +155,12 @@ import {
   Fold,
   Box,
   Warning,
-  Tools
+  Tools,
+  Moon,
+  Sunny
 } from '@element-plus/icons-vue'
 import { authAPI } from '../../shared/api'
+import { useDarkMode } from '../composables/useDarkMode'
 import type { Component } from 'vue'
 
 // 定义菜单项类型
@@ -142,6 +174,7 @@ interface MenuItem {
 const route = useRoute()
 const router = useRouter()
 const collapsed = ref(false)
+const { isDark, toggle: toggleTheme } = useDarkMode()
 const userInfo = ref({
   name: '管理员',
   avatar: ''

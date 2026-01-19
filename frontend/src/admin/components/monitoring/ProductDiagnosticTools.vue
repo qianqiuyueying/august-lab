@@ -1197,6 +1197,10 @@ const formatBytes = (bytes: number) => {
   overflow: hidden;
 }
 
+.dark .product-diagnostic-tools {
+  background: #1e293b; /* Slate 800 */
+}
+
 .tools-header {
   display: flex;
   justify-content: space-between;
@@ -1204,6 +1208,11 @@ const formatBytes = (bytes: number) => {
   padding: 20px;
   border-bottom: 1px solid #f3f4f6;
   background: #fafafa;
+}
+
+.dark .tools-header {
+  background: #0f172a; /* Slate 950 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .tools-title {
@@ -1214,6 +1223,10 @@ const formatBytes = (bytes: number) => {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.dark .tools-title {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .diagnostic-icon {
@@ -1285,10 +1298,18 @@ const formatBytes = (bytes: number) => {
   color: #1f2937;
 }
 
+.dark .tool-info h4 {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .tool-info p {
   margin: 0;
   font-size: 12px;
   color: #6b7280;
+}
+
+.dark .tool-info p {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .tool-content {
@@ -1321,10 +1342,20 @@ const formatBytes = (bytes: number) => {
   color: #6b7280;
 }
 
+.dark .result-label,
+.dark .metric-label,
+.dark .status-label {
+  color: #9ca3af; /* Gray 400 */
+}
+
 .metric-value {
   font-size: 12px;
   font-weight: 500;
   color: #1f2937;
+}
+
+.dark .metric-value {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .metric-value.performance-good {

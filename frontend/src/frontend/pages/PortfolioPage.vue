@@ -1,39 +1,32 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
-    <!-- 页面头部 - 画廊风格 -->
-    <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-        <div class="absolute inset-0 opacity-30">
-          <div class="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
-          <div class="absolute bottom-0 left-0 w-96 h-96 bg-pink-500 rounded-full blur-3xl"></div>
-        </div>
-      </div>
-      
-      <ResponsiveContainer size="xl" class="relative z-10 py-20">
+  <div class="min-h-screen bg-white dark:bg-gray-900">
+    <!-- 页面头部 -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-50/50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <ResponsiveContainer size="xl" class="relative z-10 py-16 md:py-20">
         <div class="text-center">
           <div class="inline-block mb-4">
-            <span class="text-sm font-bold text-pink-400 uppercase tracking-wider">Portfolio</span>
+            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Portfolio</span>
           </div>
-          <h1 class="text-6xl md:text-7xl font-black text-white mb-6 leading-tight">
-            {{ currentTab === 'portfolio' ? '我的' : '在线' }}<span class="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">{{ currentTab === 'portfolio' ? '作品' : '产品' }}</span>
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-gray-50 mb-6 leading-tight">
+            {{ currentTab === 'portfolio' ? '我的' : '在线' }}<span class="text-primary-500 dark:text-primary-400">{{ currentTab === 'portfolio' ? '作品' : '产品' }}</span>
           </h1>
-          <p class="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+          <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
             {{ currentTab === 'portfolio' 
               ? '这里展示了我在不同技术领域的项目作品，从前端应用到全栈系统，每个项目都承载着我对技术的热情和对用户体验的追求。'
               : '体验我开发的各种Web应用和工具，这些产品可以直接在线使用，展现了从想法到实现的完整过程。'
             }}
           </p>
           
-          <!-- 标签切换 - 玻璃态设计 -->
+          <!-- 标签切换 -->
           <div class="flex justify-center">
-            <div class="bg-white/10 backdrop-blur-xl p-1 rounded-xl border border-white/20">
+            <div class="inline-flex bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
               <button
                 @click="currentTab = 'portfolio'"
                 :class="[
-                  'px-8 py-3 rounded-lg font-bold transition-all duration-300',
+                  'px-6 py-2 rounded-md font-semibold transition-all duration-200',
                   currentTab === 'portfolio'
-                    ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-lg'
-                    : 'text-white/70 hover:text-white'
+                    ? 'bg-primary-500 text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 ]"
               >
                 作品展示
@@ -41,10 +34,10 @@
               <button
                 @click="currentTab = 'products'"
                 :class="[
-                  'px-8 py-3 rounded-lg font-bold transition-all duration-300',
+                  'px-6 py-2 rounded-md font-semibold transition-all duration-200',
                   currentTab === 'products'
-                    ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-lg'
-                    : 'text-white/70 hover:text-white'
+                    ? 'bg-primary-500 text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 ]"
               >
                 在线产品
@@ -131,7 +124,7 @@
             @click="goToDetail(portfolio.id)"
           >
               <!-- 项目图片 -->
-              <div class="relative overflow-hidden bg-gradient-to-br from-pink-500/20 to-purple-500/20 aspect-video flex-shrink-0">
+              <div class="relative overflow-hidden bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 aspect-video flex-shrink-0">
                 <ResponsiveImage
                   v-if="portfolio.image_url"
                   :src="portfolio.image_url"
@@ -142,8 +135,8 @@
                   @load="onImageLoad(portfolio.id)"
                   @error="onImageError(portfolio.id)"
                 />
-                <div v-else class="w-full h-full bg-gradient-to-br from-pink-500/30 to-purple-500/30 flex items-center justify-center">
-                  <svg class="w-16 h-16 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div v-else class="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 flex items-center justify-center">
+                  <svg class="w-16 h-16 text-primary-400 dark:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
@@ -158,30 +151,18 @@
                 
                 <!-- 特色标识 -->
                 <div v-if="portfolio.is_featured" class="absolute top-4 right-4">
-                  <div class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                  <div class="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
                     精选
-                  </div>
-                </div>
-                
-                <!-- 悬停遮罩 -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                  <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div class="bg-white rounded-full p-4 shadow-2xl transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                      <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </div>
                   </div>
                 </div>
               </div>
               
               <!-- 项目信息 -->
-              <div class="flex-1 flex flex-col p-6 space-y-4 bg-slate-800/80 backdrop-blur-xl">
-                <h3 class="text-xl font-bold text-white group-hover:text-pink-300 transition-colors duration-300">
+              <div class="flex-1 flex flex-col p-6 space-y-4 bg-white dark:bg-gray-800">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-300">
                   {{ portfolio.title }}
                 </h3>
-                <p class="text-white/80 text-sm leading-relaxed line-clamp-3 flex-1">
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 flex-1">
                   {{ portfolio.description || '暂无描述' }}
                 </p>
                 
@@ -190,20 +171,20 @@
                   <span 
                     v-for="tech in portfolio.tech_stack" 
                     :key="tech"
-                    class="px-3 py-1.5 bg-pink-500/20 backdrop-blur-sm text-pink-200 text-xs font-medium rounded-full border border-pink-400/30 hover:bg-pink-500/30 transition-colors"
+                    class="px-3 py-1.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors"
                   >
                     {{ tech }}
                   </span>
                 </div>
                 
                 <!-- 项目链接 -->
-                <div class="flex items-center gap-4 pt-3 border-t border-white/20 mt-auto">
+                <div class="flex items-center gap-4 pt-3 border-t border-gray-200 dark:border-gray-700 mt-auto">
                   <a 
                     v-if="portfolio.project_url"
                     :href="portfolio.project_url"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-pink-300 hover:text-pink-200 text-sm font-semibold flex items-center group/link transition-all duration-300"
+                    class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-semibold flex items-center group/link transition-all duration-300"
                     @click.stop
                   >
                     <svg class="w-4 h-4 mr-1.5 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +197,7 @@
                     :href="portfolio.github_url"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-white/70 hover:text-white text-sm font-semibold flex items-center group/link transition-all duration-300"
+                    class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 text-sm font-semibold flex items-center group/link transition-all duration-300"
                     @click.stop
                   >
                     <svg class="w-4 h-4 mr-1.5 group-hover/link:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">

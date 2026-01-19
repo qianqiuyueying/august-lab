@@ -1,0 +1,310 @@
+/* Element Plus 深色模式样式覆盖 - 实验室显示器光晕效果 */
+
+/* 基础背景色使用 Slate 950 (#0F172A) */
+.dark {
+  background-color: #0F172A !important;
+}
+
+/* 卡片组件 - 实验室显示器光晕 */
+.dark .el-card {
+  background-color: #1e293b !important; /* Slate 800 - 带蓝调灰 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+  color: #f3f4f6 !important;
+}
+
+.dark .el-card__header {
+  border-bottom-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+.dark .el-card__body {
+  color: #d1d5db !important;
+}
+
+/* 表格组件 - 实验室显示器光晕 */
+.dark .el-table {
+  background-color: #1e293b !important; /* Slate 800 */
+  color: #f3f4f6 !important;
+}
+
+.dark .el-table th.el-table__cell {
+  background-color: #0f172a !important; /* Slate 950 */
+  color: #f3f4f6 !important;
+  border-bottom-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-table td.el-table__cell {
+  border-bottom-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background-color: #0f172a !important; /* Slate 950 */
+}
+
+.dark .el-table__body tr:hover > td.el-table__cell {
+  background-color: #334155 !important; /* Slate 700 */
+}
+
+/* 输入框组件 - 实验室显示器光晕 */
+.dark .el-input__wrapper {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-input__inner {
+  color: #f3f4f6 !important;
+}
+
+.dark .el-input__inner::placeholder {
+  color: #6b7280 !important;
+}
+
+/* 选择器组件 - 实验室显示器光晕 */
+.dark .el-select .el-input__wrapper {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-select-dropdown {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-select-dropdown__item {
+  color: #d1d5db !important;
+}
+
+.dark .el-select-dropdown__item:hover {
+  background-color: #334155 !important; /* Slate 700 */
+}
+
+.dark .el-select-dropdown__item.selected {
+  color: #60a5fa !important;
+  background-color: #1e3a5f !important;
+}
+
+/* 分页组件 - 实验室显示器光晕 */
+.dark .el-pagination {
+  color: #d1d5db !important;
+}
+
+.dark .el-pagination button {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+  color: #d1d5db !important;
+}
+
+.dark .el-pagination button:hover {
+  color: #60a5fa !important;
+}
+
+.dark .el-pagination .el-pager li {
+  background-color: #1e293b !important; /* Slate 800 */
+  color: #d1d5db !important;
+}
+
+.dark .el-pagination .el-pager li.is-active {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* 标签组件 - 实验室显示器光晕 */
+.dark .el-tag {
+  background-color: #334155 !important; /* Slate 700 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+  color: #d1d5db !important;
+}
+
+.dark .el-tag.el-tag--success {
+  background-color: #065f46 !important;
+  border-color: #047857 !important;
+  color: #6ee7b7 !important;
+}
+
+.dark .el-tag.el-tag--warning {
+  background-color: #78350f !important;
+  border-color: #92400e !important;
+  color: #fcd34d !important;
+}
+
+.dark .el-tag.el-tag--danger {
+  background-color: #7f1d1d !important;
+  border-color: #991b1b !important;
+  color: #fca5a5 !important;
+}
+
+.dark .el-tag.el-tag--info {
+  background-color: #1e3a8a !important;
+  border-color: #1e40af !important;
+  color: #93c5fd !important;
+}
+
+.dark .el-tag.el-tag--primary {
+  background-color: #1e3a5f !important;
+  border-color: #1e40af !important;
+  color: #60a5fa !important;
+}
+
+/* 对话框组件 - 实验室显示器光晕 */
+.dark .el-dialog {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-dialog__header {
+  border-bottom-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+  color: #f3f4f6 !important;
+}
+
+.dark .el-dialog__body {
+  color: #d1d5db !important;
+}
+
+.dark .el-dialog__footer {
+  border-top-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+/* 下拉菜单 - 实验室显示器光晕 */
+.dark .el-dropdown-menu {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-dropdown-menu__item {
+  color: #d1d5db !important;
+}
+
+.dark .el-dropdown-menu__item:hover {
+  background-color: #334155 !important; /* Slate 700 */
+  color: #f3f4f6 !important;
+}
+
+/* 按钮组件 - 实验室显示器光晕 */
+.dark .el-button {
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .el-button--default {
+  background-color: #1e293b !important; /* Slate 800 */
+  color: #d1d5db !important;
+}
+
+.dark .el-button--default:hover {
+  background-color: #334155 !important; /* Slate 700 */
+  border-color: rgba(148, 163, 184, 0.3) !important; /* Slate 400 30% */
+}
+
+.dark .el-button--text {
+  color: #d1d5db !important;
+}
+
+.dark .el-button--text:hover {
+  color: #f3f4f6 !important;
+  background-color: #334155 !important; /* Slate 700 */
+}
+
+/* 表单组件 */
+.dark .el-form-item__label {
+  color: #d1d5db !important;
+}
+
+.dark .el-form-item__error {
+  color: #f87171 !important;
+}
+
+/* 骨架屏 - 实验室显示器光晕 */
+.dark .el-skeleton {
+  background-color: #1e293b !important; /* Slate 800 */
+}
+
+.dark .el-skeleton__item {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+}
+
+/* 消息提示 - 实验室显示器光晕 */
+.dark .el-message {
+  background-color: #1e293b !important; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+  color: #f3f4f6 !important;
+}
+
+.dark .el-message--success {
+  background-color: #065f46 !important;
+  border-color: #047857 !important;
+}
+
+.dark .el-message--warning {
+  background-color: #78350f !important;
+  border-color: #92400e !important;
+}
+
+.dark .el-message--error {
+  background-color: #7f1d1d !important;
+  border-color: #991b1b !important;
+}
+
+/* 加载遮罩 - 实验室显示器光晕 */
+.dark .el-loading-mask {
+  background-color: rgba(15, 23, 42, 0.8) !important; /* Slate 950 80% */
+}
+
+/* 空状态 */
+.dark .el-empty {
+  color: #9ca3af !important;
+}
+
+.dark .el-empty__description {
+  color: #6b7280 !important;
+}
+
+/* 文本颜色辅助类 */
+.dark .text-gray-900 {
+  color: #f3f4f6 !important;
+}
+
+.dark .text-gray-800 {
+  color: #e5e7eb !important;
+}
+
+.dark .text-gray-700 {
+  color: #d1d5db !important;
+}
+
+.dark .text-gray-600 {
+  color: #9ca3af !important;
+}
+
+.dark .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+/* 背景颜色辅助类 - 实验室显示器光晕 */
+.dark .bg-white {
+  background-color: #1e293b !important; /* Slate 800 */
+}
+
+.dark .bg-gray-50 {
+  background-color: #0f172a !important; /* Slate 950 - 实验室深蓝黑 */
+}
+
+.dark .bg-gray-100 {
+  background-color: #1e293b !important; /* Slate 800 */
+}
+
+.dark .bg-gray-200 {
+  background-color: #334155 !important; /* Slate 700 */
+}
+
+/* 边框颜色辅助类 - 实验室显示器光晕 */
+.dark .border-gray-200 {
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+
+.dark .border-gray-300 {
+  border-color: rgba(148, 163, 184, 0.25) !important; /* Slate 400 25% */
+}
+
+.dark .border-slate-700 {
+  border-color: rgba(148, 163, 184, 0.15) !important; /* Slate 400 15% */
+}
+

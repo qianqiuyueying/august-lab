@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 
 from ..database import get_db
@@ -27,7 +27,7 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     
     # 创建会话
     session_id = str(uuid.uuid4())
-    current_time = datetime.utcnow()
+    current_time = datetime.now(timezone.utc)
     expires_at = current_time + timedelta(hours=settings.SESSION_EXPIRE_HOURS)
     
     session = SessionModel(
@@ -71,7 +71,7 @@ def verify_token(
     session = db.query(SessionModel).filter(
         SessionModel.id == credentials.credentials,
         SessionModel.is_active == True,
-        SessionModel.expires_at > datetime.utcnow()
+        SessionModel.expires_at > datetime.now(timezone.utc)
     ).first()
     
     if not session:
@@ -91,7 +91,7 @@ def get_current_user(
     session = db.query(SessionModel).filter(
         SessionModel.id == credentials.credentials,
         SessionModel.is_active == True,
-        SessionModel.expires_at > datetime.utcnow()
+        SessionModel.expires_at > datetime.now(timezone.utc)
     ).first()
     
     if not session:

@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Union, BinaryIO
-from datetime import datetime
+from datetime import datetime, timezone
 from dataclasses import dataclass, asdict
 from enum import Enum
 
@@ -332,7 +332,7 @@ class ProductFileService:
                 # 创建元数据文件
                 metadata = {
                     "product_id": product.id,
-                    "upload_time": datetime.utcnow().isoformat(),
+                    "upload_time": datetime.now(timezone.utc).isoformat(),
                     "file_hash": file_hash,
                     "extracted_files": extracted_files,
                     "entry_file": product.entry_file
@@ -683,7 +683,7 @@ class ProductFileService:
         # 创建版本信息
         version_info = FileVersion(
             version=version,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             file_hash=self._calculate_directory_hash(product_dir),
             size=total_size,
             description=description
@@ -757,7 +757,7 @@ class ProductFileService:
         product_dir = self.get_product_directory(product_id)
         
         # 备份当前版本
-        backup_version = f"backup_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+        backup_version = f"backup_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
         self.create_version(product_id, backup_version, "自动备份（版本恢复前）")
         
         # 清空当前产品目录
@@ -867,7 +867,7 @@ class ProductFileService:
             is_safe=len(threats) == 0,
             threats=threats,
             warnings=warnings,
-            scan_time=datetime.utcnow()
+            scan_time=datetime.now(timezone.utc)
         )
     
     def scan_product_files(self, product_id: int) -> Dict:
@@ -914,13 +914,13 @@ class ProductFileService:
                         "is_safe": False,
                         "threats": [f"扫描失败: {str(e)}"],
                         "warnings": [],
-                        "scan_time": datetime.utcnow().isoformat()
+                        "scan_time": datetime.now(timezone.utc).isoformat()
                     })
                     total_threats += 1
         
         return {
             "product_id": product_id,
-            "scan_time": datetime.utcnow().isoformat(),
+            "scan_time": datetime.now(timezone.utc).isoformat(),
             "total_files": len(scan_results),
             "safe_files": len([r for r in scan_results if r["is_safe"]]),
             "total_threats": total_threats,
@@ -985,7 +985,7 @@ class ProductFileService:
             "hash": file_hash,
             "size": size,
             "type": self._get_file_type(filename).value,
-            "updated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "description": description
         }
         
@@ -1025,7 +1025,7 @@ class ProductFileService:
             backup_dir.mkdir(parents=True, exist_ok=True)
             
             # 生成备份文件名
-            timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+            timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
             backup_filename = f"{Path(file_path).stem}_{timestamp}{Path(file_path).suffix}"
             backup_path = backup_dir / backup_filename
             

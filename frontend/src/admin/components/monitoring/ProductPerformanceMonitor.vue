@@ -810,6 +810,10 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
+.dark .product-performance-monitor {
+  background: #1e293b; /* Slate 800 */
+}
+
 .monitor-header {
   display: flex;
   justify-content: space-between;
@@ -817,6 +821,11 @@ onUnmounted(() => {
   padding: 20px;
   border-bottom: 1px solid #f3f4f6;
   background: #fafafa;
+}
+
+.dark .monitor-header {
+  background: #0f172a; /* Slate 950 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .header-left {
@@ -833,6 +842,10 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.dark .monitor-title {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .performance-icon {
@@ -882,6 +895,11 @@ onUnmounted(() => {
   position: relative;
 }
 
+.dark .metric-card {
+  background: #1e293b; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .metric-header {
   display: flex;
   align-items: center;
@@ -927,9 +945,17 @@ onUnmounted(() => {
   margin-bottom: 2px;
 }
 
+.dark .metric-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .metric-subtitle {
   font-size: 12px;
   color: #6b7280;
+}
+
+.dark .metric-subtitle {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .metric-value {
@@ -937,6 +963,10 @@ onUnmounted(() => {
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 8px;
+}
+
+.dark .metric-value {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .metric-value.error-rate-high {

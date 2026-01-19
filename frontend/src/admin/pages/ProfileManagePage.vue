@@ -3,8 +3,8 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">个人信息管理</h1>
-        <p class="text-gray-600 mt-1">管理您的个人资料和联系信息</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">个人信息管理</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">管理您的个人资料和联系信息</p>
       </div>
       <div class="flex space-x-3">
         <el-button @click="previewProfile" :disabled="!hasChanges">
@@ -35,7 +35,7 @@
           >
             <!-- 基本信息 -->
             <div class="mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">基本信息</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-50 mb-4">基本信息</h3>
               
               <el-form-item label="姓名" prop="name">
                 <el-input 
@@ -66,7 +66,7 @@
 
             <!-- 头像设置 -->
             <div class="mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">头像设置</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-50 mb-4">头像设置</h3>
               
               <el-form-item label="头像" prop="avatar_url">
                 <AvatarUpload 
@@ -79,7 +79,7 @@
 
             <!-- 联系信息 -->
             <div class="mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">联系信息</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-50 mb-4">联系信息</h3>
               
               <el-form-item label="邮箱地址" prop="email">
                 <el-input 
@@ -106,7 +106,7 @@
 
             <!-- 社交链接 -->
             <div class="mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">社交链接</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-50 mb-4">社交链接</h3>
               
               <el-form-item label="GitHub" prop="github_url">
                 <el-input 
@@ -155,7 +155,7 @@
 
             <!-- 技能管理 -->
             <div class="mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">技能管理</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-gray-50 mb-4">技能管理</h3>
               
               <SkillManager v-model="form.skills" />
             </div>

@@ -11,3 +11,10 @@ with open('.env', 'r', encoding='utf-8') as f:
     print(f'发现乱码: {has_garbled}')
     if not has_garbled:
         print('✓ 文件编码正确，没有乱码！')
+
+
+
+
+
+
+

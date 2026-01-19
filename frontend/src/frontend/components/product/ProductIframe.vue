@@ -4,12 +4,12 @@
     <iframe
       ref="iframeRef"
       :src="src"
-      :sandbox="sandboxOptions"
+      :sandbox="sanitizedSandboxOptions"
       class="product-iframe"
       :class="iframeClasses"
       @load="onLoad"
       @error="onError"
-      allowfullscreen
+      :allow="allowAttributes"
       loading="lazy"
     ></iframe>
     
@@ -67,9 +67,36 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  // 注意：同时使用 allow-scripts 和 allow-same-origin 会降低沙箱安全性
+  // 这是为了支持某些产品功能（如SPA路由、跨域通信等）而必要的权衡
+  // 浏览器会显示安全警告，这是预期的行为
   sandboxOptions: 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals',
   showSecurityNotice: true,
   loadTimeout: 30000 // 30秒超时
+})
+
+// 清理sandbox选项，移除无效的allow-fullscreen
+const sanitizedSandboxOptions = computed(() => {
+  // 移除allow-fullscreen，因为它不是有效的sandbox属性
+  return props.sandboxOptions
+    .split(' ')
+    .filter(opt => opt && opt !== 'allow-fullscreen')
+    .join(' ')
+})
+
+// 如果sandbox选项包含allow-fullscreen，则添加到allow属性
+const allowAttributes = computed(() => {
+  const allowList: string[] = []
+  
+  // 检查是否需要全屏支持
+  if (props.sandboxOptions.includes('allow-fullscreen')) {
+    allowList.push('fullscreen')
+  }
+  
+  // 可以根据需要添加其他allow属性
+  // 例如：allowList.push('camera', 'microphone', 'geolocation')
+  
+  return allowList.length > 0 ? allowList.join('; ') : undefined
 })
 
 const emit = defineEmits<{

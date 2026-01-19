@@ -539,7 +539,9 @@ const sandboxPermissions = [
   { label: '允许表单', value: 'allow-forms' },
   { label: '允许弹窗', value: 'allow-popups' },
   { label: '允许指针锁定', value: 'allow-pointer-lock' },
-  { label: '允许全屏', value: 'allow-fullscreen' },
+  // 注意：allow-fullscreen 不是有效的 sandbox 属性
+  // 全屏功能应通过 iframe 的 allow="fullscreen" 属性实现
+  // { label: '允许全屏', value: 'allow-fullscreen' },
   { label: '允许下载', value: 'allow-downloads' },
   { label: '允许模态框', value: 'allow-modals' }
 ]

@@ -282,9 +282,8 @@ class GameRenderer(ProductRenderer):
                     id="game-iframe-{product_id}"
                     src="/products/{product_id}/index.html"
                     frameborder="0"
-                    allowfullscreen
-                    allow="gamepad; microphone; camera"
-                    sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen">
+                    allow="fullscreen; gamepad; microphone; camera"
+                    sandbox="allow-scripts allow-same-origin allow-pointer-lock">
                 </iframe>
             </div>
             

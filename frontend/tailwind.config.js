@@ -18,16 +18,40 @@ export default {
       },
       colors: {
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6', // 主色
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        success: {
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          500: '#10b981',
+          600: '#059669',
+        },
+        warning: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        error: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+        },
+        info: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          500: '#6366f1',
+          600: '#4f46e5',
         },
         gray: {
           50: '#f9fafb',
@@ -40,6 +64,20 @@ export default {
           700: '#374151',
           800: '#1f2937',
           900: '#111827',
+        },
+        // 实验室深色模式色彩（Slate系列）
+        slate: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b', // 卡片背景
+          900: '#0f172a', // 主背景（实验室深蓝黑）
+          950: '#020617',
         }
       },
       fontFamily: {
@@ -52,8 +90,9 @@ export default {
         '88': '22rem',
         '128': '32rem',
       },
-      // 扩展最大宽度
+      // 扩展最大宽度 - 实验室紧凑专业宽度
       maxWidth: {
+        'lab': '72rem', // 1152px - 实验室内容区宽度
         '8xl': '88rem',
         '9xl': '96rem',
       },
@@ -76,6 +115,10 @@ export default {
         'slide-right': 'slideRight 0.3s ease-out',
         'bounce-in': 'bounceIn 0.6s ease-out',
         'scale-in': 'scaleIn 0.3s ease-out',
+        // 实验室灵魂动画
+        'glow-flow': 'glowFlow 3s ease-in-out infinite', // 光迹流动
+        'particle-converge': 'particleConverge 0.3s ease-out forwards', // 粒子汇聚
+        'current-flow': 'currentFlow 0.3s ease-out', // 电流流动
       },
       keyframes: {
         fadeIn: {
@@ -108,6 +151,40 @@ export default {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        // 实验室灵魂动画关键帧
+        glowFlow: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+        particleConverge: {
+          '0%': { 
+            transform: 'translate(var(--start-x), var(--start-y)) scale(0)',
+            opacity: '0'
+          },
+          '100%': { 
+            transform: 'translate(0, 0) scale(1)',
+            opacity: '1'
+          },
+        },
+        currentFlow: {
+          '0%': { 
+            backgroundPosition: '-100% 0',
+            opacity: '0'
+          },
+          '50%': { 
+            opacity: '1'
+          },
+          '100%': { 
+            backgroundPosition: '100% 0',
+            opacity: '0'
+          },
+        },
+      },
+      // 实验室光迹渐变
+      backgroundImage: {
+        'primary-glow': 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+        'current-flow': 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent)',
       }
     },
   },

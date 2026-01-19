@@ -15,7 +15,7 @@ class ValidationError(HTTPException):
                 "error_code": "VALIDATION_ERROR",
                 "message": detail,
                 "field": field,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -33,7 +33,7 @@ class NotFoundError(HTTPException):
                 "message": detail,
                 "resource": resource,
                 "resource_id": resource_id,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -45,7 +45,7 @@ class AuthenticationError(HTTPException):
             detail={
                 "error_code": "AUTHENTICATION_ERROR",
                 "message": detail,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -57,7 +57,7 @@ class AuthorizationError(HTTPException):
             detail={
                 "error_code": "AUTHORIZATION_ERROR",
                 "message": detail,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -69,7 +69,7 @@ class DatabaseError(HTTPException):
             detail={
                 "error_code": "DATABASE_ERROR",
                 "message": detail,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -81,7 +81,7 @@ class FileUploadError(HTTPException):
             detail={
                 "error_code": "FILE_UPLOAD_ERROR",
                 "message": detail,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -93,6 +93,6 @@ class BusinessLogicError(HTTPException):
             detail={
                 "error_code": error_code,
                 "message": detail,
-                "timestamp": datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )

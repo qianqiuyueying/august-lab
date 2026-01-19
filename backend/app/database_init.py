@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from .database import Base, SQLALCHEMY_DATABASE_URL
 from .models import Portfolio, Blog, Profile, Session, Product, ProductStats, ProductLog, ProductFeedback
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 def init_database():
     """初始化数据库"""
@@ -160,7 +160,7 @@ Composition API 为 Vue3 带来了更强大的功能和更好的开发体验。�
             tags=["Vue3", "前端开发", "JavaScript", "Composition API"],
             cover_image="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=450&fit=crop",
             is_published=True,
-            published_at=datetime.utcnow()
+            published_at=datetime.now(timezone.utc)
         ),
         Blog(
             title="FastAPI 快速入门教程",
@@ -229,7 +229,7 @@ FastAPI 提供了现代化的 API 开发体验，结合了高性能和易用性�
             tags=["Python", "FastAPI", "后端开发", "API"],
             cover_image="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=450&fit=crop",
             is_published=True,
-            published_at=datetime.utcnow()
+            published_at=datetime.now(timezone.utc)
         ),
         Blog(
             title="现代前端开发工具链指南",

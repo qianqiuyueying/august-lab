@@ -554,10 +554,19 @@ onMounted(async () => {
   background: #f5f5f5;
 }
 
+.dark .product-monitoring-page {
+  background: #0f172a; /* Slate 950 */
+}
+
 .page-header {
   background: white;
   border-bottom: 1px solid #e5e7eb;
   padding: 24px;
+}
+
+.dark .page-header {
+  background: #1e293b; /* Slate 800 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .header-content {
@@ -573,9 +582,17 @@ onMounted(async () => {
   margin: 0 0 8px 0;
 }
 
+.dark .page-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .page-description {
   color: #6b7280;
   margin: 0;
+}
+
+.dark .page-description {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .header-actions {
@@ -629,6 +646,10 @@ onMounted(async () => {
   color: #1f2937;
 }
 
+.dark .card-header h3 {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .status-indicator {
   display: flex;
   align-items: center;
@@ -679,10 +700,18 @@ onMounted(async () => {
   color: #6b7280;
 }
 
+.dark .metric-label {
+  color: #9ca3af; /* Gray 400 */
+}
+
 .metric-value {
   font-size: 16px;
   font-weight: 600;
   color: #1f2937;
+}
+
+.dark .metric-value {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .metric-value.error-rate-high {
@@ -755,13 +784,28 @@ onMounted(async () => {
   border-left-color: #ef4444;
 }
 
+.dark .alert-item.alert-critical {
+  background: rgba(239, 68, 68, 0.1); /* Red 500 10% */
+  border-left-color: #ef4444;
+}
+
 .alert-item.alert-warning {
   background: #fffbeb;
   border-left-color: #f59e0b;
 }
 
+.dark .alert-item.alert-warning {
+  background: rgba(245, 158, 11, 0.1); /* Amber 500 10% */
+  border-left-color: #f59e0b;
+}
+
 .alert-item.alert-info {
   background: #f0f9ff;
+  border-left-color: #3b82f6;
+}
+
+.dark .alert-item.alert-info {
+  background: rgba(59, 130, 246, 0.1); /* Blue 500 10% */
   border-left-color: #3b82f6;
 }
 
@@ -801,15 +845,27 @@ onMounted(async () => {
   text-overflow: ellipsis;
 }
 
+.dark .alert-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .alert-time {
   font-size: 11px;
   color: #9ca3af;
+}
+
+.dark .alert-time {
+  color: #6b7280; /* Gray 500 */
 }
 
 .no-alerts {
   text-align: center;
   padding: 20px;
   color: #6b7280;
+}
+
+.dark .no-alerts {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .no-alerts p {

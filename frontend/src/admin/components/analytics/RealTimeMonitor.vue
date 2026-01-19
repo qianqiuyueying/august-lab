@@ -354,6 +354,11 @@ const formatLastUpdateTime = (timestamp: Date) => {
   border: 1px solid #e5e7eb;
 }
 
+.dark .real-time-monitor {
+  background: #1e293b; /* Slate 800 */
+  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .monitor-header {
   display: flex;
   justify-content: space-between;
@@ -361,6 +366,11 @@ const formatLastUpdateTime = (timestamp: Date) => {
   padding: 16px 20px;
   border-bottom: 1px solid #f3f4f6;
   background: #fafafa;
+}
+
+.dark .monitor-header {
+  background: #0f172a; /* Slate 950 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .header-left {
@@ -379,6 +389,10 @@ const formatLastUpdateTime = (timestamp: Date) => {
   gap: 8px;
 }
 
+.dark .monitor-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .status-icon {
   color: #3b82f6;
   transition: color 0.3s;
@@ -390,6 +404,11 @@ const formatLastUpdateTime = (timestamp: Date) => {
   padding: 2px 8px;
   background: #f3f4f6;
   border-radius: 12px;
+}
+
+.dark .status-text {
+  color: #9ca3af; /* Gray 400 */
+  background: #334155; /* Slate 700 */
 }
 
 .header-actions {
@@ -405,10 +424,18 @@ const formatLastUpdateTime = (timestamp: Date) => {
   margin: 0;
 }
 
+.dark .real-time-metrics {
+  background: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .metric-item {
   background: white;
   padding: 16px;
   text-align: center;
+}
+
+.dark .metric-item {
+  background: #1e293b; /* Slate 800 */
 }
 
 .metric-label {
@@ -417,10 +444,18 @@ const formatLastUpdateTime = (timestamp: Date) => {
   margin-bottom: 4px;
 }
 
+.dark .metric-label {
+  color: #9ca3af; /* Gray 400 */
+}
+
 .metric-value {
   font-size: 20px;
   font-weight: 600;
   color: #1f2937;
+}
+
+.dark .metric-value {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .metric-value.online-users {
@@ -465,12 +500,21 @@ const formatLastUpdateTime = (timestamp: Date) => {
   color: #374151;
 }
 
+.dark .stream-header h4 {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .stream-container {
   max-height: 300px;
   overflow-y: auto;
   border: 1px solid #f3f4f6;
   border-radius: 6px;
   background: #fafafa;
+}
+
+.dark .stream-container {
+  background: #0f172a; /* Slate 950 */
+  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .stream-container.auto-scroll {
@@ -487,12 +531,21 @@ const formatLastUpdateTime = (timestamp: Date) => {
   transition: background-color 0.2s;
 }
 
+.dark .activity-item {
+  background: #1e293b; /* Slate 800 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .activity-item:last-child {
   border-bottom: none;
 }
 
 .activity-item:hover {
   background: #f9fafb;
+}
+
+.dark .activity-item:hover {
+  background: #334155; /* Slate 700 */
 }
 
 .activity-time {
@@ -543,9 +596,17 @@ const formatLastUpdateTime = (timestamp: Date) => {
   margin-bottom: 2px;
 }
 
+.dark .activity-message {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .activity-details {
   font-size: 12px;
   color: #6b7280;
+}
+
+.dark .activity-details {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .stream-empty {
