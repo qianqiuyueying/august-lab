@@ -121,7 +121,8 @@ const renderedContent = computed(() => {
   if (!content.value) return '<p class="empty-content">暂无内容</p>'
   
   try {
-    const html = marked(content.value)
+    // marked 在同步模式下返回 string，使用类型断言确保类型正确
+    const html = marked(content.value) as string
     return DOMPurify.sanitize(html)
   } catch (error) {
     console.error('Markdown渲染失败:', error)

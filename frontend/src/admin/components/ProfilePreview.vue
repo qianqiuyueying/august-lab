@@ -200,12 +200,12 @@ const hasSocialLinks = computed(() => {
 })
 
 const skillsByCategory = computed(() => {
-  if (!props.profile?.skills) return []
+  if (!props.profile || !props.profile.skills) return []
   
   const categories = skillCategories.map(category => ({
     name: category.value,
     label: category.label,
-    skills: props.profile.skills?.filter(skill => skill.category === category.value) || []
+    skills: props.profile!.skills!.filter(skill => skill.category === category.value) || []
   })).filter(category => category.skills.length > 0)
   
   return categories

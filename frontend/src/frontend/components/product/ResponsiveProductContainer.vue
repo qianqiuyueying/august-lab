@@ -133,8 +133,8 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { WarningFilled } from '@element-plus/icons-vue'
-import { useResponsiveDesign } from '../composables/useResponsiveDesign'
-import type { Product } from '../../shared/types'
+import { useResponsiveDesign } from '../../composables/useResponsiveDesign'
+import type { Product } from '../../../shared/types'
 
 interface Props {
   product?: Product
@@ -487,8 +487,9 @@ const initializeResponsive = async () => {
     }
     
   } catch (err: any) {
-    error.value = err.message || '响应式初始化失败'
-    emit('error', error.value)
+    const errorMessage = err.message || '响应式初始化失败'
+    error.value = errorMessage
+    emit('error', errorMessage)
   } finally {
     isLoading.value = false
   }

@@ -1,8 +1,16 @@
-// API
-export * from './api'
-
-// Types
+// Types (export first to avoid conflicts)
 export * from './types'
+
+// API (explicit exports to avoid type conflicts)
+export {
+  portfolioAPI,
+  blogAPI,
+  profileAPI,
+  authAPI,
+  uploadAPI,
+  productAPI
+} from './api'
+export { default as api } from './api'
 
 // Utils
 export * from './utils'

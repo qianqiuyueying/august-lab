@@ -1,4 +1,4 @@
-import { ref, computed, reactive, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import { portfolioAPI, blogAPI, profileAPI } from '../api'
 import { useErrorHandler } from './useErrorHandler'
 import { useLoading } from './useLoading'
@@ -26,7 +26,7 @@ class DataCacheManager {
   }
 
   // 设置缓存
-  set<T>(key: string, data: T, customTtl?: number): void {
+  set<T>(key: string, data: T): void {
     // 清理过期缓存
     this.cleanup()
 
@@ -199,16 +199,20 @@ export function usePortfolioStore() {
       if (index !== -1) {
         globalState.portfolios[index] = result
       }
+      return result
     }
 
-    return result
+    return null
   }
 
   // 创建作品
   const createPortfolio = async (data: Omit<Portfolio, 'id' | 'created_at' | 'updated_at'>): Promise<Portfolio | null> => {
     const result = await safeExecute(
       async () => {
-        const response = await portfolioAPI.create(data)
+        const response = await portfolioAPI.create({
+          ...data,
+          display_order: data.display_order ?? 0
+        })
         return response.data
       },
       null,
@@ -222,9 +226,10 @@ export function usePortfolioStore() {
       
       // 清除相关缓存
       cacheManager.delete('portfolios_all')
+      return result
     }
 
-    return result
+    return null
   }
 
   // 更新作品
@@ -249,9 +254,10 @@ export function usePortfolioStore() {
       // 清除相关缓存
       cacheManager.delete('portfolios_all')
       cacheManager.delete(`portfolio_${id}`)
+      return result
     }
 
-    return result
+    return null
   }
 
   // 删除作品
@@ -276,21 +282,22 @@ export function usePortfolioStore() {
       // 清除相关缓存
       cacheManager.delete('portfolios_all')
       cacheManager.delete(`portfolio_${id}`)
+      return true
     }
 
-    return success
+    return false
   }
 
   // 计算属性
   const featuredPortfolios = computed(() => 
     globalState.portfolios
       .filter(p => p.is_featured)
-      .sort((a, b) => b.display_order - a.display_order)
+      .sort((a, b) => (b.display_order ?? 0) - (a.display_order ?? 0))
   )
 
   const publishedPortfolios = computed(() => 
     globalState.portfolios
-      .sort((a, b) => b.display_order - a.display_order)
+      .sort((a, b) => (b.display_order ?? 0) - (a.display_order ?? 0))
   )
 
   return {
@@ -391,9 +398,10 @@ export function useBlogStore() {
       if (index !== -1) {
         globalState.blogs[index] = result
       }
+      return result
     }
 
-    return result
+    return null
   }
 
   // 创建博客
@@ -415,9 +423,10 @@ export function useBlogStore() {
       // 清除相关缓存
       cacheManager.delete('blogs_all')
       cacheManager.delete('blogs_all_admin')
+      return result
     }
 
-    return result
+    return null
   }
 
   // 更新博客
@@ -443,9 +452,10 @@ export function useBlogStore() {
       cacheManager.delete('blogs_all')
       cacheManager.delete('blogs_all_admin')
       cacheManager.delete(`blog_${id}`)
+      return result
     }
 
-    return result
+    return null
   }
 
   // 删除博客
@@ -471,9 +481,10 @@ export function useBlogStore() {
       cacheManager.delete('blogs_all')
       cacheManager.delete('blogs_all_admin')
       cacheManager.delete(`blog_${id}`)
+      return true
     }
 
-    return success
+    return false
   }
 
   // 计算属性
@@ -573,9 +584,10 @@ export function useProfileStore() {
       
       // 清除缓存
       cacheManager.delete('profile')
+      return result
     }
 
-    return result
+    return null
   }
 
   return {

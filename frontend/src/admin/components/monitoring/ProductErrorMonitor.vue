@@ -565,6 +565,10 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
+.dark .product-error-monitor {
+  background: #1e293b; /* Slate 800 */
+}
+
 .monitor-header {
   display: flex;
   justify-content: space-between;
@@ -572,6 +576,11 @@ onUnmounted(() => {
   padding: 20px;
   border-bottom: 1px solid #f3f4f6;
   background: #fafafa;
+}
+
+.dark .monitor-header {
+  background: #0f172a; /* Slate 950 */
+  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .header-left {
@@ -590,6 +599,10 @@ onUnmounted(() => {
   gap: 8px;
 }
 
+.dark .monitor-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .error-icon {
   color: #ef4444;
 }
@@ -606,6 +619,11 @@ onUnmounted(() => {
   border-radius: 12px;
 }
 
+.dark .status-text {
+  color: #9ca3af; /* Gray 400 */
+  background: #334155; /* Slate 700 */
+}
+
 .header-actions {
   display: flex;
   gap: 12px;
@@ -620,12 +638,20 @@ onUnmounted(() => {
   margin: 0;
 }
 
+.dark .error-stats {
+  background: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .stat-item {
   background: white;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.dark .stat-item {
+  background: #1e293b; /* Slate 800 */
 }
 
 .stat-icon {
@@ -666,10 +692,18 @@ onUnmounted(() => {
   line-height: 1;
 }
 
+.dark .stat-value {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .stat-label {
   font-size: 12px;
   color: #6b7280;
   margin-top: 4px;
+}
+
+.dark .stat-label {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .error-list {
@@ -687,6 +721,10 @@ onUnmounted(() => {
   font-size: 16px;
   font-weight: 600;
   color: #1f2937;
+}
+
+.dark .list-header h4 {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .list-controls {
@@ -709,10 +747,18 @@ onUnmounted(() => {
   margin-bottom: 2px;
 }
 
+.dark .message-text {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .message-location {
   font-size: 11px;
   color: #6b7280;
   font-family: monospace;
+}
+
+.dark .message-location {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .product-name {

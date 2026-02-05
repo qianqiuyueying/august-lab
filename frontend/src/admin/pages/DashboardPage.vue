@@ -2,8 +2,8 @@
   <div>
     <!-- 欢迎信息 -->
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900 mb-2">欢迎回来！</h1>
-      <p class="text-gray-600">这里是您的管理后台概览</p>
+      <h1 :class="['text-2xl font-bold mb-2', isDark ? 'text-gray-100' : 'text-gray-900']">欢迎回来！</h1>
+      <p :class="isDark ? 'text-gray-400' : 'text-gray-600'">这里是您的管理后台概览</p>
     </div>
 
     <!-- 统计卡片 -->
@@ -19,11 +19,11 @@
             <component :is="stat.icon" />
           </el-icon>
         </div>
-        <div class="text-2xl font-bold text-gray-900 mb-2">
+        <div :class="['text-2xl font-bold mb-2', isDark ? 'text-gray-100' : 'text-gray-900']">
           <el-skeleton v-if="loading" :rows="1" animated />
           <span v-else>{{ stat.value }}</span>
         </div>
-        <div class="text-gray-600">{{ stat.title }}</div>
+        <div :class="isDark ? 'text-gray-400' : 'text-gray-600'">{{ stat.title }}</div>
         <div v-if="stat.change" class="text-xs mt-2" :class="stat.changeColor">
           {{ stat.change }}
         </div>
@@ -35,10 +35,10 @@
       <el-card>
         <template #header>
           <div class="flex items-center justify-between">
-            <span class="font-semibold text-gray-900">最新作品</span>
+            <span :class="['font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">最新作品</span>
             <router-link 
               to="/admin/portfolio" 
-              class="text-primary-600 hover:text-primary-700 text-sm"
+              :class="['text-sm', isDark ? 'text-blue-400 hover:text-blue-300' : 'text-primary-600 hover:text-primary-700']"
             >
               查看全部 →
             </router-link>
@@ -53,23 +53,23 @@
           <div 
             v-for="portfolio in recentPortfolios" 
             :key="portfolio.id" 
-            class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+            :class="['flex items-center space-x-3 p-3 rounded-lg transition-colors', isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50']"
           >
             <div class="w-12 h-12 bg-gradient-to-br from-primary-400 to-blue-500 rounded-lg flex items-center justify-center">
               <el-icon class="text-white"><Briefcase /></el-icon>
             </div>
             <div class="flex-1 min-w-0">
-              <div class="font-medium text-gray-900 truncate">{{ portfolio.title }}</div>
-              <div class="text-sm text-gray-500">{{ formatDate(portfolio.created_at) }}</div>
+              <div :class="['font-medium truncate', isDark ? 'text-gray-100' : 'text-gray-900']">{{ portfolio.title }}</div>
+              <div :class="['text-sm', isDark ? 'text-gray-400' : 'text-gray-500']">{{ formatDate(portfolio.created_at) }}</div>
             </div>
             <el-tag v-if="portfolio.is_featured" type="success" size="small">推荐</el-tag>
           </div>
         </div>
         
-        <div v-else class="text-center py-8 text-gray-500">
+        <div :class="['text-center py-8', isDark ? 'text-gray-400' : 'text-gray-500']">
           <el-icon size="48" class="mb-4"><Briefcase /></el-icon>
           <p>暂无作品</p>
-          <router-link to="/admin/portfolio" class="text-primary-600 hover:text-primary-700">
+          <router-link to="/admin/portfolio" :class="isDark ? 'text-blue-400 hover:text-blue-300' : 'text-primary-600 hover:text-primary-700'">
             创建第一个作品
           </router-link>
         </div>
@@ -79,10 +79,10 @@
       <el-card>
         <template #header>
           <div class="flex items-center justify-between">
-            <span class="font-semibold text-gray-900">最新博客</span>
+            <span :class="['font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">最新博客</span>
             <router-link 
               to="/admin/blog" 
-              class="text-primary-600 hover:text-primary-700 text-sm"
+              :class="['text-sm', isDark ? 'text-blue-400 hover:text-blue-300' : 'text-primary-600 hover:text-primary-700']"
             >
               查看全部 →
             </router-link>
@@ -97,12 +97,12 @@
           <div 
             v-for="blog in recentBlogs" 
             :key="blog.id" 
-            class="border-b border-gray-100 pb-3 last:border-b-0 hover:bg-gray-50 p-3 rounded-lg transition-colors"
+            :class="['pb-3 last:border-b-0 p-3 rounded-lg transition-colors', isDark ? 'border-b border-slate-700/50 hover:bg-slate-700/50' : 'border-b border-gray-100 hover:bg-gray-50']"
           >
             <div class="flex items-start justify-between">
               <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-900 mb-1 truncate">{{ blog.title }}</div>
-                <div class="text-sm text-gray-500">{{ formatDate(blog.created_at) }}</div>
+                <div :class="['font-medium mb-1 truncate', isDark ? 'text-gray-100' : 'text-gray-900']">{{ blog.title }}</div>
+                <div :class="['text-sm', isDark ? 'text-gray-400' : 'text-gray-500']">{{ formatDate(blog.created_at) }}</div>
               </div>
               <el-tag 
                 :type="blog.is_published ? 'success' : 'warning'" 
@@ -114,10 +114,10 @@
           </div>
         </div>
         
-        <div v-else class="text-center py-8 text-gray-500">
+        <div :class="['text-center py-8', isDark ? 'text-gray-400' : 'text-gray-500']">
           <el-icon size="48" class="mb-4"><Document /></el-icon>
           <p>暂无博客</p>
-          <router-link to="/admin/blog" class="text-primary-600 hover:text-primary-700">
+          <router-link to="/admin/blog" :class="isDark ? 'text-blue-400 hover:text-blue-300' : 'text-primary-600 hover:text-primary-700'">
             写第一篇博客
           </router-link>
         </div>
@@ -127,41 +127,41 @@
     <!-- 快速操作 -->
     <el-card class="mt-6">
       <template #header>
-        <span class="font-semibold text-gray-900">快速操作</span>
+        <span :class="['font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">快速操作</span>
       </template>
       
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <router-link 
           to="/admin/portfolio" 
-          class="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all"
+          :class="['flex flex-col items-center p-4 rounded-lg border hover:shadow-sm transition-all', isDark ? 'border-slate-700/50 hover:border-primary-500' : 'border-gray-200 hover:border-primary-300']"
         >
-          <el-icon size="24" class="text-primary-600 mb-2"><Plus /></el-icon>
-          <span class="text-sm text-gray-700">新建作品</span>
+          <el-icon size="24" :class="['mb-2', isDark ? 'text-blue-400' : 'text-primary-600']"><Plus /></el-icon>
+          <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">新建作品</span>
         </router-link>
         
         <router-link 
           to="/admin/blog" 
-          class="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all"
+          :class="['flex flex-col items-center p-4 rounded-lg border hover:shadow-sm transition-all', isDark ? 'border-slate-700/50 hover:border-primary-500' : 'border-gray-200 hover:border-primary-300']"
         >
-          <el-icon size="24" class="text-primary-600 mb-2"><EditPen /></el-icon>
-          <span class="text-sm text-gray-700">写博客</span>
+          <el-icon size="24" :class="['mb-2', isDark ? 'text-blue-400' : 'text-primary-600']"><EditPen /></el-icon>
+          <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">写博客</span>
         </router-link>
         
         <router-link 
           to="/admin/profile" 
-          class="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all"
+          :class="['flex flex-col items-center p-4 rounded-lg border hover:shadow-sm transition-all', isDark ? 'border-slate-700/50 hover:border-primary-500' : 'border-gray-200 hover:border-primary-300']"
         >
-          <el-icon size="24" class="text-primary-600 mb-2"><User /></el-icon>
-          <span class="text-sm text-gray-700">编辑资料</span>
+          <el-icon size="24" :class="['mb-2', isDark ? 'text-blue-400' : 'text-primary-600']"><User /></el-icon>
+          <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">编辑资料</span>
         </router-link>
         
         <a 
           href="/" 
           target="_blank"
-          class="flex flex-col items-center p-4 rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all"
+          :class="['flex flex-col items-center p-4 rounded-lg border hover:shadow-sm transition-all', isDark ? 'border-slate-700/50 hover:border-primary-500' : 'border-gray-200 hover:border-primary-300']"
         >
-          <el-icon size="24" class="text-primary-600 mb-2"><View /></el-icon>
-          <span class="text-sm text-gray-700">预览网站</span>
+          <el-icon size="24" :class="['mb-2', isDark ? 'text-blue-400' : 'text-primary-600']"><View /></el-icon>
+          <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">预览网站</span>
         </a>
       </div>
     </el-card>
@@ -182,7 +182,10 @@ import {
   ChatDotRound
 } from '@element-plus/icons-vue'
 import { useDataSync } from '../../shared/composables/useDataStore'
+import { useDarkMode } from '../composables/useDarkMode'
 import type { Portfolio, Blog } from '../../shared/types'
+
+const { isDark } = useDarkMode()
 
 // 数据存储
 const { portfolioStore, blogStore, startAutoSync, stopAutoSync } = useDataSync()
@@ -212,44 +215,47 @@ const recentBlogs = computed(() =>
 )
 
 // 统计数据
-const stats = computed(() => [
-  { 
-    title: '总作品数', 
-    value: portfolioStore.portfolios.value.length.toString(),
-    icon: Briefcase,
-    color: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    change: '',
-    changeColor: ''
-  },
-  { 
-    title: '博客文章', 
-    value: blogStore.blogs.value.length.toString(),
-    icon: Document,
-    color: 'bg-green-50',
-    iconColor: 'text-green-600',
-    change: '',
-    changeColor: ''
-  },
-  { 
-    title: '已发布博客', 
-    value: blogStore.publishedBlogs.value.length.toString(),
-    icon: ChatDotRound,
-    color: 'bg-purple-50',
-    iconColor: 'text-purple-600',
-    change: '',
-    changeColor: ''
-  },
-  { 
-    title: '推荐作品', 
-    value: portfolioStore.featuredPortfolios.value.length.toString(),
-    icon: TrendCharts,
-    color: 'bg-orange-50',
-    iconColor: 'text-orange-600',
-    change: '',
-    changeColor: ''
-  }
-])
+const stats = computed(() => {
+  const dark = isDark.value
+  return [
+    { 
+      title: '总作品数', 
+      value: portfolioStore.portfolios.value.length.toString(),
+      icon: Briefcase,
+      color: dark ? 'bg-slate-800/50' : 'bg-blue-50',
+      iconColor: dark ? 'text-blue-400' : 'text-blue-600',
+      change: '',
+      changeColor: ''
+    },
+    { 
+      title: '博客文章', 
+      value: blogStore.blogs.value.length.toString(),
+      icon: Document,
+      color: dark ? 'bg-slate-800/50' : 'bg-green-50',
+      iconColor: dark ? 'text-green-400' : 'text-green-600',
+      change: '',
+      changeColor: ''
+    },
+    { 
+      title: '已发布博客', 
+      value: blogStore.publishedBlogs.value.length.toString(),
+      icon: ChatDotRound,
+      color: dark ? 'bg-slate-800/50' : 'bg-purple-50',
+      iconColor: dark ? 'text-purple-400' : 'text-purple-600',
+      change: '',
+      changeColor: ''
+    },
+    { 
+      title: '推荐作品', 
+      value: portfolioStore.featuredPortfolios.value.length.toString(),
+      icon: TrendCharts,
+      color: dark ? 'bg-slate-800/50' : 'bg-orange-50',
+      iconColor: dark ? 'text-orange-400' : 'text-orange-600',
+      change: '',
+      changeColor: ''
+    }
+  ]
+})
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)

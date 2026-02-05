@@ -148,7 +148,7 @@ api.interceptors.response.use(
     return response
   },
   async (error: AxiosError) => {
-    const { response, config, code, message } = error
+    const { response, config, code } = error
 
     // 构建错误信息
     const errorInfo: APIError = {
@@ -179,10 +179,12 @@ api.interceptors.response.use(
     } else {
       // HTTP 错误
       switch (response.status) {
-        case 400:
-          errorInfo.message = response.data?.message || '请求参数错误'
+        case 400: {
+          const data = response.data as any
+          errorInfo.message = data?.message || '请求参数错误'
           ElMessage.error(errorInfo.message)
           break
+        }
         case 401:
           errorInfo.message = '登录已过期，请重新登录'
           localStorage.removeItem('admin_token')
@@ -203,10 +205,12 @@ api.interceptors.response.use(
           errorInfo.message = '请求的资源不存在'
           ElMessage.error(errorInfo.message)
           break
-        case 422:
-          errorInfo.message = response.data?.message || '数据验证失败'
+        case 422: {
+          const data = response.data as any
+          errorInfo.message = data?.message || '数据验证失败'
           ElMessage.error(errorInfo.message)
           break
+        }
         case 429:
           errorInfo.message = '请求过于频繁，请稍后重试'
           ElMessage.warning(errorInfo.message)
@@ -221,9 +225,11 @@ api.interceptors.response.use(
           errorInfo.message = '服务暂时不可用，请稍后重试'
           ElMessage.error(errorInfo.message)
           break
-        default:
-          errorInfo.message = response.data?.message || `请求失败 (${response.status})`
+        default: {
+          const data = response.data as any
+          errorInfo.message = data?.message || `请求失败 (${response.status})`
           ElMessage.error(errorInfo.message)
+        }
       }
     }
 

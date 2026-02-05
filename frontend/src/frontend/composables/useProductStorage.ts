@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { api } from '../../shared/api'
+import api from '../../shared/api'
 
 export interface ProductStorageRecord {
   key: string

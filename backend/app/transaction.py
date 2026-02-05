@@ -141,6 +141,12 @@ def transactional(rollback_on_exception: bool = True, max_retries: int = 3):
                         detail="数据库操作失败"
                     )
                 
+                except HTTPException:
+                    # HTTP异常应该直接重新抛出，不要转换
+                    if rollback_on_exception:
+                        db_session.rollback()
+                    raise
+                
                 except Exception as e:
                     # 其他异常
                     if rollback_on_exception:
@@ -162,7 +168,7 @@ def transactional(rollback_on_exception: bool = True, max_retries: int = 3):
                         },
                     })
                     #endregion
-
+                    
                     # 记录详细的异常信息
                     import traceback
                     error_msg = str(e) if str(e) else repr(e)

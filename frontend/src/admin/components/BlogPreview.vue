@@ -113,7 +113,8 @@ const renderedContent = computed(() => {
   if (!props.blog?.content) return ''
   
   try {
-    const html = marked(props.blog.content)
+    // marked 在同步模式下返回 string，使用类型断言确保类型正确
+    const html = marked(props.blog.content) as string
     return DOMPurify.sanitize(html)
   } catch (error) {
     console.error('Markdown渲染失败:', error)

@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50/50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center px-4">
     <div class="max-w-md w-full space-y-8">
       <div class="text-center">
         <div class="flex items-center justify-center space-x-2 mb-6">
-          <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+          <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center shadow-md">
             <span class="text-white font-bold">A</span>
           </div>
-          <span class="text-2xl font-bold text-gray-900">管理后台</span>
+          <span class="text-2xl font-bold text-gray-900 dark:text-gray-50">管理后台</span>
         </div>
-        <h2 class="text-xl text-gray-600">登录到管理系统</h2>
+        <h2 class="text-xl text-gray-600 dark:text-gray-400">登录到管理系统</h2>
       </div>
       
-      <el-card class="shadow-lg">
+      <el-card class="shadow-xl border border-gray-200 dark:border-slate-700/50">
         <el-form 
           ref="loginFormRef"
           :model="loginForm" 

@@ -1,6 +1,19 @@
 import { ref, computed } from 'vue'
 import type { Product } from '../../shared/types'
 
+// 扩展 Window 接口以支持 SPA 框架检测
+declare global {
+  interface Window {
+    React?: any
+    Vue?: any
+    ng?: any
+    __REACT_DEVTOOLS_GLOBAL_HOOK__?: any
+    __VUE__?: any
+    getAllAngularRootElements?: () => any[]
+    SPARouter?: any
+  }
+}
+
 interface SPAConfig {
   routingMode: 'hash' | 'history' | 'memory'
   baseUrl: string

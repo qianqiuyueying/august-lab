@@ -234,7 +234,8 @@ export const builtinTemplates: ConfigTemplate[] = [
         eventForwarding: ['gamepad', 'keyboard', 'mouse', 'touchstart', 'touchmove']
       },
       security: {
-        sandbox: ['allow-scripts', 'allow-same-origin', 'allow-pointer-lock', 'allow-fullscreen']
+        sandbox: ['allow-scripts', 'allow-same-origin', 'allow-pointer-lock']
+        // 注意：allow-fullscreen 不是有效的 sandbox 属性，应使用 allow="fullscreen" 属性
       }
     }
   },
@@ -284,7 +285,8 @@ export const builtinTemplates: ConfigTemplate[] = [
         eventForwarding: ['gamepad', 'keyboard', 'mouse', 'touchstart']
       },
       security: {
-        sandbox: ['allow-scripts', 'allow-same-origin', 'allow-pointer-lock', 'allow-fullscreen']
+        sandbox: ['allow-scripts', 'allow-same-origin', 'allow-pointer-lock']
+        // 注意：allow-fullscreen 不是有效的 sandbox 属性，应使用 allow="fullscreen" 属性
       }
     }
   },

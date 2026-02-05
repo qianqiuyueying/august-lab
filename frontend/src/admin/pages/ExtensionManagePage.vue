@@ -500,12 +500,22 @@ onMounted(() => {
   min-height: 100vh;
 }
 
+.dark .extension-management {
+  background: #0f172a; /* Slate 950 */
+}
+
 .page-header {
   background: white;
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .page-header {
+  background: #1e293b; /* Slate 800 */
+  box-shadow: none;
+  border: 1px solid rgba(148, 163, 184, 0.15); /* Slate 400 15% */
 }
 
 .header-content {
@@ -525,10 +535,18 @@ onMounted(() => {
   color: #1f2937;
 }
 
+.dark .page-title {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .page-description {
   margin: 0;
   color: #6b7280;
   font-size: 14px;
+}
+
+.dark .page-description {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .header-actions {
@@ -579,9 +597,17 @@ onMounted(() => {
   margin-bottom: 4px;
 }
 
+.dark .stat-number {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .stat-label {
   color: #6b7280;
   font-size: 14px;
+}
+
+.dark .stat-label {
+  color: #9ca3af; /* Gray 400 */
 }
 
 .extensions-section, .product-types-section {
@@ -601,6 +627,10 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.dark .section-header h2 {
+  color: #f3f4f6; /* Gray 50 */
+}
+
 .extensions-grid, .product-types-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -614,8 +644,16 @@ onMounted(() => {
   transition: all 0.2s;
 }
 
+.dark .extension-card, .dark .product-type-card {
+  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+}
+
 .extension-card:hover, .product-type-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .extension-card:hover, .dark .product-type-card:hover {
+  box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.2);
 }
 
 .extension-card.disabled {
@@ -624,6 +662,10 @@ onMounted(() => {
 
 .extension-card.disabled :deep(.el-card__body) {
   background: #f8f9fa;
+}
+
+.dark .extension-card.disabled :deep(.el-card__body) {
+  background: #0f172a; /* Slate 950 */
 }
 
 .extension-header, .product-type-header {
@@ -636,6 +678,10 @@ onMounted(() => {
 .extension-info h3, .product-type-header h3 {
   margin: 0 0 5px 0;
   color: #333;
+}
+
+.dark .extension-info h3, .dark .product-type-header h3 {
+  color: #f3f4f6; /* Gray 50 */
 }
 
 .extension-type, .product-type-name {
@@ -655,6 +701,10 @@ onMounted(() => {
   color: #666;
   margin-bottom: 15px;
   line-height: 1.5;
+}
+
+.dark .extension-description, .dark .product-type-description {
+  color: #d1d5db; /* Gray 300 */
 }
 
 .extension-meta {

@@ -254,6 +254,20 @@ export interface ProductFeedback {
   replied_at?: string
 }
 
+export interface ProductFeedbackPublic {
+  id: number
+  product_id: number
+  feedback_type: 'bug' | 'feature' | 'improvement' | 'general'
+  rating?: number
+  title: string
+  content: string
+  status: 'resolved' | 'closed'
+  admin_reply?: string
+  created_at: string
+  replied_at?: string
+  // 不包含敏感信息：user_name, user_email, ip_address, user_agent
+}
+
 export interface ProductFeedbackStats {
   product_id: number
   total_feedback: number

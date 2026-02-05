@@ -58,9 +58,8 @@
     
     <!-- 产品信息弹窗 -->
     <ProductInfoModal
-      v-if="showProductInfo"
+      v-model="showProductInfo"
       :product="product"
-      @close="showProductInfo = false"
     />
     
     <!-- 产品反馈表单 -->
@@ -278,9 +277,13 @@ const loadProduct = async () => {
     const savedState = restoreProductState(currentProductId.value)
     if (savedState) {
       zoomLevel.value = savedState.zoomLevel
-      isFullscreen.value = savedState.displayMode === 'fullscreen'
-      // 可以在这里恢复其他状态
+      // 注意：不直接恢复全屏状态，因为实际全屏状态由浏览器控制
+      // 如果需要恢复全屏，应该调用 toggleFullscreen()，而不是直接设置状态
+      // 这里只恢复缩放级别，全屏状态由用户手动触发或通过 fullscreenchange 事件同步
     }
+    
+    // 确保 isFullscreen 状态与实际全屏状态同步
+    isFullscreen.value = !!document.fullscreenElement
     
     // 记录访问统计
     await recordAccess(currentProductId.value, {
@@ -304,17 +307,24 @@ const reloadProduct = () => {
   loadProduct()
 }
 
-const toggleFullscreen = () => {
+const toggleFullscreen = async () => {
   if (!props.allowFullscreen) return
   
-  isFullscreen.value = !isFullscreen.value
-  
-  if (isFullscreen.value) {
-    // 进入全屏
-    document.documentElement.requestFullscreen?.()
-  } else {
-    // 退出全屏
-    document.exitFullscreen?.()
+  try {
+    if (!document.fullscreenElement) {
+      // 进入全屏 - 等待 Promise 完成后再更新状态
+      await document.documentElement.requestFullscreen?.()
+      // 状态会通过 fullscreenchange 事件自动更新
+    } else {
+      // 退出全屏 - 等待 Promise 完成后再更新状态
+      await document.exitFullscreen?.()
+      // 状态会通过 fullscreenchange 事件自动更新
+    }
+  } catch (error) {
+    // 如果全屏操作失败（用户拒绝、浏览器不支持等），确保状态同步
+    console.warn('全屏操作失败:', error)
+    // 通过检查实际状态来同步
+    isFullscreen.value = !!document.fullscreenElement
   }
 }
 
@@ -324,11 +334,31 @@ const goBack = () => {
     recordDuration(product.value.id)
   }
   
-  // 返回上一页或产品列表
-  if (window.history.length > 1) {
+  // 智能返回逻辑：
+  // 1. 优先使用浏览器历史记录（如果存在且来源是当前域名）
+  // 2. 其次根据路由查询参数中的from字段返回
+  // 3. 最后默认返回到产品列表
+  
+  const referrer = document.referrer
+  const currentOrigin = window.location.origin
+  const hasHistory = window.history.length > 1
+  const isFromSameOrigin = referrer && referrer.startsWith(currentOrigin)
+  
+  // 如果有历史记录且来源是当前域名，使用浏览器后退
+  if (hasHistory && isFromSameOrigin) {
     router.go(-1)
-  } else {
+    return
+  }
+  
+  // 根据路由查询参数中的from字段返回
+  const from = route.query.from as string
+  if (from === 'portfolio') {
     router.push('/portfolio')
+  } else if (from === 'home') {
+    router.push('/')
+  } else {
+    // 默认返回到产品列表
+    router.push({ path: '/portfolio', query: { tab: 'products' } })
   }
 }
 
@@ -412,19 +442,34 @@ const onThemeChange = (theme: 'light' | 'dark' | 'auto') => {
 }
 
 // 键盘事件处理
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && isFullscreen.value) {
-    toggleFullscreen()
-  }
+const handleKeydown = () => {
+  // 注意：当用户按 ESC 键时，浏览器会自动退出全屏
+  // fullscreenchange 事件会被触发，handleFullscreenChange 会自动更新状态
+  // 这里不需要手动调用 toggleFullscreen，避免重复操作
 }
 
-// 全屏状态监听
+// 全屏状态监听 - 这是唯一更新 isFullscreen 状态的地方，确保状态与实际全屏状态一致
 const handleFullscreenChange = () => {
-  isFullscreen.value = !!document.fullscreenElement
+  const isCurrentlyFullscreen = !!document.fullscreenElement
+  // 只有当状态实际改变时才更新，避免不必要的响应式更新
+  if (isFullscreen.value !== isCurrentlyFullscreen) {
+    isFullscreen.value = isCurrentlyFullscreen
+    
+    // 保存显示模式状态
+    if (currentProductId.value) {
+      updateDisplayMode(
+        currentProductId.value, 
+        isCurrentlyFullscreen ? 'fullscreen' : 'normal'
+      )
+    }
+  }
 }
 
 // 生命周期
 onMounted(() => {
+  // 初始化时同步全屏状态
+  isFullscreen.value = !!document.fullscreenElement
+  
   if (props.autoLoad) {
     loadProduct()
   }

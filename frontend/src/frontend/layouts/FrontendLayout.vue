@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- 导航头部 -->
-    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
       <ResponsiveContainer size="xl" :padding="{ xs: '0 1rem', sm: '0 1.5rem', lg: '0 2rem' }">
         <div class="flex justify-between items-center h-16">
           <!-- Logo -->
@@ -83,18 +83,37 @@
       <router-view />
     </main>
     
-    <!-- 页脚 -->
-    <footer class="bg-white border-t border-gray-200 section-padding">
+    <!-- 页脚 - 实验室彩蛋 -->
+    <footer class="bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 py-6">
       <ResponsiveContainer size="xl">
         <div class="text-center">
-          <div class="flex items-center justify-center space-x-2 mb-4">
-            <div class="w-6 h-6 bg-primary-600 rounded-md flex items-center justify-center">
+          <div class="flex items-center justify-center space-x-2 mb-2">
+            <div class="w-5 h-5 bg-primary-500 rounded-md flex items-center justify-center shadow-md">
               <span class="text-white font-bold text-xs">A</span>
             </div>
-            <span class="text-lg font-semibold text-gray-900">August.Lab</span>
+            <span class="text-base font-semibold text-gray-900 dark:text-gray-50">August.Lab</span>
           </div>
-          <p class="text-gray-600 text-sm">
+          <p class="text-gray-600 dark:text-gray-400 text-xs mb-2">
             © {{ new Date().getFullYear() }} August.Lab. All rights reserved.
+          </p>
+          <!-- 实验室彩蛋：Build in Public + 实时时间 + Git commit -->
+          <div class="group relative inline-block">
+            <code class="text-gray-500 dark:text-gray-500 text-xs font-mono">
+              // Build in Public • Last sync: {{ currentTime }}
+            </code>
+            <!-- Hover时显示Git commit -->
+            <div 
+              v-if="gitCommit"
+              class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-slate-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
+            >
+              {{ gitCommit }}
+              <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+            </div>
+          </div>
+          <p class="text-gray-500 dark:text-gray-500 text-xs mt-2">
+            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+              冀ICP备2025117309号
+            </a>
           </p>
         </div>
       </ResponsiveContainer>
@@ -103,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import ResponsiveContainer from '../../shared/components/ResponsiveContainer.vue'
 import { useResponsive } from '../../shared/composables/useResponsive'
@@ -113,10 +132,27 @@ const { isMobile } = useResponsive()
 
 const mobileMenuOpen = ref(false)
 
+// 实验室彩蛋：实时时间
+const currentTime = ref('')
+const updateTime = () => {
+  const now = new Date()
+  currentTime.value = now.toLocaleTimeString('zh-CN', { 
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+// Git commit（从环境变量获取，构建时注入）
+const gitCommit = computed(() => {
+  // @ts-ignore
+  return import.meta.env.VITE_GIT_COMMIT || null
+})
+
 const navItems = [
   { name: '首页', path: '/' },
-  { name: '作品', path: '/portfolio' },
-  { name: '产品', path: '/products' },
+  { name: '作品集', path: '/portfolio' },
   { name: '博客', path: '/blog' },
   { name: '关于我', path: '/about' }
 ]
@@ -164,16 +200,26 @@ const handleResize = () => {
   }
 }
 
+let timeInterval: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('keydown', handleEscKey)
   window.addEventListener('resize', handleResize)
+  
+  // 初始化时间并每秒更新
+  updateTime()
+  timeInterval = setInterval(updateTime, 1000)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   document.removeEventListener('keydown', handleEscKey)
   window.removeEventListener('resize', handleResize)
+  
+  if (timeInterval) {
+    clearInterval(timeInterval)
+  }
 })
 
 // 监听路由变化

@@ -27,7 +27,31 @@ const route = useRoute()
 const productId = computed(() => {
   // 优先使用props中的id，然后使用路由参数
   const id = props.id || route.params.id
-  return typeof id === 'string' ? parseInt(id, 10) : id
+  
+  if (id === undefined) {
+    return undefined
+  }
+  
+  if (typeof id === 'number') {
+    return id
+  }
+  
+  if (typeof id === 'string') {
+    const parsed = parseInt(id, 10)
+    return isNaN(parsed) ? undefined : parsed
+  }
+  
+  // 处理数组情况（取第一个元素）
+  if (Array.isArray(id) && id.length > 0) {
+    const firstId = id[0]
+    if (typeof firstId === 'string') {
+      const parsed = parseInt(firstId, 10)
+      return isNaN(parsed) ? undefined : parsed
+    }
+    return typeof firstId === 'number' ? firstId : undefined
+  }
+  
+  return undefined
 })
 </script>
 

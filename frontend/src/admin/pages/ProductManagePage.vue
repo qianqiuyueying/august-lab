@@ -691,13 +691,23 @@ onMounted(() => {
 .page-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1f2937;
   margin: 0 0 8px 0;
 }
 
+:deep(.dark) .page-title {
+  color: #f3f4f6;
+}
+
+:deep(.dark) .page-title {
+  color: #f3f4f6;
+}
+
 .page-description {
-  color: #6b7280;
   margin: 0;
+}
+
+:deep(.dark) .page-description {
+  color: #9ca3af;
 }
 
 .filters-section {
@@ -765,20 +775,26 @@ onMounted(() => {
 .product-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
   margin: 0 0 4px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+:deep(.dark) .product-title {
+  color: #f3f4f6;
+}
+
 .product-description {
   font-size: 14px;
-  color: #6b7280;
   margin: 0 0 8px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+:deep(.dark) .product-description {
+  color: #9ca3af;
 }
 
 .product-meta {
@@ -823,7 +839,10 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #6b7280;
+}
+
+:deep(.dark) .stat-item {
+  color: #9ca3af;
 }
 
 .action-buttons {
@@ -837,14 +856,25 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
   margin-top: 16px;
+}
+
+:deep(.dark) .batch-actions {
+  background: #111827;
+  border-top: 1px solid #374151;
+}
+
+:deep(.dark) .batch-actions {
+  background: #111827;
+  border-top: 1px solid #374151;
 }
 
 .batch-info {
   font-size: 14px;
-  color: #374151;
+}
+
+:deep(.dark) .batch-info {
+  color: #d1d5db;
 }
 
 .batch-buttons {

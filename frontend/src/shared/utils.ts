@@ -1,11 +1,35 @@
 // 共享工具函数
 
 /**
- * 格式化日期
+ * 解析时间字符串，确保正确处理时区
+ * 如果时间字符串没有时区信息，假设它是 UTC 时间
  */
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString)
+function parseDate(dateString: string | Date): Date {
+  if (dateString instanceof Date) {
+    return dateString
+  }
+  
+  // 如果字符串没有时区信息（没有 Z 或 +/-），假设它是 UTC 时间
+  if (typeof dateString === 'string') {
+    // 检查是否已经有时区标识
+    if (!dateString.includes('Z') && !dateString.match(/[+-]\d{2}:\d{2}$/)) {
+      // 没有时区信息，假设是 UTC 时间，添加 Z 后缀
+      // 移除可能存在的毫秒部分，然后添加 Z
+      const normalized = dateString.replace(/\.\d{3}$/, '') + 'Z'
+      return new Date(normalized)
+    }
+  }
+  
+  return new Date(dateString)
+}
+
+/**
+ * 格式化日期（中国时区）
+ */
+export function formatDate(dateString: string | Date): string {
+  const date = parseDate(dateString)
   return date.toLocaleDateString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -13,10 +37,40 @@ export function formatDate(dateString: string): string {
 }
 
 /**
+ * 格式化日期时间（中国时区）
+ */
+export function formatDateTime(dateString: string | Date): string {
+  const date = parseDate(dateString)
+  return date.toLocaleString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+/**
+ * 格式化时间（中国时区）
+ */
+export function formatTime(dateString: string | Date): string {
+  const date = parseDate(dateString)
+  return date.toLocaleTimeString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+/**
  * 格式化相对时间
  */
-export function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString)
+export function formatRelativeTime(dateString: string | Date): string {
+  const date = parseDate(dateString)
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
   

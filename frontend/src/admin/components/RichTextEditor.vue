@@ -124,7 +124,7 @@
         />
         <el-button 
           size="small" 
-          @click="$refs.colorInput?.click()" 
+          @click="colorInput?.click()" 
           title="文字颜色"
         >
           <el-icon><Brush /></el-icon>

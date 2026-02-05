@@ -5,64 +5,175 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gray-50 text-gray-900 antialiased;
+    line-height: 1.5; /* 黄金节奏 */
+  }
+  
+  /* 深色模式基础样式 - 实验室显示器光晕 */
+  .dark body {
+    @apply bg-slate-900 text-gray-50; /* 使用 Slate 950 (#0F172A) */
+  }
+  
+  /* CSS变量：光迹渐变 */
+  :root {
+    --primary-glow: linear-gradient(135deg, #3B82F6, #8B5CF6);
   }
 }
 
 @layer components {
-  /* 按钮样式 */
+  /* 按钮样式 - 实验室灵魂化改造 */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 「通电反馈」：hover时边框渐变从左→右流动 */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-glow);
+    transition: left 0.3s ease-out;
+    z-index: 0;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  
+  .btn-primary > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* 「轻触反馈」：active时scale+blur */
+  .btn-primary:active {
+    transform: scale(0.98);
+    filter: blur(0.5px);
   }
   
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-semibold py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
   }
   
   .btn-outline {
-    @apply border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 轮廓按钮的通电反馈 */
+  .btn-outline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-glow);
+    transition: left 0.3s ease-out;
+    z-index: 0;
+    opacity: 0.2;
+  }
+  
+  .btn-outline:hover::before {
+    left: 100%;
+  }
+  
+  .btn-outline > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .btn-outline:active {
+    transform: scale(0.98);
+    filter: blur(0.5px);
   }
   
   .btn-danger {
-    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+    @apply bg-error-500 hover:bg-error-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2;
   }
   
-  /* 卡片样式 */
+  .btn-danger:active {
+    transform: scale(0.98);
+    filter: blur(0.5px);
+  }
+  
+  .btn-text {
+    @apply text-primary-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-text:active {
+    transform: scale(0.98);
+  }
+  
+  /* 卡片样式 - 「漂浮感」设计 */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+    @apply bg-white dark:bg-slate-800 rounded-xl border border-primary-500/10 dark:border-slate-700/50 p-6;
+    box-shadow: none; /* 默认无阴影 */
+    position: relative;
   }
   
+  /* Hover时：轻微阴影+上移+顶部光迹条 */
   .card-hover {
-    @apply card hover:shadow-lg transition-shadow duration-300;
+    @apply card transition-all duration-300;
   }
   
-  /* 表单样式 */
+  .card-hover:hover {
+    box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.2);
+    transform: translateY(-4px);
+  }
+  
+  /* 顶部2px高光条（光迹效果） */
+  .card-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-glow);
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .card-hover:hover::before {
+    opacity: 1;
+  }
+  
+  /* 表单样式 - 新设计系统 */
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+    @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500;
   }
   
   .input-error {
-    @apply border-red-300 focus:ring-red-500;
+    @apply border-error-500 focus:ring-error-500;
   }
   
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-2;
+    @apply block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
   }
   
   .form-group {
-    @apply mb-4;
+    @apply mb-6;
   }
   
-  /* 导航样式 */
+  /* 导航样式 - 新设计系统 */
   .nav-link {
-    @apply text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200;
+    @apply text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20;
   }
   
   .nav-link-active {
-    @apply text-primary-600;
+    @apply text-primary-500 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20;
   }
   
   /* 标签样式 */
@@ -333,7 +444,43 @@
   }
   
   .table-responsive table {
-    @apply min-w-full divide-y divide-gray-200;
+    @apply min-w-full divide-y divide-gray-200 dark:divide-slate-700;
+  }
+  
+  /* 表格 - 示波器触发线（实验室灵魂） */
+  .table-lab {
+    @apply w-full;
+  }
+  
+  .table-lab tbody tr {
+    @apply relative transition-colors duration-200;
+    position: relative;
+  }
+  
+  /* 行悬停：仅高亮行首4px主色竖条（示波器触发线） */
+  .table-lab tbody tr:hover {
+    background-color: transparent;
+  }
+  
+  .table-lab tbody tr:hover::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--primary-glow);
+    z-index: 1;
+  }
+  
+  .table-lab tbody td {
+    @apply px-6 py-4 text-sm text-gray-900 dark:text-gray-100;
+    position: relative;
+    z-index: 0;
+  }
+  
+  .table-lab thead th {
+    @apply px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-gray-50 dark:bg-slate-800;
   }
   
   /* 响应式导航 */

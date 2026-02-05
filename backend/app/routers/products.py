@@ -6,6 +6,7 @@ import os
 import tempfile
 import shutil
 import secrets
+import logging
 from pathlib import Path
 
 from ..database import get_db
@@ -25,7 +26,7 @@ from ..schemas import (
     ProductFeedbackPublic
 )
 from fastapi import Form
-from datetime import datetime
+from datetime import datetime, timezone
 from ..transaction import transactional, with_db_error_handling
 from ..security import (
     create_safe_query_executor, sql_injection_protection, validate_and_sanitize_input,
@@ -38,6 +39,8 @@ from ..error_handlers import (
 from ..services import product_file_service
 from ..services.product_extension_service import product_extension_service
 from .auth import get_current_user
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -457,16 +460,41 @@ def record_product_stats(
     if not product:
         raise ResourceNotFoundAPIError("产品", product_id)
     
-    # 验证和清理统计数据
-    safe_data = validate_and_sanitize_input(stats_data.dict())
+    # 对于统计数据，使用更宽松的验证策略
+    # 因为统计数据通常来自客户端，包含用户代理、referrer等信息，这些可能包含特殊字符
+    stats_dict = stats_data.dict()
     
-    # 如果没有提供 access_time，在 Python 端设置，避免需要从数据库刷新
-    # 注意：ProductStatsCreate schema 可能不包含 access_time 字段（由数据库自动生成）
-    # 但我们在创建模型实例时手动设置，这样就不需要刷新了
-    if 'access_time' not in safe_data or safe_data.get('access_time') is None:
-        safe_data['access_time'] = datetime.now(timezone.utc)
+    # 直接使用原始数据，只对关键字段进行基本验证
+    safe_data = {
+        'product_id': product_id,  # 从URL参数获取，确保安全
+        'visitor_ip': stats_dict.get('visitor_ip', '')[:45] if stats_dict.get('visitor_ip') else None,  # 限制长度
+        'session_id': stats_dict.get('session_id', '')[:100] if stats_dict.get('session_id') else None,  # 限制长度
+        'duration_seconds': stats_dict.get('duration_seconds', 0) or 0,  # 确保是整数
+        'user_agent': stats_dict.get('user_agent', '')[:500] if stats_dict.get('user_agent') else None,  # 限制长度
+        'referrer': stats_dict.get('referrer', '')[:500] if stats_dict.get('referrer') else None,  # 限制长度
+    }
     
-    stats = ProductStatsModel(**safe_data)
+    # 如果没有提供 access_time，在 Python 端设置
+    safe_data['access_time'] = datetime.now(timezone.utc)
+    
+    # 确保 duration_seconds 是有效的整数
+    try:
+        safe_data['duration_seconds'] = int(safe_data['duration_seconds'])
+        if safe_data['duration_seconds'] < 0:
+            safe_data['duration_seconds'] = 0
+    except (ValueError, TypeError):
+        safe_data['duration_seconds'] = 0
+    
+    try:
+        stats = ProductStatsModel(**safe_data)
+    except Exception as e:
+        import traceback
+        error_traceback = traceback.format_exc()
+        logger.error(f"创建ProductStatsModel失败: {str(e)}\n数据: {safe_data}\n{error_traceback}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"创建统计数据失败: {str(e)}"
+        )
     db.add(stats)
     # 使用 flush() 将更改发送到数据库并生成 ID，但不提交事务
     # @transactional 装饰器会在函数返回后自动提交事务
@@ -1021,7 +1049,7 @@ def update_product_feedback(
     
     # 如果添加了管理员回复，设置回复时间
     if 'admin_reply' in update_data and update_data['admin_reply']:
-        from datetime import datetime
+        from datetime import datetime, timezone
         update_data['replied_at'] = datetime.now(timezone.utc)
     
     for field, value in update_data.items():
@@ -1192,7 +1220,7 @@ def validate_api_token(
     if not api_token:
         return {"valid": False, "reason": "令牌不存在或已失效"}
     
-    from datetime import datetime
+    from datetime import datetime, timezone
     if api_token.expires_at < datetime.now(timezone.utc):
         return {"valid": False, "reason": "令牌已过期"}
     
@@ -1429,7 +1457,7 @@ def proxy_api_call(
             detail="无效的API令牌"
         )
     
-    from datetime import datetime
+    from datetime import datetime, timezone
     if api_token.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -2158,7 +2186,7 @@ def validate_product_session(
     if not session:
         return {"valid": False, "reason": "会话不存在"}
     
-    from datetime import datetime
+    from datetime import datetime, timezone
     if session.expires_at < datetime.now(timezone.utc):
         return {"valid": False, "reason": "会话已过期"}
     
@@ -2246,7 +2274,7 @@ def update_session_data(
     if not session:
         raise ResourceNotFoundAPIError("会话", session_id)
     
-    from datetime import datetime
+    from datetime import datetime, timezone
     if session.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -2293,7 +2321,7 @@ def get_session_data(
     if not session:
         raise ResourceNotFoundAPIError("会话", session_id)
     
-    from datetime import datetime
+    from datetime import datetime, timezone
     if session.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -145,12 +145,8 @@ const toggleFullscreen = () => {
 
 const goBack = () => {
   emit('go-back')
-  // 尝试使用浏览器后退功能，如果没有历史记录则返回到产品列表页面
-  if (window.history.length > 1) {
-    router.go(-1)
-  } else {
-    router.push('/products')
-  }
+  // 这个方法会被父组件的goBack覆盖，这里只触发事件
+  // 实际的返回逻辑在ProductContainer中处理
 }
 </script>
 

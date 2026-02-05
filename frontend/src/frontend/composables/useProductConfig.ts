@@ -2,7 +2,7 @@ import { ref, computed, reactive } from 'vue'
 import type { Product } from '../../shared/types'
 
 // 产品配置接口定义
-interface ProductConfigSchema {
+export interface ProductConfigSchema {
   type: 'static' | 'spa' | 'game' | 'tool'
   version: string
   metadata: {

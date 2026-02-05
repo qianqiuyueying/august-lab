@@ -1,47 +1,106 @@
 <template>
   <div class="min-h-screen">
-    <!-- 主视觉区域 -->
-    <section class="hero-responsive bg-gradient-to-br from-primary-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-      <!-- 背景装饰 -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-10 left-10 w-20 h-20 bg-primary-400 rounded-full blur-xl"></div>
-        <div class="absolute top-32 right-20 w-32 h-32 bg-blue-400 rounded-full blur-xl"></div>
-        <div class="absolute bottom-20 left-1/4 w-24 h-24 bg-indigo-400 rounded-full blur-xl"></div>
+    <!-- 主视觉区域 - 简洁专业风格 -->
+    <section class="hero-section relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-primary-50 via-white to-primary-50/50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <!-- 背景装饰 - 更简洁 -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-200/30 dark:bg-primary-900/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary-300/20 dark:bg-primary-800/20 rounded-full blur-3xl"></div>
       </div>
       
-      <ResponsiveContainer size="xl" class="relative z-10">
-        <div class="hero-content">
-          <div class="fade-in">
-            <h1 class="heading-1 mb-6">
-              Hello, I'm <span class="text-primary-600 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">August</span>
+      <!-- 内容区域 -->
+      <ResponsiveContainer size="xl" class="relative z-10 py-20 md:py-28 lg:py-32">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center space-y-8 md:space-y-10">
+            <!-- 装饰性标签 -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 dark:bg-primary-900/30 rounded-full border border-primary-200 dark:border-primary-800">
+              <span class="w-2 h-2 bg-success-500 rounded-full animate-pulse"></span>
+              <span class="text-sm font-medium text-primary-700 dark:text-primary-300">全栈开发者 · 在线</span>
+            </div>
+            
+            <!-- 主标题 -->
+            <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight">
+              <span class="block text-gray-900 dark:text-gray-50 mb-2">Hello,</span>
+              <span class="block text-primary-500 dark:text-primary-400">
+                I'm August
+              </span>
             </h1>
-            <p class="text-responsive-lg text-gray-600 mb-8 max-w-3xl mx-auto lg:mx-0 leading-relaxed">
-              一名热爱技术的全栈开发者，专注于创造有意义的数字体验。
-              <br class="hidden sm:block">
-              致力于用代码构建更美好的世界，让技术服务于人。
+            
+            <!-- 副标题 -->
+            <p class="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              用代码创造数字体验
+              <br class="hidden md:block">
+              <span class="text-lg md:text-xl text-gray-500 dark:text-gray-400">让技术与创意完美融合</span>
             </p>
-            <div class="flex-responsive gap-responsive justify-center lg:justify-start">
-              <router-link to="/portfolio" class="btn-primary btn-responsive-lg group">
-                <span>查看作品</span>
-                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            
+            <!-- CTA 按钮组 -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <router-link 
+                to="/portfolio" 
+                class="btn-primary inline-flex items-center justify-center gap-2 group"
+              >
+                探索作品
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </router-link>
-              <router-link to="/about" class="btn-outline btn-responsive-lg">
+              
+              <router-link 
+                to="/about" 
+                class="btn-secondary inline-flex items-center justify-center"
+              >
                 了解更多
               </router-link>
+            </div>
+            
+            <!-- 社交链接 -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
+              <span class="text-sm text-gray-500 dark:text-gray-400">关注我</span>
+              <div class="flex gap-4">
+                <a 
+                  href="#" 
+                  class="w-12 h-12 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all hover:scale-110 shadow-sm"
+                  aria-label="GitHub"
+                >
+                  <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="#" 
+                  class="w-12 h-12 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all hover:scale-110 shadow-sm"
+                  aria-label="Twitter"
+                >
+                  <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </ResponsiveContainer>
+      
+      <!-- 滚动提示 -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+        <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
     </section>
     
     <!-- 最新作品预览 -->
-    <section class="section-padding bg-white">
-      <ResponsiveContainer size="xl">
-        <div class="text-center mb-12">
-          <h2 class="heading-2 mb-4">最新作品</h2>
-          <p class="text-responsive-base text-gray-600 max-w-2xl mx-auto">
+    <section class="section-padding bg-white dark:bg-gray-900 relative overflow-hidden">
+      <ResponsiveContainer size="xl" class="relative z-10">
+        <!-- 标题区域 -->
+        <div class="text-center mb-16">
+          <div class="inline-block mb-4">
+            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Portfolio</span>
+          </div>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-50 mb-4 leading-tight">
+            精选<span class="text-primary-500 dark:text-primary-400">作品</span>
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             展示我最近完成的一些项目，涵盖前端开发、全栈应用和创新实验
           </p>
         </div>
@@ -61,66 +120,70 @@
             :text-lines="2"
           />
           
-          <!-- 作品网格 -->
-          <div v-else-if="featuredPortfolios.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+          <!-- 作品网格 - 优化间距和响应式 -->
+          <div v-else-if="featuredPortfolios.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
           <div 
-            v-for="portfolio in featuredPortfolios" 
+            v-for="(portfolio, idx) in featuredPortfolios" 
             :key="portfolio.id" 
-            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-2"
+            class="group cursor-pointer"
+            :class="{
+              'md:col-span-2 xl:col-span-1': idx === 0,
+              'xl:row-span-2': idx === 1
+            }"
             @click="goToPortfolioDetail(portfolio.id)"
           >
-            <!-- 项目图片 -->
-            <div class="relative overflow-hidden bg-gray-100 aspect-video">
-              <ResponsiveImage
-                v-if="portfolio.image_url"
-                :src="portfolio.image_url"
-                :alt="portfolio.title"
-                aspect-ratio="video"
-                class="group-hover:scale-105 transition-transform duration-300"
-              />
-              <div v-else class="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-              </div>
-              
-              <!-- 悬停遮罩 -->
-              <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div class="bg-white rounded-full p-3 shadow-lg">
-                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  </div>
+            <div class="h-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700">
+              <!-- 项目图片 -->
+              <div class="relative overflow-hidden bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20" :class="idx === 1 ? 'h-64' : 'aspect-video'">
+                <ResponsiveImage
+                  v-if="portfolio.image_url"
+                  :src="portfolio.image_url"
+                  :alt="portfolio.title"
+                  :aspect-ratio="idx === 1 ? undefined : 'video'"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div v-else class="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 flex items-center justify-center">
+                  <svg class="w-16 h-16 text-primary-400 dark:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                
+                <!-- 特色标签 -->
+                <div v-if="idx === 0" class="absolute top-4 left-4 px-3 py-1 bg-primary-500 text-white text-xs font-semibold rounded-full shadow-md">
+                  精选
                 </div>
               </div>
-            </div>
-            
-            <!-- 项目信息 -->
-            <div class="p-6 space-y-4">
-              <h3 class="heading-5 group-hover:text-primary-600 transition-colors duration-200">
-                {{ portfolio.title }}
-              </h3>
-              <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
-                {{ portfolio.description || '暂无描述' }}
-              </p>
               
-              <!-- 技术栈标签 -->
-              <div class="flex flex-wrap gap-2">
-                <span 
-                  v-for="tech in portfolio.tech_stack.slice(0, 3)" 
-                  :key="tech"
-                  class="tag tag-primary text-xs"
-                >
-                  {{ tech }}
-                </span>
-                <span 
-                  v-if="portfolio.tech_stack.length > 3"
-                  class="tag tag-secondary text-xs"
-                >
-                  +{{ portfolio.tech_stack.length - 3 }}
-                </span>
+              <!-- 项目信息 -->
+              <div class="p-6 space-y-4 bg-white dark:bg-gray-800">
+                <div class="flex items-start justify-between">
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
+                    {{ portfolio.title }}
+                  </h3>
+                  <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed" :class="idx === 1 ? '' : 'line-clamp-2'">
+                  {{ portfolio.description || '暂无描述' }}
+                </p>
+                
+                <!-- 技术栈标签 -->
+                <div class="flex flex-wrap gap-2 pt-2">
+                  <span 
+                    v-for="tech in portfolio.tech_stack.slice(0, 3)" 
+                    :key="tech"
+                    class="px-3 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full border border-primary-200 dark:border-primary-800"
+                  >
+                    {{ tech }}
+                  </span>
+                  <span 
+                    v-if="portfolio.tech_stack.length > 3"
+                    class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full"
+                  >
+                    +{{ portfolio.tech_stack.length - 3 }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -136,13 +199,13 @@
         </div>
         
           <!-- 查看更多按钮 -->
-          <div v-if="featuredPortfolios.length > 0" class="text-center">
+          <div v-if="featuredPortfolios.length > 0" class="text-center mt-12">
             <router-link 
               to="/portfolio" 
-              class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+              class="btn-primary inline-flex items-center gap-2"
             >
               查看所有作品
-              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </router-link>
@@ -152,11 +215,16 @@
     </section>
     
     <!-- 最新产品预览 -->
-    <section class="section-padding bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <ResponsiveContainer size="xl">
-        <div class="text-center mb-12">
-          <h2 class="heading-2 mb-4">我的产品</h2>
-          <p class="text-responsive-base text-gray-600 max-w-2xl mx-auto">
+    <section class="py-16 md:py-20 lg:py-24 bg-gray-50 dark:bg-gray-800 relative overflow-hidden">
+      <ResponsiveContainer size="xl" class="relative z-10">
+        <div class="text-center mb-12 md:mb-16">
+          <div class="inline-block mb-4">
+            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Products</span>
+          </div>
+          <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-50 mb-4 leading-tight">
+            在线<span class="text-primary-500 dark:text-primary-400">产品</span>
+          </h2>
+          <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-4">
             体验我开发的Web应用和工具，点击即可在线使用
           </p>
         </div>
@@ -176,52 +244,42 @@
             :text-lines="2"
           />
           
-          <!-- 产品网格 -->
-          <div v-else-if="featuredProducts.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+          <!-- 产品网格 - 优化间距 -->
+          <div v-else-if="featuredProducts.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
             <div 
               v-for="product in featuredProducts" 
               :key="product.id" 
-              class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-2"
+              class="group cursor-pointer"
               @click="launchProduct(product)"
             >
+              <div class="h-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700">
               <!-- 产品预览图 -->
-              <div class="relative overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 aspect-video">
+              <div class="relative overflow-hidden bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 aspect-video">
                 <ResponsiveImage
                   v-if="product.preview_image"
                   :src="product.preview_image"
                   :alt="product.title"
                   aspect-ratio="video"
-                  class="group-hover:scale-105 transition-transform duration-300"
+                  class="group-hover:scale-105 transition-transform duration-500"
                 />
-                <div v-else class="w-full h-48 bg-gradient-to-br from-indigo-200 to-purple-200 flex items-center justify-center">
+                <div v-else class="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 flex items-center justify-center">
                   <div class="text-6xl opacity-60">
                     {{ getProductIcon(product.product_type) }}
                   </div>
                 </div>
                 
                 <!-- 产品类型标签 -->
-                <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium text-white" :class="getProductTypeClass(product.product_type)">
+                <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md" :class="getProductTypeClass(product.product_type)">
                   {{ getProductTypeLabel(product.product_type) }}
-                </div>
-                
-                <!-- 启动按钮遮罩 -->
-                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                  <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="bg-white rounded-full p-4 shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                      <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-6V7a2 2 0 00-2-2H5a2 2 0 00-2 2v3m2 13h10a2 2 0 002-2v-3m-2-13h10a2 2 0 012 2v3" />
-                      </svg>
-                    </div>
-                  </div>
                 </div>
               </div>
               
               <!-- 产品信息 -->
-              <div class="p-6 space-y-4">
-                <h3 class="heading-5 group-hover:text-indigo-600 transition-colors duration-200">
+              <div class="p-6 space-y-4 bg-white dark:bg-gray-800">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
                   {{ product.title }}
                 </h3>
-                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-2">
                   {{ product.description || '暂无描述' }}
                 </p>
                 
@@ -230,33 +288,34 @@
                   <span 
                     v-for="tech in product.tech_stack?.slice(0, 3)" 
                     :key="tech"
-                    class="tag tag-indigo text-xs"
+                    class="px-3 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full border border-primary-200 dark:border-primary-800"
                   >
                     {{ tech }}
                   </span>
                   <span 
                     v-if="product.tech_stack && product.tech_stack.length > 3"
-                    class="tag tag-secondary text-xs"
+                    class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full"
                   >
                     +{{ product.tech_stack.length - 3 }}
                   </span>
                 </div>
                 
                 <!-- 产品统计 -->
-                <div class="flex items-center justify-between text-xs text-gray-500">
-                  <div class="flex items-center gap-1">
+                <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     {{ product.view_count || 0 }} 次体验
                   </div>
-                  <div class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">
+                  <div class="px-4 py-1.5 bg-primary-500 text-white rounded-full font-semibold text-xs shadow-md">
                     立即体验
                   </div>
                 </div>
               </div>
             </div>
+          </div>
           </div>
           
           <!-- 空状态 -->
@@ -267,13 +326,13 @@
           </div>
           
           <!-- 查看更多按钮 -->
-          <div v-if="featuredProducts.length > 0" class="text-center">
+          <div v-if="featuredProducts.length > 0" class="text-center mt-12">
             <router-link 
-              to="/products" 
-              class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors duration-200"
+              :to="{ path: '/portfolio', query: { tab: 'products' } }" 
+              class="btn-primary inline-flex items-center gap-2"
             >
               查看所有产品
-              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </router-link>
@@ -283,11 +342,16 @@
     </section>
     
     <!-- 最新博客预览 -->
-    <section class="section-padding bg-gray-50">
+    <section class="py-16 md:py-20 lg:py-24 bg-white dark:bg-gray-900">
       <ResponsiveContainer size="xl">
-        <div class="text-center mb-12">
-          <h2 class="heading-2 mb-4">最新博客</h2>
-          <p class="text-responsive-base text-gray-600 max-w-2xl mx-auto">
+        <div class="text-center mb-12 md:mb-16">
+          <div class="inline-block mb-4">
+            <span class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Blog</span>
+          </div>
+          <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-50 mb-4 leading-tight">
+            最新<span class="text-primary-500 dark:text-primary-400">博客</span>
+          </h2>
+          <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-4">
             分享技术心得、开发经验和生活感悟
           </p>
         </div>
@@ -307,12 +371,13 @@
             :text-lines="2"
           />
         
-        <!-- 博客网格 -->
-        <div v-else-if="recentBlogs.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+        <!-- 博客网格 - 优化间距 -->
+        <div v-else-if="recentBlogs.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
           <article 
-            v-for="blog in recentBlogs" 
+            v-for="(blog, idx) in recentBlogs" 
             :key="blog.id"
-            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-2"
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600"
+            :style="{ animationDelay: `${idx * 100}ms` }"
             @click="goToBlogDetail(blog.id)"
           >
             <!-- 封面图片 -->
@@ -336,12 +401,12 @@
               </div>
               
               <!-- 标题 -->
-              <h3 class="heading-5 group-hover:text-primary-600 transition-colors duration-200 line-clamp-2">
+              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-50 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2">
                 {{ blog.title }}
               </h3>
               
               <!-- 摘要 -->
-              <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+              <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">
                 {{ blog.summary || extractSummary(blog.content) }}
               </p>
               
@@ -350,13 +415,13 @@
                 <span 
                   v-for="tag in blog.tags.slice(0, 3)" 
                   :key="tag"
-                  class="tag tag-secondary text-xs"
+                  class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full"
                 >
                   {{ tag }}
                 </span>
                 <span 
                   v-if="blog.tags.length > 3"
-                  class="tag tag-secondary text-xs"
+                  class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full"
                 >
                   +{{ blog.tags.length - 3 }}
                 </span>
@@ -375,13 +440,13 @@
         </div>
         
           <!-- 查看更多按钮 -->
-          <div v-if="recentBlogs.length > 0" class="text-center">
+          <div v-if="recentBlogs.length > 0" class="text-center mt-12">
             <router-link 
               to="/blog" 
-              class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+              class="btn-primary inline-flex items-center gap-2"
             >
               查看所有博客
-              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </router-link>
@@ -391,22 +456,33 @@
     </section>
     
     <!-- 联系我区域 -->
-    <section class="section-padding bg-gradient-to-r from-primary-600 to-blue-600 text-white">
-      <ResponsiveContainer size="lg">
-        <div class="text-center">
-          <h2 class="heading-2 mb-4 text-white">让我们一起创造</h2>
-          <p class="text-responsive-lg mb-8 opacity-90 max-w-2xl mx-auto">
+    <section class="py-16 md:py-20 lg:py-24 bg-primary-500 dark:bg-primary-600 text-white relative overflow-hidden">
+      <!-- 背景装饰 -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+      </div>
+      
+      <ResponsiveContainer size="lg" class="relative z-10">
+        <div class="text-center px-4">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 text-white">
+            让我们一起创造
+          </h2>
+          <p class="text-base md:text-lg lg:text-xl mb-8 md:mb-10 opacity-95 max-w-2xl mx-auto leading-relaxed">
             有想法？有项目？或者只是想聊聊技术？
             <br class="hidden sm:block">
             随时欢迎与我联系，让我们一起把想法变成现实。
           </p>
-          <div class="flex-responsive gap-responsive justify-center">
-            <router-link to="/about" class="bg-white text-primary-600 hover:bg-gray-100 btn-responsive-lg font-semibold transition-colors duration-200">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <router-link 
+              to="/about" 
+              class="w-full sm:w-auto bg-white text-primary-600 hover:bg-gray-50 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 rounded-lg px-8 py-4 text-base md:text-lg"
+            >
               联系我
             </router-link>
             <a 
               href="mailto:hello@august.lab" 
-              class="border-2 border-white text-white hover:bg-white hover:text-primary-600 btn-responsive-lg font-semibold transition-colors duration-200"
+              class="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-primary-600 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 rounded-lg px-8 py-4 text-base md:text-lg"
             >
               发送邮件
             </a>
@@ -484,7 +560,10 @@ const goToBlogDetail = (id: number) => {
 }
 
 const launchProduct = (product: Product) => {
-  router.push(`/product/${product.id}`)
+  router.push({
+    path: `/product/${product.id}`,
+    query: { from: 'home' }
+  })
 }
 
 const getProductIcon = (type: string) => {
@@ -632,25 +711,44 @@ onUnmounted(() => {
   animation: spin 1s linear infinite;
 }
 
-/* 背景装饰动画 */
-@keyframes float {
+/* 3D Blob 动画 */
+@keyframes blob {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate(0px, 0px) scale(1);
   }
-  50% {
-    transform: translateY(-20px);
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
   }
 }
 
-.hero-responsive .absolute {
-  animation: float 6s ease-in-out infinite;
+.animate-blob {
+  animation: blob 7s infinite;
 }
 
-.hero-responsive .absolute:nth-child(2) {
-  animation-delay: -2s;
+.animation-delay-2000 {
+  animation-delay: 2s;
 }
 
-.hero-responsive .absolute:nth-child(3) {
-  animation-delay: -4s;
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* 卡片入场动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid > div {
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 </style>

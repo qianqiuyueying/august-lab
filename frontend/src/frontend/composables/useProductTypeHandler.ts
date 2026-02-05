@@ -123,8 +123,8 @@ const productTypeConfigs: Record<string, ProductTypeConfig> = {
       'allow-forms',
       'allow-popups',
       'allow-modals',
-      'allow-pointer-lock',
-      'allow-fullscreen'
+      'allow-pointer-lock'
+      // 注意：allow-fullscreen 不是有效的 sandbox 属性，应使用 allow="fullscreen" 属性
     ],
     allowedFeatures: [
       'localStorage',

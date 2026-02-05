@@ -411,8 +411,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, reactive, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useProductConfig } from '../../frontend/composables/useProductConfig'
-import type { Product } from '../../shared/types'
+import { useProductConfig } from '../../../frontend/composables/useProductConfig'
+import type { Product } from '../../../shared/types'
 
 interface Props {
   product?: Product
@@ -433,8 +433,8 @@ const {
   createDefaultConfig,
   loadConfigFromProduct,
   validateConfig,
-  exportConfig,
-  importConfig,
+  exportConfig: exportConfigCore,
+  importConfig: importConfigCore,
   resetConfig
 } = useProductConfig()
 
@@ -539,7 +539,9 @@ const sandboxPermissions = [
   { label: '允许表单', value: 'allow-forms' },
   { label: '允许弹窗', value: 'allow-popups' },
   { label: '允许指针锁定', value: 'allow-pointer-lock' },
-  { label: '允许全屏', value: 'allow-fullscreen' },
+  // 注意：allow-fullscreen 不是有效的 sandbox 属性
+  // 全屏功能应通过 iframe 的 allow="fullscreen" 属性实现
+  // { label: '允许全屏', value: 'allow-fullscreen' },
   { label: '允许下载', value: 'allow-downloads' },
   { label: '允许模态框', value: 'allow-modals' }
 ]
@@ -676,7 +678,7 @@ const resetToDefault = async () => {
 }
 
 const exportConfig = () => {
-  const configString = exportConfig(configForm as any)
+  const configString = exportConfigCore(configForm as any)
   
   // 创建下载链接
   const blob = new Blob([configString], { type: 'application/json' })
@@ -696,7 +698,7 @@ const importConfig = () => {
 }
 
 const doImportConfig = () => {
-  const result = importConfig(importJson.value)
+  const result = importConfigCore(importJson.value)
   
   if (result.success && result.config) {
     Object.assign(configForm, result.config)

@@ -37,6 +37,50 @@
         </el-col>
       </el-row>
       
+      <!-- 产品类型说明提示 -->
+      <el-form-item>
+        <el-collapse v-model="activeTypeHelp" accordion>
+          <el-collapse-item name="type-help">
+            <template #title>
+              <el-icon style="margin-right: 8px;"><InfoFilled /></el-icon>
+              <span style="font-weight: 500;">产品类型说明（点击查看区别）</span>
+            </template>
+            <div class="product-type-help">
+              <el-descriptions :column="1" border size="small">
+                <el-descriptions-item label="静态网站 (static)">
+                  <div class="type-description">
+                    <p><strong>适用场景：</strong>传统 HTML/CSS/JS 网站、展示型网站、文档站点</p>
+                    <p><strong>特点：</strong>必须包含 HTML 文件，基础权限，内存 512MB，存储 100MB</p>
+                    <p><strong>入口文件：</strong>index.html、main.html、app.html</p>
+                  </div>
+                </el-descriptions-item>
+                <el-descriptions-item label="单页应用 (spa)">
+                  <div class="type-description">
+                    <p><strong>适用场景：</strong>React、Vue、Angular 等 SPA 框架应用</p>
+                    <p><strong>特点：</strong>必须包含 index.html，支持路由模式，启用缓存优化，支持父窗口通信</p>
+                    <p><strong>资源限制：</strong>内存 512MB，存储 100MB</p>
+                  </div>
+                </el-descriptions-item>
+                <el-descriptions-item label="游戏 (game)">
+                  <div class="type-description">
+                    <p><strong>适用场景：</strong>HTML5 游戏、交互式游戏应用</p>
+                    <p><strong>特点：</strong>支持全屏、指针锁定、WebGL、Canvas、Audio、Gamepad</p>
+                    <p><strong>资源限制：</strong>内存 1GB，存储 200MB（更高限制）</p>
+                  </div>
+                </el-descriptions-item>
+                <el-descriptions-item label="工具 (tool)">
+                  <div class="type-description">
+                    <p><strong>适用场景：</strong>计算工具、转换工具、实用小程序</p>
+                    <p><strong>特点：</strong>高安全级别，支持剪贴板、通知、网络请求</p>
+                    <p><strong>资源限制：</strong>内存 256MB，存储 50MB（更严格限制）</p>
+                  </div>
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </el-form-item>
+      
       <el-form-item label="产品描述" prop="description">
         <el-input
           v-model="form.description"
@@ -198,7 +242,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, InfoFilled } from '@element-plus/icons-vue'
 import { useProductStore } from '../../../frontend/composables/useProductStore'
 import { uploadAPI } from '../../../shared/api'
 import type { Product } from '../../../shared/types'
@@ -224,15 +268,29 @@ const visible = ref(false)
 const saving = ref(false)
 const showTechInput = ref(false)
 const newTech = ref('')
+const activeTypeHelp = ref<string[]>([])
 
 // 表单数据
-const form = ref({
+const form = ref<{
+  title: string
+  description: string
+  product_type: 'static' | 'spa' | 'game' | 'tool'
+  version: string
+  entry_file: string
+  tech_stack: string[]
+  preview_image: string
+  project_url: string
+  github_url: string
+  is_published: boolean
+  is_featured: boolean
+  display_order: number
+}>({
   title: '',
   description: '',
   product_type: 'static',
   version: '1.0.0',
   entry_file: 'index.html',
-  tech_stack: [] as string[],
+  tech_stack: [],
   preview_image: '',
   project_url: '',
   github_url: '',
@@ -495,6 +553,24 @@ const handleClose = () => {
 .upload-hint {
   font-size: 12px;
   color: #a8abb2;
+}
+
+.product-type-help {
+  padding: 12px 0;
+}
+
+.type-description {
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.type-description p {
+  margin: 4px 0;
+}
+
+.type-description strong {
+  color: #409eff;
+  font-weight: 600;
 }
 
 .dialog-footer {
