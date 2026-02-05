@@ -17,5 +17,13 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           set -e
-          cd /www/wwwroot/August
+          if [ -d "/www/wwwroot/August/.git" ]; then
+            cd /www/wwwroot/August
+            git pull
+          else
+            mkdir -p /www/wwwroot
+            cd /www/wwwroot
+            git clone https://github.com/qianqiuyueying/august-lab.git August
+            cd /www/wwwroot/August
+          fi
           ./scripts/deploy.sh

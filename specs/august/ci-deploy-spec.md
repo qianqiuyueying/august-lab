@@ -18,6 +18,12 @@
  - 端口：`52631`
  - 工作目录：`/www/wwwroot/August`
  - 部署脚本：`./scripts/deploy.sh`
+
+## 代码同步
+
+- 代码来源：`https://github.com/qianqiuyueying/august-lab.git`
+- 若工作目录不存在：创建父目录并 `git clone` 到 `/www/wwwroot/August`
+- 若工作目录已存在：在该目录内执行 `git pull` 更新
  
  ## 禁用的环节
  
