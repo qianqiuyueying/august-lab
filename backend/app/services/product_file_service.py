@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Union, BinaryIO
-from datetime import datetime
+from datetime import datetime, timezone
 from dataclasses import dataclass, asdict
 from enum import Enum
 
@@ -221,20 +221,23 @@ class ProductFileService:
                 if '..' in member.filename or member.filename.startswith('/'):
                     continue
                 
-                # 创建安全的文件路径
-                safe_path = os.path.join(extract_to, member.filename)
-                safe_path = os.path.normpath(safe_path)
+                # 创建安全的文件路径（使用跨平台路径）
+                extract_to_path = Path(extract_to)
+                safe_path = extract_to_path / member.filename
+                safe_path = safe_path.resolve()
                 
                 # 确保路径在目标目录内
-                if not safe_path.startswith(os.path.normpath(extract_to)):
+                try:
+                    safe_path.relative_to(extract_to_path.resolve())
+                except ValueError:
                     continue
                 
                 # 创建目录
                 if member.is_dir():
-                    os.makedirs(safe_path, exist_ok=True)
+                    safe_path.mkdir(parents=True, exist_ok=True)
                 else:
                     # 确保父目录存在
-                    os.makedirs(os.path.dirname(safe_path), exist_ok=True)
+                    safe_path.parent.mkdir(parents=True, exist_ok=True)
                     
                     # 解压文件
                     with zip_ref.open(member) as source, open(safe_path, 'wb') as target:
@@ -244,9 +247,29 @@ class ProductFileService:
         
         return extracted_files
     
+    def get_product_directory(self, product_id: int) -> Path:
+        """
+        获取产品存储目录路径（基于ID，固定路径结构）
+        
+        Args:
+            product_id: 产品ID
+        
+        Returns:
+            产品目录路径
+        """
+        return self.base_dir / str(product_id)
+    
     def create_product_directory(self, product_id: int) -> Path:
-        """为产品创建存储目录"""
-        product_dir = self.base_dir / str(product_id)
+        """
+        为产品创建存储目录（如果已存在则先清理）
+        
+        Args:
+            product_id: 产品ID
+        
+        Returns:
+            产品目录路径
+        """
+        product_dir = self.get_product_directory(product_id)
         
         # 如果目录已存在，先清理
         if product_dir.exists():
@@ -309,7 +332,7 @@ class ProductFileService:
                 # 创建元数据文件
                 metadata = {
                     "product_id": product.id,
-                    "upload_time": datetime.utcnow().isoformat(),
+                    "upload_time": datetime.now(timezone.utc).isoformat(),
                     "file_hash": file_hash,
                     "extracted_files": extracted_files,
                     "entry_file": product.entry_file
@@ -320,11 +343,15 @@ class ProductFileService:
                 with open(metadata_path, 'w', encoding='utf-8') as f:
                     json.dump(metadata, f, indent=2, ensure_ascii=False)
                 
-                # 确保返回正确的文件路径
+                # 生成基于ID的文件路径标记（用于前端判断文件是否已上传）
+                # 实际文件路径基于ID计算，但需要设置标记值以便前端识别
+                file_path_marker = f"/products/{product.id}/"
+                
+                # 返回上传结果
                 return ProductUploadResponse(
                     message="产品文件上传成功",
                     product_id=product.id,
-                    file_path=str(product_dir.absolute()),
+                    file_path=file_path_marker,  # 设置标记值，用于前端判断文件已上传
                     extracted_files=extracted_files
                 )
                 
@@ -338,8 +365,8 @@ class ProductFileService:
             raise ValueError(f"文件上传失败: {str(e)}")
     
     def get_product_files(self, product_id: int) -> Dict:
-        """获取产品文件信息"""
-        product_dir = self.base_dir / str(product_id)
+        """获取产品文件信息（基于ID的固定路径）"""
+        product_dir = self.get_product_directory(product_id)
         
         if not product_dir.exists():
             return {"files": [], "message": "产品文件不存在"}
@@ -377,8 +404,8 @@ class ProductFileService:
         }
     
     def delete_product_files(self, product_id: int) -> bool:
-        """删除产品文件"""
-        product_dir = self.base_dir / str(product_id)
+        """删除产品文件（基于ID的固定路径）"""
+        product_dir = self.get_product_directory(product_id)
         
         if product_dir.exists():
             try:
@@ -391,8 +418,8 @@ class ProductFileService:
         return True
     
     def verify_product_integrity(self, product_id: int) -> Tuple[bool, str]:
-        """验证产品文件完整性"""
-        product_dir = self.base_dir / str(product_id)
+        """验证产品文件完整性（基于ID的固定路径）"""
+        product_dir = self.get_product_directory(product_id)
         
         if not product_dir.exists():
             return False, "产品目录不存在"
@@ -485,7 +512,7 @@ class ProductFileService:
         if file_ext not in self.safe_extensions:
             raise ValueError(f"不支持的文件类型: {file_ext}")
         
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         if not product_dir.exists():
             raise ValueError(f"产品目录不存在: {product_id}")
         
@@ -543,7 +570,7 @@ class ProductFileService:
         if not self._is_safe_path(file_path):
             raise ValueError(f"不安全的文件路径: {file_path}")
         
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         full_path = product_dir / file_path
         
         # 确保文件在产品目录内
@@ -584,7 +611,7 @@ class ProductFileService:
         if not self._is_safe_path(file_path):
             raise ValueError(f"不安全的文件路径: {file_path}")
         
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         full_path = product_dir / file_path
         
         # 确保文件在产品目录内
@@ -628,7 +655,7 @@ class ProductFileService:
         Returns:
             版本创建结果
         """
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         if not product_dir.exists():
             raise ValueError(f"产品目录不存在: {product_id}")
         
@@ -656,7 +683,7 @@ class ProductFileService:
         # 创建版本信息
         version_info = FileVersion(
             version=version,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             file_hash=self._calculate_directory_hash(product_dir),
             size=total_size,
             description=description
@@ -727,10 +754,10 @@ class ProductFileService:
         if not version_dir.exists():
             raise ValueError(f"版本不存在: {version}")
         
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         
         # 备份当前版本
-        backup_version = f"backup_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+        backup_version = f"backup_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
         self.create_version(product_id, backup_version, "自动备份（版本恢复前）")
         
         # 清空当前产品目录
@@ -840,7 +867,7 @@ class ProductFileService:
             is_safe=len(threats) == 0,
             threats=threats,
             warnings=warnings,
-            scan_time=datetime.utcnow()
+            scan_time=datetime.now(timezone.utc)
         )
     
     def scan_product_files(self, product_id: int) -> Dict:
@@ -853,7 +880,7 @@ class ProductFileService:
         Returns:
             扫描结果汇总
         """
-        product_dir = self.base_dir / str(product_id)
+        product_dir = self.get_product_directory(product_id)
         if not product_dir.exists():
             raise ValueError(f"产品目录不存在: {product_id}")
         
@@ -887,13 +914,13 @@ class ProductFileService:
                         "is_safe": False,
                         "threats": [f"扫描失败: {str(e)}"],
                         "warnings": [],
-                        "scan_time": datetime.utcnow().isoformat()
+                        "scan_time": datetime.now(timezone.utc).isoformat()
                     })
                     total_threats += 1
         
         return {
             "product_id": product_id,
-            "scan_time": datetime.utcnow().isoformat(),
+            "scan_time": datetime.now(timezone.utc).isoformat(),
             "total_files": len(scan_results),
             "safe_files": len([r for r in scan_results if r["is_safe"]]),
             "total_threats": total_threats,
@@ -940,8 +967,8 @@ class ProductFileService:
     
     def _update_file_record(self, product_id: int, filename: str, file_hash: str, 
                           size: int, description: str = None):
-        """更新文件记录"""
-        product_dir = self.base_dir / str(product_id)
+        """更新文件记录（基于ID的固定路径）"""
+        product_dir = self.get_product_directory(product_id)
         records_path = product_dir / ".file_records.json"
         
         # 读取现有记录
@@ -958,7 +985,7 @@ class ProductFileService:
             "hash": file_hash,
             "size": size,
             "type": self._get_file_type(filename).value,
-            "updated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "description": description
         }
         
@@ -967,8 +994,8 @@ class ProductFileService:
             json.dump(records, f, indent=2, ensure_ascii=False)
     
     def _remove_file_record(self, product_id: int, filename: str):
-        """移除文件记录"""
-        product_dir = self.base_dir / str(product_id)
+        """移除文件记录（基于ID的固定路径）"""
+        product_dir = self.get_product_directory(product_id)
         records_path = product_dir / ".file_records.json"
         
         if records_path.exists():
@@ -985,9 +1012,9 @@ class ProductFileService:
                 pass
     
     def _create_file_backup(self, product_id: int, file_path: str) -> Optional[Path]:
-        """创建文件备份"""
+        """创建文件备份（基于ID的固定路径）"""
         try:
-            product_dir = self.base_dir / str(product_id)
+            product_dir = self.get_product_directory(product_id)
             source_path = product_dir / file_path
             
             if not source_path.exists():
@@ -998,7 +1025,7 @@ class ProductFileService:
             backup_dir.mkdir(parents=True, exist_ok=True)
             
             # 生成备份文件名
-            timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+            timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
             backup_filename = f"{Path(file_path).stem}_{timestamp}{Path(file_path).suffix}"
             backup_path = backup_dir / backup_filename
             

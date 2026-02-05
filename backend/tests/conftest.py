@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 import tempfile
 import os
+from pathlib import Path
 
 import sys
 import os
@@ -26,10 +27,11 @@ TEST_DATABASE_URL = "sqlite:///./test_temp.db"
 @pytest.fixture(scope="function")
 def test_engine():
     """创建测试数据库引擎"""
-    # 清理可能存在的测试数据库文件
-    if os.path.exists("test_temp.db"):
+    # 清理可能存在的测试数据库文件（跨平台）
+    test_db_path = Path("test_temp.db")
+    if test_db_path.exists():
         try:
-            os.remove("test_temp.db")
+            test_db_path.unlink()
         except:
             pass
     
@@ -44,12 +46,13 @@ def test_engine():
     Base.metadata.create_all(bind=engine)
     yield engine
     
-    # 清理
+    # 清理（跨平台）
     Base.metadata.drop_all(bind=engine)
     engine.dispose()
-    if os.path.exists("test_temp.db"):
+    test_db_path = Path("test_temp.db")
+    if test_db_path.exists():
         try:
-            os.remove("test_temp.db")
+            test_db_path.unlink()
         except:
             pass
 

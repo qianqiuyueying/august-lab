@@ -39,10 +39,14 @@ sudo chmod +x /usr/local/bin/docker-compose
 ### 步骤 2：上传项目代码
 
 ```bash
-# 方式 A：使用 Git 克隆
+# 方式 A：使用 Git 克隆（推荐）
 cd /opt
-sudo git clone https://github.com/your-username/august-lab.git
+# 公开仓库：直接克隆，无需密钥
+git clone https://github.com/qianqiuyueying/august-lab.git
 cd august-lab
+
+# 如果是私有仓库，需要先配置 SSH 密钥或使用 Personal Access Token
+# 详细说明请查看：docs/SERVER_CLONE_GUIDE.md
 
 # 方式 B：使用 SCP 上传
 # 在本地执行：scp -r ./August user@server:/opt/august-lab

@@ -11,11 +11,23 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
 from fastapi import HTTPException, status
 import time
+import json
 
 # 设置日志
 logger = logging.getLogger(__name__)
 
 F = TypeVar('F', bound=Callable[..., Any])
+
+#region agent log
+def _agent_log(payload: dict) -> None:
+    """Debug-mode NDJSON logger (no secrets)."""
+    try:
+        payload.setdefault("timestamp", int(time.time() * 1000))
+        with open(r"g:\vscode\projects\August\.cursor\debug.log", "a", encoding="utf-8") as f:
+            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+#endregion
 
 class DatabaseError(Exception):
     """数据库操作异常基类"""
@@ -57,9 +69,35 @@ def transactional(rollback_on_exception: bool = True, max_retries: int = 3):
             while retry_count <= max_retries:
                 try:
                     # 开始事务
+                    #region agent log
+                    _agent_log({
+                        "sessionId": "debug-session",
+                        "runId": "pre-fix",
+                        "hypothesisId": "H1",
+                        "location": "backend/app/transaction.py:transactional.wrapper:before_func",
+                        "message": "enter transactional wrapper",
+                        "data": {
+                            "func": getattr(func, "__name__", str(func)),
+                            "retry_count": retry_count,
+                            "max_retries": max_retries,
+                            "rollback_on_exception": rollback_on_exception,
+                            "has_db_session": db_session is not None,
+                        },
+                    })
+                    #endregion
                     result = func(*args, **kwargs)
                     
                     # 提交事务
+                    #region agent log
+                    _agent_log({
+                        "sessionId": "debug-session",
+                        "runId": "pre-fix",
+                        "hypothesisId": "H1",
+                        "location": "backend/app/transaction.py:transactional.wrapper:before_commit",
+                        "message": "about to commit transactional session",
+                        "data": {"func": getattr(func, "__name__", str(func))},
+                    })
+                    #endregion
                     db_session.commit()
                     logger.info(f"事务成功提交: {func.__name__}")
                     return result
@@ -107,11 +145,33 @@ def transactional(rollback_on_exception: bool = True, max_retries: int = 3):
                     # 其他异常
                     if rollback_on_exception:
                         db_session.rollback()
-                        logger.error(f"未知错误，事务已回滚: {func.__name__}, 错误: {str(e)}")
+                    
+                    #region agent log
+                    _agent_log({
+                        "sessionId": "debug-session",
+                        "runId": "pre-fix",
+                        "hypothesisId": "H1",
+                        "location": "backend/app/transaction.py:transactional.wrapper:except_exception",
+                        "message": "caught exception in transactional wrapper",
+                        "data": {
+                            "func": getattr(func, "__name__", str(func)),
+                            "exc_type": type(e).__name__,
+                            "is_http_exception": isinstance(e, HTTPException),
+                            "http_status_code": getattr(e, "status_code", None),
+                            "http_detail_type": type(getattr(e, "detail", None)).__name__,
+                        },
+                    })
+                    #endregion
+
+                    # 记录详细的异常信息
+                    import traceback
+                    error_msg = str(e) if str(e) else repr(e)
+                    error_traceback = traceback.format_exc()
+                    logger.error(f"未知错误，事务已回滚: {func.__name__}, 错误: {error_msg}\n{error_traceback}")
                     
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="服务器内部错误"
+                        detail=f"服务器内部错误: {error_msg}"
                     )
         
         return wrapper

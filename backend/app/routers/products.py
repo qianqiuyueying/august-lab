@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Request
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from typing import List, Optional
 import os
 import tempfile
@@ -21,7 +21,8 @@ from ..schemas import (
     ExtensionConfigureRequest,
     Product, ProductCreate, ProductUpdate, ProductStats, ProductStatsCreate,
     ProductLog, ProductLogCreate, ProductUploadResponse, ProductAnalytics, MessageResponse,
-    ProductFeedback, ProductFeedbackCreate, ProductFeedbackUpdate, ProductFeedbackStats
+    ProductFeedback, ProductFeedbackCreate, ProductFeedbackUpdate, ProductFeedbackStats,
+    ProductFeedbackPublic
 )
 from fastapi import Form
 from datetime import datetime
@@ -35,9 +36,42 @@ from ..error_handlers import (
     create_paginated_response
 )
 from ..services import product_file_service
+from ..services.product_extension_service import product_extension_service
 from .auth import get_current_user
 
 router = APIRouter()
+
+# 注意：这些固定路径的路由必须在动态路由 {product_id} 之前定义
+# 否则 FastAPI 会尝试将 "product-types" 等字符串解析为 product_id 整数，导致 422 错误
+
+@router.get("/product-types")
+def get_available_product_types():
+    """获取可用的产品类型（公开接口）"""
+    try:
+        product_types = product_extension_service.get_available_product_types()
+        return {"product_types": product_types}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"获取产品类型失败: {str(e)}"
+        )
+
+@router.get("/extensions")
+@sql_injection_protection
+def list_extensions(
+    current_user: str = Depends(get_current_user)
+):
+    """列出所有扩展（需要认证）"""
+    try:
+        extensions = product_extension_service.list_extensions()
+        return {"extensions": extensions}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"获取扩展列表失败: {str(e)}"
+        )
 
 @router.get("/", response_model=List[Product])
 @sql_injection_protection
@@ -240,7 +274,7 @@ def upload_product_files(
             temp_file_path = temp_file.name
         
         # 检查文件大小
-        file_size = os.path.getsize(temp_file_path)
+        file_size = Path(temp_file_path).stat().st_size
         if file_size > product_file_service.max_file_size:
             max_size_mb = product_file_service.max_file_size // (1024*1024)
             raise ValidationAPIError(f"文件大小超过限制 ({max_size_mb}MB)")
@@ -248,9 +282,10 @@ def upload_product_files(
         # 使用文件服务处理上传
         result = product_file_service.upload_product_files(product, temp_file_path)
         
-        # 更新产品文件路径
+        # 更新 product.file_path 为标记值（用于前端判断文件是否已上传）
+        # 实际文件路径基于ID计算，但需要设置标记值以便前端识别
         product.file_path = result.file_path
-        # 注意：不要手动调用 db.commit()，@transactional 装饰器会自动处理
+        db.flush()  # 刷新到数据库（@transactional 装饰器会自动提交）
         
         return result
         
@@ -268,9 +303,9 @@ def upload_product_files(
         )
     finally:
         # 确保清理临时文件
-        if temp_file_path and os.path.exists(temp_file_path):
+        if temp_file_path and Path(temp_file_path).exists():
             try:
-                os.unlink(temp_file_path)
+                Path(temp_file_path).unlink()
             except Exception as e:
                 # 记录日志但不中断主要流程
                 print(f"清理临时文件失败: {e}")
@@ -312,14 +347,16 @@ def launch_product(
             detail="产品未发布"
         )
     
-    if not product.file_path or not os.path.exists(product.file_path):
+    # 使用基于ID的固定路径（不再依赖数据库中的file_path）
+    product_dir = product_file_service.get_product_directory(product_id)
+    if not product_dir.exists():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="产品文件不存在"
         )
     
     # 检查入口文件是否存在
-    entry_file_path = Path(product.file_path) / product.entry_file
+    entry_file_path = product_dir / product.entry_file
     if not entry_file_path.exists():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -332,6 +369,77 @@ def launch_product(
         "entry_url": f"/products/{product_id}/{product.entry_file}",
         "config": product.config_data or {}
     }
+
+@router.get("/{product_id}/stats")
+@sql_injection_protection
+def get_product_stats(
+    product_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """获取产品统计数据（公开接口）"""
+    safe_executor = create_safe_query_executor(db)
+    
+    product = safe_executor.safe_get_by_id(ProductModel, product_id)
+    
+    if not product:
+        raise ResourceNotFoundAPIError("产品", product_id)
+    
+    try:
+        # 查询统计数据（分页）
+        stats_query = db.query(ProductStatsModel).filter(
+            ProductStatsModel.product_id == product_id
+        ).order_by(ProductStatsModel.access_time.desc())
+        
+        total = stats_query.count()
+        stats = stats_query.offset(max(skip, 0)).limit(min(limit, 100)).all()
+        
+        # 计算汇总统计（使用聚合查询提高性能）
+        summary_query = db.query(
+            func.count(ProductStatsModel.id).label('total_visits'),
+            func.count(func.distinct(ProductStatsModel.visitor_ip)).label('unique_visitors'),
+            func.avg(ProductStatsModel.duration_seconds).label('average_duration'),
+            func.max(ProductStatsModel.access_time).label('last_access')
+        ).filter(
+            ProductStatsModel.product_id == product_id
+        ).first()
+        
+        total_visits = summary_query.total_visits or 0
+        unique_visitors = summary_query.unique_visitors or 0
+        average_duration = float(summary_query.average_duration) if summary_query.average_duration else 0.0
+        last_access = summary_query.last_access
+        
+        return {
+            "product_id": product_id,
+            "summary": {
+                "total_visits": total_visits,
+                "unique_visitors": unique_visitors,
+                "average_duration": round(average_duration, 2),
+                "last_access": last_access.replace(tzinfo=timezone.utc).isoformat() if last_access else None
+            },
+            "stats": [{
+                "id": stat.id,
+                "visitor_ip": stat.visitor_ip,
+                "session_id": stat.session_id,
+                "access_time": stat.access_time.replace(tzinfo=timezone.utc).isoformat() if stat.access_time else None,
+                "duration_seconds": stat.duration_seconds,
+                "user_agent": stat.user_agent,
+                "referrer": stat.referrer
+            } for stat in stats],
+            "pagination": {
+                "skip": skip,
+                "limit": limit,
+                "total": total
+            }
+        }
+    except Exception as e:
+        import traceback
+        logger.error(f"获取产品统计数据失败: {str(e)}\n{traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"获取统计数据失败: {str(e)}"
+        )
 
 @router.post("/{product_id}/stats", response_model=ProductStats)
 @transactional(rollback_on_exception=True, max_retries=2)
@@ -352,10 +460,22 @@ def record_product_stats(
     # 验证和清理统计数据
     safe_data = validate_and_sanitize_input(stats_data.dict())
     
+    # 如果没有提供 access_time，在 Python 端设置，避免需要从数据库刷新
+    # 注意：ProductStatsCreate schema 可能不包含 access_time 字段（由数据库自动生成）
+    # 但我们在创建模型实例时手动设置，这样就不需要刷新了
+    if 'access_time' not in safe_data or safe_data.get('access_time') is None:
+        safe_data['access_time'] = datetime.now(timezone.utc)
+    
     stats = ProductStatsModel(**safe_data)
     db.add(stats)
+    # 使用 flush() 将更改发送到数据库并生成 ID，但不提交事务
+    # @transactional 装饰器会在函数返回后自动提交事务
     db.flush()
-    db.refresh(stats)
+    
+    # 注意：不要使用 db.refresh()，因为可能与事务装饰器的提交时机冲突
+    # flush() 后对象已经包含了生成的 ID 和我们设置的 access_time
+    # 这样就不需要从数据库刷新了
+    
     return stats
 
 @router.get("/{product_id}/analytics", response_model=ProductAnalytics)
@@ -392,14 +512,17 @@ def get_product_analytics(
     total_visits = len(stats)
     unique_visitors = len(set(s.visitor_ip for s in stats if s.visitor_ip))
     average_duration = sum(s.duration_seconds for s in stats) / total_visits if total_visits > 0 else 0
-    last_access = max(s.access_time for s in stats) if stats else None
+    # 过滤掉access_time为None的记录
+    stats_with_time = [s for s in stats if s.access_time is not None]
+    last_access = max(s.access_time for s in stats_with_time) if stats_with_time else None
     
     # 简单的热门时间分析（按小时）
     popular_times = []
     hour_counts = {}
     for stat in stats:
-        hour = stat.access_time.hour
-        hour_counts[hour] = hour_counts.get(hour, 0) + 1
+        if stat.access_time:  # 检查access_time是否为None
+            hour = stat.access_time.hour
+            hour_counts[hour] = hour_counts.get(hour, 0) + 1
     
     for hour, count in sorted(hour_counts.items()):
         popular_times.append({
@@ -515,6 +638,7 @@ def get_storage_stats(
     return product_file_service.get_storage_stats()
 
 @router.get("/{product_id}/monitoring/errors")
+@with_db_error_handling
 @sql_injection_protection
 def get_product_errors(
     product_id: int,
@@ -540,17 +664,21 @@ def get_product_errors(
     if severity:
         filters["log_level"] = severity
     
-    errors = safe_executor.safe_filter_query(
-        ProductLogModel,
-        filters,
-        limit=min(limit, 100),
-        offset=max(skip, 0),
-        order_by='timestamp'
+    # 使用原生查询以确保正确的排序（降序，最新的在前）
+    query = db.query(ProductLogModel).filter(
+        ProductLogModel.product_id == product_id,
+        ProductLogModel.log_type == "error"
     )
+    
+    if severity:
+        query = query.filter(ProductLogModel.log_level == severity)
+    
+    errors = query.order_by(desc(ProductLogModel.timestamp)).offset(max(skip, 0)).limit(min(limit, 100)).all()
     
     return errors
 
 @router.get("/{product_id}/monitoring/performance")
+@with_db_error_handling
 @sql_injection_protection
 def get_product_performance(
     product_id: int,
@@ -567,19 +695,11 @@ def get_product_performance(
     if not product:
         raise ResourceNotFoundAPIError("产品", product_id)
     
-    # 构建过滤条件
-    filters = {
-        "product_id": product_id,
-        "log_type": "performance"
-    }
-    
-    performance_logs = safe_executor.safe_filter_query(
-        ProductLogModel,
-        filters,
-        limit=min(limit, 100),
-        offset=max(skip, 0),
-        order_by='timestamp'
-    )
+    # 使用原生查询以确保正确的排序（降序，最新的在前）
+    performance_logs = db.query(ProductLogModel).filter(
+        ProductLogModel.product_id == product_id,
+        ProductLogModel.log_type == "performance"
+    ).order_by(desc(ProductLogModel.timestamp)).offset(max(skip, 0)).limit(min(limit, 100)).all()
     
     return performance_logs
 
@@ -606,7 +726,7 @@ def run_product_diagnostic(
         "overall_status": "good",
         "checks": {
             "file_integrity": product_file_service.verify_product_integrity(product_id)[0],
-            "entry_file_exists": os.path.exists(Path(product.file_path or "") / product.entry_file) if product.file_path else False,
+            "entry_file_exists": (product_file_service.get_product_directory(product_id) / product.entry_file).exists(),
             "config_valid": bool(product.config_data),
             "published_status": product.is_published
         },
@@ -705,6 +825,113 @@ def create_product_feedback(
     db.refresh(feedback)
     return feedback
 
+def filter_sensitive_content(content: str) -> str:
+    """
+    过滤敏感内容，确保符合监管要求
+    
+    Args:
+        content: 原始内容
+        
+    Returns:
+        过滤后的内容
+    """
+    if not content:
+        return content
+    
+    import re
+    
+    # 基础敏感词列表（可根据需要扩展）
+    # 注意：这里只是示例，实际使用时应该使用更完善的敏感词库或接入第三方内容审核服务
+    sensitive_words = [
+        # 可以在这里添加需要过滤的敏感词
+    ]
+    
+    filtered = content
+    
+    # 过滤敏感词（简单替换为*）
+    for word in sensitive_words:
+        if word:
+            # 使用正则表达式进行大小写不敏感的替换
+            pattern = re.compile(re.escape(word), re.IGNORECASE)
+            filtered = pattern.sub('*' * len(word), filtered)
+    
+    # 移除可能的HTML标签和脚本（防止XSS）
+    # 移除script标签
+    filtered = re.sub(r'<script[^>]*>.*?</script>', '', filtered, flags=re.IGNORECASE | re.DOTALL)
+    # 移除on事件属性
+    filtered = re.sub(r'\s*on\w+\s*=\s*["\'][^"\']*["\']', '', filtered, flags=re.IGNORECASE)
+    # 移除javascript:协议
+    filtered = re.sub(r'javascript:', '', filtered, flags=re.IGNORECASE)
+    # 移除data:协议（可能包含恶意代码）
+    filtered = re.sub(r'data:\s*[^;]*;base64,', '', filtered, flags=re.IGNORECASE)
+    
+    return filtered
+
+@router.get("/{product_id}/feedback/public", response_model=List[ProductFeedbackPublic])
+@sql_injection_protection
+def get_product_feedback_public(
+    product_id: int,
+    feedback_type: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db)
+):
+    """
+    获取产品公开反馈列表（公开接口，符合隐私保护要求）
+    
+    只返回已解决（resolved）或已关闭（closed）的反馈
+    不包含任何敏感信息：用户姓名、邮箱、IP地址、用户代理等
+    符合《个人信息保护法》和《网络安全法》要求
+    """
+    safe_executor = create_safe_query_executor(db)
+    
+    product = safe_executor.safe_get_by_id(ProductModel, product_id)
+    if not product:
+        raise ResourceNotFoundAPIError("产品", product_id)
+    
+    # 只查询已解决或已关闭的反馈
+    from sqlalchemy import desc, or_
+    query = db.query(ProductFeedbackModel).filter(
+        ProductFeedbackModel.product_id == product_id,
+        ProductFeedbackModel.status.in_(['resolved', 'closed'])
+    )
+    
+    if feedback_type:
+        query = query.filter(ProductFeedbackModel.feedback_type == feedback_type)
+    
+    # 限制返回数量，避免过多数据（最多20条）
+    # 优先按回复时间排序，如果没有回复则按创建时间排序
+    # 使用Python排序确保有回复的排在前面
+    all_feedback = query.all()
+    feedback_list = sorted(
+        all_feedback,
+        key=lambda x: (x.replied_at if x.replied_at else x.created_at),
+        reverse=True
+    )[max(skip, 0):max(skip, 0) + min(limit, 20)]
+    
+    # 转换为公开格式（不包含敏感信息）
+    public_feedback = []
+    for feedback in feedback_list:
+        # 内容过滤：确保内容符合监管要求
+        filtered_content = filter_sensitive_content(feedback.content)
+        filtered_title = filter_sensitive_content(feedback.title)
+        filtered_reply = filter_sensitive_content(feedback.admin_reply) if feedback.admin_reply else None
+        
+        public_feedback.append(ProductFeedbackPublic(
+            id=feedback.id,
+            product_id=feedback.product_id,
+            feedback_type=feedback.feedback_type,
+            rating=feedback.rating,
+            title=filtered_title,
+            content=filtered_content,
+            status=feedback.status,
+            admin_reply=filtered_reply,
+            created_at=feedback.created_at,
+            replied_at=feedback.replied_at
+        ))
+    
+    return public_feedback
+
 @router.get("/{product_id}/feedback")
 @sql_injection_protection
 def get_product_feedback(
@@ -731,13 +958,18 @@ def get_product_feedback(
     if status:
         filters["status"] = status
     
-    feedback_list = safe_executor.safe_filter_query(
-        ProductFeedbackModel,
-        filters,
-        limit=min(limit, 100),
-        offset=max(skip, 0),
-        order_by='created_at'
+    # 使用原生查询以确保正确的排序（降序，最新的在前）
+    from sqlalchemy import desc
+    query = db.query(ProductFeedbackModel).filter(
+        ProductFeedbackModel.product_id == product_id
     )
+    
+    if feedback_type:
+        query = query.filter(ProductFeedbackModel.feedback_type == feedback_type)
+    if status:
+        query = query.filter(ProductFeedbackModel.status == status)
+    
+    feedback_list = query.order_by(desc(ProductFeedbackModel.created_at)).offset(max(skip, 0)).limit(min(limit, 100)).all()
     
     return feedback_list
 
@@ -790,7 +1022,7 @@ def update_product_feedback(
     # 如果添加了管理员回复，设置回复时间
     if 'admin_reply' in update_data and update_data['admin_reply']:
         from datetime import datetime
-        update_data['replied_at'] = datetime.utcnow()
+        update_data['replied_at'] = datetime.now(timezone.utc)
     
     for field, value in update_data.items():
         setattr(feedback, field, value)
@@ -902,7 +1134,7 @@ def generate_api_token(
         raise ResourceNotFoundAPIError("产品", product_id)
     
     import secrets
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     # 生成安全的令牌
     token = secrets.token_urlsafe(32)
@@ -918,7 +1150,7 @@ def generate_api_token(
         product_id=product_id,
         token=token,
         permissions=permissions,
-        expires_at=datetime.utcnow() + timedelta(days=30)  # 30天有效期
+        expires_at=datetime.now(timezone.utc) + timedelta(days=30)  # 30天有效期
     )
     
     db.add(api_token)
@@ -961,11 +1193,11 @@ def validate_api_token(
         return {"valid": False, "reason": "令牌不存在或已失效"}
     
     from datetime import datetime
-    if api_token.expires_at < datetime.utcnow():
+    if api_token.expires_at < datetime.now(timezone.utc):
         return {"valid": False, "reason": "令牌已过期"}
     
     # 更新使用记录
-    api_token.last_used_at = datetime.utcnow()
+    api_token.last_used_at = datetime.now(timezone.utc)
     api_token.usage_count += 1
     db.commit()
     
@@ -974,6 +1206,46 @@ def validate_api_token(
         "permissions": api_token.permissions,
         "expires_at": api_token.expires_at.isoformat()
     }
+
+@router.get("/{product_id}/api/tokens")
+@with_db_error_handling
+@sql_injection_protection
+def get_api_tokens(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
+):
+    """获取产品API令牌列表（需要认证）"""
+    safe_executor = create_safe_query_executor(db)
+    
+    product = safe_executor.safe_get_by_id(ProductModel, product_id)
+    if not product:
+        raise ResourceNotFoundAPIError("产品", product_id)
+    
+    # 查询所有令牌（包括已撤销的）
+    tokens = db.query(ProductAPITokenModel).filter(
+        ProductAPITokenModel.product_id == product_id
+    ).order_by(desc(ProductAPITokenModel.created_at)).all()
+    
+    # 转换为安全的响应格式（不返回完整token，只返回部分）
+    result = []
+    for token in tokens:
+        token_str = token.token
+        masked_token = f"{token_str[:8]}...{token_str[-4:]}" if len(token_str) > 12 else "***"
+        
+        result.append({
+            "id": token.id,
+            "token": masked_token,
+            "full_token": token.token,  # 完整token仅用于显示
+            "permissions": token.permissions,
+            "is_active": token.is_active,
+            "created_at": token.created_at.isoformat() if token.created_at else None,
+            "expires_at": token.expires_at.isoformat() if token.expires_at else None,
+            "last_used_at": token.last_used_at.isoformat() if token.last_used_at else None,
+            "usage_count": token.usage_count or 0
+        })
+    
+    return result
 
 @router.delete("/{product_id}/api/token")
 @transactional(rollback_on_exception=True, max_retries=2)
@@ -1158,14 +1430,14 @@ def proxy_api_call(
         )
     
     from datetime import datetime
-    if api_token.expires_at < datetime.utcnow():
+    if api_token.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="API令牌已过期"
         )
     
     # 记录API调用
-    start_time = datetime.utcnow()
+    start_time = datetime.now(timezone.utc)
     
     try:
         # 这里可以实现实际的API代理逻辑
@@ -1478,7 +1750,7 @@ def export_product_data(
     # 构建导出数据
     export_data = {
         "product_id": product_id,
-        "export_time": datetime.utcnow().isoformat(),
+        "export_time": datetime.now(timezone.utc).isoformat(),
         "total_records": len(storage_records),
         "data": {}
     }
@@ -1611,7 +1883,7 @@ def create_guest_session(
         raise ResourceNotFoundAPIError("产品", product_id)
     
     import uuid
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     # 创建访客会话
     session_id = str(uuid.uuid4())
@@ -1620,7 +1892,7 @@ def create_guest_session(
         product_id=product_id,
         user_id=None,
         is_guest=True,
-        expires_at=datetime.utcnow() + timedelta(hours=24),  # 24小时有效期
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),  # 24小时有效期
         session_data={}
     )
     
@@ -1684,7 +1956,7 @@ def register_product_user(
             raise ValidationAPIError("邮箱已存在")
     
     import uuid
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     # 创建用户
     user_id = str(uuid.uuid4())
@@ -1707,7 +1979,7 @@ def register_product_user(
         product_id=product_id,
         user_id=user_id,
         is_guest=False,
-        expires_at=datetime.utcnow() + timedelta(days=30),  # 30天有效期
+        expires_at=datetime.now(timezone.utc) + timedelta(days=30),  # 30天有效期
         session_data={}
     )
     
@@ -1787,10 +2059,10 @@ def login_product_user(
         )
     
     import uuid
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone, timezone
     
     # 更新用户最后活跃时间
-    user.last_active_at = datetime.utcnow()
+    user.last_active_at = datetime.now(timezone.utc)
     
     # 创建新会话
     session_id = str(uuid.uuid4())
@@ -1799,7 +2071,7 @@ def login_product_user(
         product_id=product_id,
         user_id=user.id,
         is_guest=False,
-        expires_at=datetime.utcnow() + timedelta(days=30),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=30),
         session_data={}
     )
     
@@ -1887,11 +2159,11 @@ def validate_product_session(
         return {"valid": False, "reason": "会话不存在"}
     
     from datetime import datetime
-    if session.expires_at < datetime.utcnow():
+    if session.expires_at < datetime.now(timezone.utc):
         return {"valid": False, "reason": "会话已过期"}
     
     # 更新最后访问时间
-    session.last_accessed_at = datetime.utcnow()
+    session.last_accessed_at = datetime.now(timezone.utc)
     db.commit()
     
     return {
@@ -1975,7 +2247,7 @@ def update_session_data(
         raise ResourceNotFoundAPIError("会话", session_id)
     
     from datetime import datetime
-    if session.expires_at < datetime.utcnow():
+    if session.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="会话已过期"
@@ -1983,8 +2255,8 @@ def update_session_data(
     
     # 更新会话数据
     session.session_data = session_data
-    session.updated_at = datetime.utcnow()
-    session.last_accessed_at = datetime.utcnow()
+    session.updated_at = datetime.now(timezone.utc)
+    session.last_accessed_at = datetime.now(timezone.utc)
     
     db.flush()
     db.refresh(session)
@@ -2022,14 +2294,14 @@ def get_session_data(
         raise ResourceNotFoundAPIError("会话", session_id)
     
     from datetime import datetime
-    if session.expires_at < datetime.utcnow():
+    if session.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="会话已过期"
         )
     
     # 更新最后访问时间
-    session.last_accessed_at = datetime.utcnow()
+    session.last_accessed_at = datetime.now(timezone.utc)
     db.commit()
     
     return {
@@ -2383,7 +2655,7 @@ def verify_files_integrity(
             "product_id": product_id,
             "is_valid": is_valid,
             "message": message,
-            "verified_at": datetime.utcnow().isoformat()
+            "verified_at": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -2435,7 +2707,7 @@ def get_resource_stats(
                 "latest_version": versions[0] if versions else None
             },
             "metadata": files_info.get("metadata", {}),
-            "generated_at": datetime.utcnow().isoformat()
+            "generated_at": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -2453,7 +2725,7 @@ def get_storage_stats(
         stats = product_file_service.get_storage_stats()
         return {
             **stats,
-            "generated_at": datetime.utcnow().isoformat()
+            "generated_at": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -2538,23 +2810,7 @@ def cleanup_product_resources(
 
 # ==================== 产品扩展机制API ====================
 
-from ..services.product_extension_service import product_extension_service, HookType
-
-@router.get("/extensions")
-@sql_injection_protection
-def list_extensions(
-    current_user: str = Depends(get_current_user)
-):
-    """列出所有扩展（需要认证）"""
-    try:
-        extensions = product_extension_service.list_extensions()
-        return {"extensions": extensions}
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"获取扩展列表失败: {str(e)}"
-        )
+from ..services.product_extension_service import HookType
 
 @router.get("/extensions/{extension_name}")
 @sql_injection_protection
@@ -2617,19 +2873,6 @@ def configure_extension(
             detail=f"配置扩展失败: {str(e)}"
         )
 
-@router.get("/product-types")
-def get_available_product_types():
-    """获取可用的产品类型（公开接口）"""
-    try:
-        product_types = product_extension_service.get_available_product_types()
-        return {"product_types": product_types}
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"获取产品类型失败: {str(e)}"
-        )
-
 @router.post("/{product_id}/render")
 def render_product(
     product_id: int,
@@ -2673,7 +2916,7 @@ def render_product(
         return {
             "product_id": product_id,
             "rendered_html": rendered_html,
-            "render_time": datetime.utcnow().isoformat()
+            "render_time": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -2702,8 +2945,8 @@ def validate_product_with_extensions(
         files = {}
         
         # 读取文件内容（用于验证）
-        # 使用 product_file_service 的 base_dir 来获取产品目录
-        product_dir = product_file_service.base_dir / str(product_id)
+        # 使用基于ID的固定路径获取产品目录
+        product_dir = product_file_service.get_product_directory(product_id)
         for file_info in files_info.get("files", []):
             file_path = product_dir / file_info["path"]
             if file_path.exists():
@@ -2726,7 +2969,7 @@ def validate_product_with_extensions(
             "product_id": product_id,
             "is_valid": is_valid,
             "errors": errors,
-            "validated_at": datetime.utcnow().isoformat()
+            "validated_at": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:

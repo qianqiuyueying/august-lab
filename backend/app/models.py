@@ -82,7 +82,7 @@ class Product(Base):
     tech_stack = Column(JSON, default=list)  # 存储技术栈数组
     product_type = Column(String(50), nullable=False, index=True)  # 'static', 'spa', 'game', 'tool'
     entry_file = Column(String(200), default='index.html')
-    file_path = Column(String(500))  # 产品文件存储路径
+    file_path = Column(String(500))  # 已废弃：产品文件路径现在完全基于ID计算，不再存储。保留字段以兼容旧数据。
     config_data = Column(JSON, default=dict)  # 存储产品配置
     is_published = Column(Boolean, default=False, index=True)
     is_featured = Column(Boolean, default=False, index=True)

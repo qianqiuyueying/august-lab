@@ -22,7 +22,9 @@ def list_products():
     
     for product in products:
         status = "✓" if product.is_published else "○"
-        file_status = "有文件" if product.file_path else "无文件"
+        # 检查文件是否存在（基于ID的固定路径）
+        product_dir = product_file_service.get_product_directory(product.id)
+        file_status = "有文件" if product_dir.exists() else "无文件"
         
         print(f"{status} ID: {product.id:3d} | {product.title:30s} | {product.product_type:8s} | {file_status}")
     
@@ -32,7 +34,9 @@ def list_products():
 def verify_all_products():
     """验证所有产品的文件完整性"""
     db = next(get_db())
-    products = db.query(ProductModel).filter(ProductModel.file_path.isnot(None)).all()
+    # 获取所有产品，检查文件是否存在（基于ID）
+    all_products = db.query(ProductModel).all()
+    products = [p for p in all_products if product_file_service.get_product_directory(p.id).exists()]
     
     print(f"验证 {len(products)} 个有文件的产品:")
     print("-" * 80)
@@ -85,9 +89,11 @@ def show_product_details(product_id: int):
     print(f"入口文件: {product.entry_file}")
     print(f"发布状态: {'已发布' if product.is_published else '未发布'}")
     print(f"推荐状态: {'推荐' if product.is_featured else '普通'}")
-    print(f"文件路径: {product.file_path or '无'}")
+    # 使用基于ID的固定路径
+    product_dir = product_file_service.get_product_directory(product_id)
+    print(f"文件路径: {str(product_dir) if product_dir.exists() else '无'}")
     
-    if product.file_path:
+    if product_dir.exists():
         # 显示文件信息
         file_info = product_file_service.get_product_files(product_id)
         files = file_info.get('files', [])
