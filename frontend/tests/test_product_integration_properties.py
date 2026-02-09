@@ -5131,6 +5131,11 @@ class TestProductIntegrationProperties:
         5. 并发访问处理正确
         6. 统计数据聚合准确
         """
+        def _progress(message: str) -> None:
+            if os.environ.get("AUGUST_TEST_PROGRESS") == "1":
+                print(f"[progress] {message}")
+
+        _progress("start")
         # 1. 模拟统计数据收集系统
         class AccessStatisticsCollector:
             def __init__(self):
@@ -5250,6 +5255,7 @@ class TestProductIntegrationProperties:
         
         # 2. 初始化统计收集器
         stats_collector = AccessStatisticsCollector()
+        _progress("collector_initialized")
         
         # 3. 测试访问事件记录和统计
         for i, product_data in enumerate(products):
@@ -5289,6 +5295,7 @@ class TestProductIntegrationProperties:
             expected_users = len(set(event["user_id"] for event in product_events if event["user_id"]))
             assert stats["unique_users"] == expected_users, \
                 f"产品 {product_id} 唯一用户数统计不准确: 期望 {expected_users}, 实际 {stats['unique_users']}"
+        _progress("basic_stats_checked")
         
         # 4. 验证时间范围查询的准确性
         for i, product_data in enumerate(products):
@@ -5314,6 +5321,7 @@ class TestProductIntegrationProperties:
                 
                 assert range_stats["total_duration"] == expected_duration, \
                     f"产品 {product_id} 时间范围查询总时长不准确: 期望 {expected_duration}, 实际 {range_stats['total_duration']}"
+        _progress("range_stats_checked")
         
         # 5. 验证并发访问处理的正确性
         def simulate_concurrent_access(product_id: int, concurrent_events: list):
@@ -5371,6 +5379,7 @@ class TestProductIntegrationProperties:
                 
                 assert concurrent_stats["peak_concurrent_users"] <= len(product_events), \
                     f"产品 {product_id} 峰值并发用户数不应该超过总访问数"
+        _progress("concurrency_checked")
         
         # 6. 验证统计数据的一致性和完整性
         def validate_statistics_consistency(collector: AccessStatisticsCollector):
@@ -5412,6 +5421,7 @@ class TestProductIntegrationProperties:
         
         # 执行一致性验证
         validate_statistics_consistency(stats_collector)
+        _progress("consistency_checked")
         
         # 7. 验证趋势数据的准确性
         for i, product_data in enumerate(products):
@@ -5434,6 +5444,7 @@ class TestProductIntegrationProperties:
                 
                 assert isinstance(hour_stats["unique_users"], int) and hour_stats["unique_users"] >= 0, \
                     f"产品 {product_id} 第{hour}小时唯一用户数数据类型错误"
+        _progress("trending_checked")
         
         # 8. 验证实时统计更新的准确性
         def test_real_time_updates(collector: AccessStatisticsCollector, new_events: list):
@@ -5534,6 +5545,7 @@ class TestProductIntegrationProperties:
         
         # 执行持久性测试
         test_statistics_persistence(stats_collector)
+        _progress("persistence_checked")
         
         # 10. 验证统计数据的性能和扩展性
         def validate_statistics_performance(event_count: int):
@@ -5566,6 +5578,7 @@ class TestProductIntegrationProperties:
         total_events = len(access_events)
         performance_valid = validate_statistics_performance(total_events)
         assert performance_valid, "统计系统性能验证失败"
+        _progress("performance_checked")
     
     @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
     @given(
