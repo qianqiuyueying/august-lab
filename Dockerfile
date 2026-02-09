@@ -10,13 +10,14 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件
 COPY backend/requirements.txt .
 
 # 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --retries 5 --timeout 120 -r requirements.txt
 
 # ==================== 前端构建阶段 ====================
 FROM node:18-alpine as frontend-builder
