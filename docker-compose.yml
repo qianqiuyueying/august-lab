@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 初始化挂载目录权限（确保容器内用户可写）
   init-permissions:
