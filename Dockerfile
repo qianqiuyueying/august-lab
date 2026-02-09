@@ -2,7 +2,7 @@
 # 多阶段构建，优化镜像大小
 
 # ==================== 后端构建阶段 ====================
-FROM python:3.11-slim as backend-builder
+FROM python:3.11-slim AS backend-builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir --retries 5 --timeout 120 -r requirements.txt
 
 # ==================== 前端构建阶段 ====================
-FROM node:18-alpine as frontend-builder
+FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app
 

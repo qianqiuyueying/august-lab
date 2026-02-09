@@ -445,6 +445,38 @@ docker-compose config
 docker-compose restart
 ```
 
+### 6. Docker 构建时拉取镜像超时（国内服务器）
+
+若出现 `dial tcp ... registry-1.docker.io:443: i/o timeout`，说明服务器访问 Docker Hub 超时。**在服务器上配置国内镜像加速**后重试。
+
+**步骤（以 root 或 sudo 执行）：**
+
+1. 创建或编辑 Docker  daemon 配置：
+   ```bash
+   sudo mkdir -p /etc/docker
+   sudo nano /etc/docker/daemon.json
+   ```
+2. 写入以下内容（任选一个镜像源，或保留多个）：
+   ```json
+   {
+     "registry-mirrors": [
+       "https://docker.1ms.run",
+       "https://docker.xuanyuan.me"
+     ],
+     "insecure-registries": []
+   }
+   ```
+   其他可选镜像（需自行申请或确认可用）：
+   - 阿里云：需在 [容器镜像服务](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) 获取专属加速地址
+   - 腾讯云：`https://mirror.ccs.tencentyun.com`
+3. 重启 Docker 并重新构建：
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart docker
+   cd /www/wwwroot/August   # 或你的项目路径
+   ./scripts/deploy.sh
+   ```
+
 ---
 
 ## 更新部署
