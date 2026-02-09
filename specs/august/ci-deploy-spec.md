@@ -18,6 +18,7 @@
  - 端口：`52631`
  - 工作目录：`/www/wwwroot/August`
  - 部署脚本：`./scripts/deploy.sh`
+- 部署脚本需在仓库中标记为可执行（git mode `+x`），避免执行时报 `Permission denied`
 
 ## 代码同步
 
