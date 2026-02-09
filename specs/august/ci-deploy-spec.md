@@ -23,6 +23,7 @@
 - 前端构建依赖需锁定已验证兼容版本（例如 `typescript@5.3.3`），避免构建期版本漂移导致失败
 - 若前端包含非 TypeScript 的 `.vue` 组件脚本，需在 `tsconfig.json` 启用 `allowJs`，避免 `vue-tsc` 构建失败
 - Python 依赖安装需增加重试与超时（`pip install --retries 5 --timeout 120`），避免网络波动导致 “No matching distribution”
+- 若服务器已占用 80/443（如宝塔面板），Nginx 容器需改用 8080/8443 端口映射
 
 ## 代码同步
 
