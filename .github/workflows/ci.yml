@@ -17,6 +17,9 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           set -e
+          if [ -d "/www/wwwroot/August" ]; then
+            chown -R root:root /www/wwwroot/August
+          fi
           if [ -d "/www/wwwroot/August/.git" ]; then
             cd /www/wwwroot/August
             git pull
