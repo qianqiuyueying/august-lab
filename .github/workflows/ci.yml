@@ -8,13 +8,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    # 需确保 GitHub 所在网络能访问服务器 192.144.154.17:52631（SSH），否则会 dial timeout
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: 192.144.154.17
         username: root
-        port: 52631
+        port: 22
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        command_timeout: 5m
         script: |
           set -e
           if [ -d "/www/wwwroot/August" ]; then

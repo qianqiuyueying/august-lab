@@ -15,7 +15,7 @@
  - 通过 SSH 连接服务器并执行部署脚本
  - 服务器地址：`192.144.154.17`
  - 用户名：`root`
- - 端口：`52631`
+ - 端口：`22`（若 SSH 改过端口，需在 `.github/workflows/ci.yml` 中同步修改）
  - 工作目录：`/www/wwwroot/August`
  - 部署脚本：`./scripts/deploy.sh`
 - 部署脚本需在仓库中标记为可执行（git mode `+x`），避免执行时报 `Permission denied`
@@ -43,11 +43,24 @@
  - 不执行任何代码检查或格式化（`lint`/`black`/`flake8`/`isort`）
  - 不执行 CI 侧的 Docker 构建或镜像测试
  
- ## 失败处理
- 
+## 失败处理
+
  - 部署脚本退出非 0 即视为失败
  - CI 保留脚本输出作为失败日志
  - 不做自动重试
+
+## 常见错误排查
+
+- **`dial tcp 192.144.154.17:52631: i/o timeout`**  
+  表示 GitHub Actions 的 runner 无法连上服务器的 SSH 端口，连接在建立阶段就超时。请检查：  
+  1. 服务器上 SSH 是否在目标端口监听（`ss -tlnp | grep sshd`）。  
+  2. 云安全组/防火墙是否放行入站 SSH 端口（来源需允许 GitHub 出口 IP 或临时 0.0.0.0/0 测试）。  
+  3. 若服务器在国内或网络受限，可考虑部署 [self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners) 在同一内网执行部署。
+
+- **`connect: connection refused`**  
+  表示已能到达服务器，但目标端口没有服务监听。请确认：  
+  1. CI 中 `port` 与服务器实际 SSH 监听端口一致（`ss -tlnp | grep sshd` 查看）。  
+  2. 若 SSH 在 22，workflow 中应为 `port: 22`；若已改为 52631，需在服务器 `sshd_config` 中设置 `Port 52631` 并重启 `sshd`，且防火墙放行该端口。
  
  ## 机密信息
  
