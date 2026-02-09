@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  # 初始化挂载目录权限（确保容器内用户可写）
+  init-permissions:
+    image: busybox:1.36
+    container_name: august-lab-init-permissions
+    user: "0:0"
+    command: >
+      sh -lc "mkdir -p /app/backend/uploads /app/backend/products /app/logs /app/data
+      && chown -R 1000:1000 /app/backend/uploads /app/backend/products /app/logs /app/data"
+    volumes:
+      - ./backend/uploads:/app/backend/uploads
+      - ./backend/products:/app/backend/products
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: "no"
+    networks:
+      - august-lab-network
+
   # 后端API服务
   backend:
     build:
@@ -21,6 +38,8 @@ services:
       - ./logs:/app/logs
       - ./data:/app/data
     restart: unless-stopped
+    depends_on:
+      - init-permissions
     networks:
       - august-lab-network
 

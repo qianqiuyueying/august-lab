@@ -64,16 +64,17 @@ fix_permissions() {
              backend/products/versions \
              backend/products/backups \
              backend/products/temp \
-             logs
+             logs \
+             data
 
-    # SQLite 数据库文件（挂载到 /app/august_lab.db）
-    if [ ! -f "august_lab.db" ]; then
+    # SQLite 数据库文件（挂载到 /app/data/august_lab.db）
+    if [ ! -f "data/august_lab.db" ]; then
         log_info "创建 SQLite 数据库文件..."
-        touch august_lab.db
+        touch data/august_lab.db
     fi
 
     # 容器内用户为 uid 1000 (august)，需要可写权限
-    chown -R 1000:1000 backend/uploads backend/products logs august_lab.db || \
+    chown -R 1000:1000 backend/uploads backend/products logs data || \
         log_warning "目录权限修正失败，请检查宿主机权限"
 }
 
@@ -104,6 +105,10 @@ deploy() {
     # 构建镜像
     log_info "构建 Docker 镜像..."
     docker-compose build
+
+    # 先修复容器内挂载目录权限
+    log_info "初始化挂载目录权限..."
+    docker-compose run --rm init-permissions
     
     # 启动服务
     log_info "启动服务..."

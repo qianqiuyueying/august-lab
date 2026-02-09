@@ -82,7 +82,13 @@ ALLOWED_ORIGINS=https://your-domain.com,https://www.your-domain.com
 ### 步骤 4：启动服务
 
 ```bash
-# 构建并启动容器
+# 构建镜像
+docker-compose build
+
+# 初始化挂载目录权限（避免 SQLite 无法写入）
+docker-compose run --rm init-permissions
+
+# 启动容器
 docker-compose up -d
 
 # 查看日志
@@ -402,11 +408,11 @@ sudo netstat -tlnp | grep 8000
 
 ```bash
 # 检查数据库文件权限
-ls -la /var/www/august-lab/august_lab.db
+ls -la /var/www/august-lab/data/august_lab.db
 
 # 修复权限
-sudo chown www-data:www-data /var/www/august-lab/august_lab.db
-sudo chmod 600 /var/www/august-lab/august_lab.db
+sudo chown -R 1000:1000 /var/www/august-lab/data
+sudo chmod -R u+rwX /var/www/august-lab/data
 ```
 
 ### 3. 前端无法访问 API
