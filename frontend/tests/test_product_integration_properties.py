@@ -5133,7 +5133,7 @@ class TestProductIntegrationProperties:
         """
         def _progress(message: str) -> None:
             if os.environ.get("AUGUST_TEST_PROGRESS") == "1":
-                print(f"[progress] {message}")
+                print(f"[progress] {message}", flush=True)
 
         _progress("start")
         # 1. 模拟统计数据收集系统

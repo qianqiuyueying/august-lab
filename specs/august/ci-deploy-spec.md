@@ -21,6 +21,7 @@
 - 部署脚本需在仓库中标记为可执行（git mode `+x`），避免执行时报 `Permission denied`
 - 部署脚本生成的 `SECRET_KEY` 必须为单行字符串，避免写入 `.env` 时导致 `sed` 替换失败
 - 前端构建依赖需锁定已验证兼容版本（例如 `typescript@5.3.3`），避免构建期版本漂移导致失败
+- 若前端包含非 TypeScript 的 `.vue` 组件脚本，需在 `tsconfig.json` 启用 `allowJs`，避免 `vue-tsc` 构建失败
 
 ## 代码同步
 
