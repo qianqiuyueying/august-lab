@@ -65,6 +65,7 @@ COPY --from=frontend-builder --chown=august:august /app/dist ./frontend/dist
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PORT=8000
+ENV PYTHONPATH=/app/backend
 
 # 切换到非root用户
 USER august

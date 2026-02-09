@@ -24,6 +24,7 @@
 - 若前端包含非 TypeScript 的 `.vue` 组件脚本，需在 `tsconfig.json` 启用 `allowJs`，避免 `vue-tsc` 构建失败
 - Python 依赖安装需增加重试与超时（`pip install --retries 5 --timeout 120`），避免网络波动导致 “No matching distribution”
 - 若服务器已占用 80/443（如宝塔面板），Nginx 容器需改用 8080/8443 端口映射
+- 后端运行需确保 `app` 包可被找到（容器内设置 `PYTHONPATH=/app/backend`），否则会出现 `ModuleNotFoundError: No module named 'app'`
 
 ## 代码同步
 
