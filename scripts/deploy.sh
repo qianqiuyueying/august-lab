@@ -57,6 +57,20 @@ check_env() {
     fi
 }
 
+# 修正数据目录权限（避免容器非 root 无法写入）
+fix_permissions() {
+    log_info "修正数据目录权限..."
+    mkdir -p backend/uploads \
+             backend/products/versions \
+             backend/products/backups \
+             backend/products/temp \
+             logs
+
+    # 容器内用户为 uid 1000 (august)，需要可写权限
+    chown -R 1000:1000 backend/uploads backend/products logs || \
+        log_warning "目录权限修正失败，请检查宿主机权限"
+}
+
 # 生成 SECRET_KEY
 generate_secret_key() {
     if grep -q "your-super-secret-key-here" .env; then
@@ -134,6 +148,7 @@ main() {
     check_docker
     check_env
     generate_secret_key
+    fix_permissions
     deploy
     show_info
 }

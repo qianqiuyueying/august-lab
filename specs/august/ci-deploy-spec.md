@@ -25,6 +25,7 @@
 - Python 依赖安装需增加重试与超时（`pip install --retries 5 --timeout 120`），避免网络波动导致 “No matching distribution”
 - 若服务器已占用 80/443（如宝塔面板），Nginx 容器需改用 8080/8443 端口映射
 - 后端运行需确保 `app` 包可被找到（容器内设置 `PYTHONPATH=/app/backend`），否则会出现 `ModuleNotFoundError: No module named 'app'`
+- 若后端以非 root 用户运行，宿主机 `backend/products`/`backend/uploads`/`logs` 需可写（部署前 `chown -R 1000:1000`），否则创建 `products/versions` 会失败
 
 ## 代码同步
 
