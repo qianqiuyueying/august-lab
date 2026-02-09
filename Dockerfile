@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y \
 
 # 创建非root用户
 RUN useradd -m -u 1000 august && \
-    mkdir -p /app/backend/uploads /app/backend/products /app/logs && \
+    mkdir -p /app/backend/uploads /app/backend/products /app/logs /app/data && \
     chown -R august:august /app
 
 # 从构建阶段复制Python依赖

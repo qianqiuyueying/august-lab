@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./august_lab.db
+      - DATABASE_URL=sqlite:////app/data/august_lab.db
       - SECRET_KEY=${SECRET_KEY}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -19,7 +19,7 @@ services:
       - ./backend/uploads:/app/backend/uploads
       - ./backend/products:/app/backend/products
       - ./logs:/app/logs
-      - ./august_lab.db:/app/august_lab.db
+      - ./data:/app/data
     restart: unless-stopped
     networks:
       - august-lab-network

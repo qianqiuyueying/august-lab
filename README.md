@@ -232,6 +232,8 @@ docker-compose logs -f
 docker-compose down
 ```
 
+> SQLite 数据文件会保存在项目根目录的 `./data/august_lab.db` 中。
+
 ### 生产环境部署
 
 详细的生产环境部署指南请参考：

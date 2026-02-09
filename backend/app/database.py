@@ -15,9 +15,31 @@ current_file = Path(__file__).resolve()  # backend/app/database.py
 backend_app_dir = current_file.parent     # backend/app
 backend_dir = backend_app_dir.parent      # backend
 PROJECT_ROOT = backend_dir.parent         # August (项目根目录)
-DB_PATH = PROJECT_ROOT / "august_lab.db"
+DEFAULT_DB_PATH = PROJECT_ROOT / "august_lab.db"
 
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
+def _normalize_sqlite_url(db_url: str) -> str:
+    if db_url in ("sqlite:///:memory:", "sqlite://"):
+        return db_url
+    if db_url.startswith("sqlite:////"):
+        path_part = db_url[len("sqlite:////"):]
+        db_path = (Path("/") / path_part).resolve()
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        return f"sqlite:////{db_path.as_posix().lstrip('/')}"
+    if db_url.startswith("sqlite:///"):
+        path_part = db_url[len("sqlite:///"):]
+        db_path = Path(path_part)
+        if not db_path.is_absolute():
+            db_path = (PROJECT_ROOT / db_path).resolve()
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        return f"sqlite:///{db_path.as_posix()}"
+    return db_url
+
+env_database_url = os.getenv("DATABASE_URL")
+if env_database_url:
+    SQLALCHEMY_DATABASE_URL = _normalize_sqlite_url(env_database_url)
+else:
+    DEFAULT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{DEFAULT_DB_PATH.as_posix()}"
 
 # SQLite使用StaticPool
 pool_class = StaticPool
