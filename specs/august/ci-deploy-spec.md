@@ -19,6 +19,7 @@
  - 工作目录：`/www/wwwroot/August`
  - 部署脚本：`./scripts/deploy.sh`
 - 部署脚本需在仓库中标记为可执行（git mode `+x`），避免执行时报 `Permission denied`
+- 部署脚本生成的 `SECRET_KEY` 必须为单行字符串，避免写入 `.env` 时导致 `sed` 替换失败
 
 ## 代码同步
 

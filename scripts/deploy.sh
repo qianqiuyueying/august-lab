@@ -61,7 +61,7 @@ check_env() {
 generate_secret_key() {
     if grep -q "your-super-secret-key-here" .env; then
         log_info "生成新的 SECRET_KEY..."
-        SECRET_KEY=$(openssl rand -base64 64)
+        SECRET_KEY=$(openssl rand -base64 64 | tr -d '\n')
         if [[ "$OSTYPE" == "darwin"* ]]; then
             # macOS
             sed -i '' "s|SECRET_KEY=.*|SECRET_KEY=$SECRET_KEY|" .env
