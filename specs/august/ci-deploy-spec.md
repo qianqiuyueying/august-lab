@@ -21,7 +21,9 @@
 
 ## 代码同步
 
-- 代码来源：`https://github.com/qianqiuyueying/august-lab.git`
+- 代码来源：`git@github.com:qianqiuyueying/august-lab.git`
+- 服务器需预置可访问该仓库的 SSH Key（例如 `/root/.ssh/id_rsa`）
+- 服务器需已信任 `github.com`（例如将其写入 `~/.ssh/known_hosts`）
 - 若工作目录不存在：创建父目录并 `git clone` 到 `/www/wwwroot/August`
 - 若工作目录已存在：在该目录内执行 `git pull` 更新
  

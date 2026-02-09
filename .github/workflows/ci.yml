@@ -23,7 +23,9 @@ jobs:
           else
             mkdir -p /www/wwwroot
             cd /www/wwwroot
-            git clone https://github.com/qianqiuyueying/august-lab.git August
+            mkdir -p /root/.ssh
+            ssh-keyscan github.com >> /root/.ssh/known_hosts
+            git clone git@github.com:qianqiuyueying/august-lab.git August
             cd /www/wwwroot/August
           fi
           ./scripts/deploy.sh
