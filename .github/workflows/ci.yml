@@ -35,6 +35,9 @@ jobs:
           else
             mkdir -p /www/wwwroot
             cd /www/wwwroot
+            if [ -d "August" ]; then
+              rm -rf August
+            fi
             mkdir -p /root/.ssh
             ssh-keyscan github.com >> /root/.ssh/known_hosts
             git clone git@github.com:qianqiuyueying/august-lab.git August
