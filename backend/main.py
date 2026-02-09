@@ -104,21 +104,24 @@ app.include_router(profile.router, prefix="/api/profile", tags=["个人信息"])
 app.include_router(upload.router, prefix="/api/upload", tags=["文件上传"])
 app.include_router(products.router, prefix="/api/products", tags=["产品管理"])
 
-@app.get("/")
-async def root():
-    return {"message": "August.Lab API Server"}
-
 @app.get("/health")
 async def health_check():
     from app.database import check_database_health
-    
     db_healthy = check_database_health()
-    
     return {
         "status": "healthy" if db_healthy else "unhealthy",
         "database": "connected" if db_healthy else "disconnected",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+# 前端 SPA：镜像内存在构建产物时由后端直接提供（必须放在最后，否则会覆盖 /health 等）
+spa_dir = Path("/app/frontend/dist")
+if spa_dir.exists():
+    app.mount("/", StaticFiles(directory=str(spa_dir), html=True), name="spa")
+else:
+    @app.get("/")
+    async def root():
+        return {"message": "August.Lab API Server"}
 
 if __name__ == "__main__":
     import uvicorn
