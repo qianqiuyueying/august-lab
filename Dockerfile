@@ -26,8 +26,8 @@ WORKDIR /app
 # 复制前端依赖文件
 COPY frontend/package*.json ./
 
-# 安装前端依赖
-RUN npm ci --only=production
+# 安装前端依赖（需要 devDependencies 以支持构建）
+RUN npm ci
 
 # 复制前端源代码
 COPY frontend/ .
