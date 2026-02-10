@@ -54,7 +54,8 @@ class Settings:
     ).split(",")
     
     # ==================== 速率限制配置 ====================
-    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+    # 默认 300 次/小时，避免产品监控页轮询过快占满配额导致整站 429
+    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "300"))
     RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "3600"))  # 1小时
     
     # ==================== 邮件配置 ====================

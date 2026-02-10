@@ -312,7 +312,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useProductMonitoring, type ProductPerformanceLog } from '../../../frontend/composables/useProductMonitoring'
 import { useProductStore } from '../../../frontend/composables/useProductStore'
@@ -367,9 +367,10 @@ interface Props {
   refreshInterval?: number
 }
 
+// 默认关闭自动刷新、60s 间隔，避免高频请求触发后端限流
 const props = withDefaults(defineProps<Props>(), {
-  autoRefresh: true,
-  refreshInterval: 10000
+  autoRefresh: false,
+  refreshInterval: 60000
 })
 
 // 响应式数据
@@ -666,6 +667,11 @@ const stopAutoRefresh = () => {
     refreshTimer = null
   }
 }
+
+watch(() => props.autoRefresh, (on) => {
+  if (on) startAutoRefresh()
+  else stopAutoRefresh()
+})
 
 // 工具方法
 const getPerformanceStatusClass = () => {

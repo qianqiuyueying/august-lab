@@ -29,6 +29,14 @@
             </el-option>
           </el-select>
           
+          <el-tooltip content="开启后每 60 秒刷新一次，避免请求过频触发限流">
+            <el-switch
+              v-model="monitoringAutoRefresh"
+              active-text="自动刷新"
+              size="default"
+              style="margin-right: 12px"
+            />
+          </el-tooltip>
           <el-button-group>
             <el-button
               v-for="tab in monitoringTabs"
@@ -183,14 +191,22 @@
         </div>
       </div>
       
-      <!-- 错误监控 -->
+      <!-- 错误监控：仅开启自动刷新时每 60s 轮询，避免占满限流 -->
       <div v-else-if="activeTab === 'errors'" class="tab-content">
-        <ProductErrorMonitor :product-id="selectedProductId || undefined" />
+        <ProductErrorMonitor
+          :product-id="selectedProductId || undefined"
+          :auto-refresh="monitoringAutoRefresh"
+          :refresh-interval="60000"
+        />
       </div>
       
-      <!-- 性能监控 -->
+      <!-- 性能监控：仅开启自动刷新时每 60s 轮询 -->
       <div v-else-if="activeTab === 'performance'" class="tab-content">
-        <ProductPerformanceMonitor :product-id="selectedProductId || undefined" />
+        <ProductPerformanceMonitor
+          :product-id="selectedProductId || undefined"
+          :auto-refresh="monitoringAutoRefresh"
+          :refresh-interval="60000"
+        />
       </div>
       
       <!-- 诊断工具 -->
@@ -248,7 +264,8 @@ interface MonitoringTab {
   icon: any
 }
 
-// 响应式数据
+// 响应式数据（默认关闭自动刷新，避免高频请求触发后端限流）
+const monitoringAutoRefresh = ref(false)
 const activeTab = ref('overview')
 const selectedProductId = ref<number | null>(null)
 const products = ref<Product[]>([])

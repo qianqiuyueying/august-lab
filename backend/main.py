@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 import os
 from datetime import datetime, timezone
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 
 from app.database import engine, Base
 from app import models  # 导入模型以确保它们被注册到 Base.metadata
@@ -127,7 +129,6 @@ def _spa_file_path(relative_path: str) -> Path | None:
     """解析 SPA 静态文件路径，防止路径穿越；不存在或非法则返回 None。"""
     if not spa_dir or not relative_path:
         return None
-    # 规范路径，禁止 ..
     parts = Path(relative_path).parts
     if ".." in parts or relative_path.startswith("/"):
         return None
@@ -139,22 +140,37 @@ def _spa_file_path(relative_path: str) -> Path | None:
     return full if full.is_file() else None
 
 
-# 前端 SPA 回退：必须放在最后注册，保证 /api、/health、/uploads、/products 先匹配
-if spa_dir and (spa_dir / "index.html").exists():
-    @app.get("/{path:path}", response_class=FileResponse, include_in_schema=False)
-    async def spa_fallback(path: str):
-        # 先尝试作为静态文件（如 /assets/xxx.js）
-        if path:
-            file_path = _spa_file_path(path)
-            if file_path:
-                return FileResponse(str(file_path))
-        # 否则返回 index.html（Vue Router 前端路由）
-        index_path = spa_dir / "index.html"
-        if not index_path.exists():
-            from fastapi import HTTPException
-            raise HTTPException(status_code=404, detail="SPA index not found")
-        return FileResponse(str(index_path))
-else:
+# 用中间件做 SPA 回退：先走正常路由（API 先匹配），只有返回 404 的 GET 且非 /api 等时才回退到 index.html，避免 /api 被当成前端路由返回 HTML
+class SPA404Middleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        if response.status_code != 404 or request.method != "GET":
+            return response
+        path = request.url.path.strip("/")
+        if path.startswith("api/") or path.startswith("uploads/") or path.startswith("products/") or path == "health":
+            return response
+        if not spa_dir or not (spa_dir / "index.html").exists():
+            return response
+        file_path = _spa_file_path(path)
+        if file_path:
+            return FileResponse(str(file_path))
+        return FileResponse(str(spa_dir / "index.html"))
+
+
+# 禁止浏览器缓存 /api 响应，避免 API 被误缓存成 HTML 后一直返回错误内容
+class NoCacheAPIMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/api/"):
+            response.headers.append("Cache-Control", "no-store, no-cache, must-revalidate")
+            response.headers.append("Pragma", "no-cache")
+        return response
+
+
+app.add_middleware(NoCacheAPIMiddleware)
+app.add_middleware(SPA404Middleware)
+
+if not (spa_dir and (spa_dir / "index.html").exists()):
     @app.get("/")
     async def root():
         return {"message": "August.Lab API Server"}
