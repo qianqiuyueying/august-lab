@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col md:cursor-none">
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col">
     <!-- 背景网格 - 工业风核心 -->
     <div class="fixed inset-0 z-0 pointer-events-none opacity-20 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark"></div>
     <!-- 噪点纹理 -->
@@ -225,17 +225,3 @@ onUnmounted(() => {
 }
 </style>
 
-<style>
-/* 全局光标控制 */
-@media (min-width: 768px) {
-  /* 强制在可交互元素上也隐藏系统光标，由自定义光标接管 */
-  a, button, [role="button"], .cursor-pointer {
-    cursor: none !important;
-  }
-  
-  /* 输入框恢复系统光标，避免输入困难 */
-  input, textarea, [contenteditable="true"] {
-    cursor: text !important;
-  }
-}
-</style>

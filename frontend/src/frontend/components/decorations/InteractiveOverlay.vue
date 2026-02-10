@@ -1,17 +1,6 @@
 <template>
   <div class="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-    <!-- 1. 自定义光标 (Custom Cursor) -->
-    <div 
-      class="custom-cursor hidden md:block fixed w-6 h-6 rounded-full border border-slate-900 dark:border-lab-accent mix-blend-difference pointer-events-none transition-transform duration-100 ease-out z-[100]"
-      :class="{ 'scale-150 bg-slate-900/10 dark:bg-lab-accent/10': isHovering }"
-      :style="{ left: `${cursorX}px`, top: `${cursorY}px`, transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})` }"
-    >
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="w-1 h-1 bg-slate-900 dark:bg-lab-accent rounded-full"></div>
-      </div>
-    </div>
-
-    <!-- 2. 点击特效 (Click Ripples) -->
+    <!-- 1. 点击特效 (Click Ripples) -->
     <transition-group name="ripple">
       <div
         v-for="ripple in ripples"
@@ -27,7 +16,7 @@
       ></div>
     </transition-group>
 
-    <!-- 3. 漂浮符号 (Floating Symbols) -->
+    <!-- 2. 漂浮符号 (Floating Symbols) -->
     <div class="absolute inset-0 w-full h-full">
       <div
         v-for="(symbol, index) in symbols"
@@ -46,7 +35,7 @@
       </div>
     </div>
 
-    <!-- 4. 看板娘 (Mascot) - 'Bot-01' -->
+    <!-- 3. 看板娘 (Mascot) - 'Bot-01' -->
     <div
       class="fixed bottom-8 right-8 pointer-events-auto transition-all duration-500 ease-in-out transform"
       :class="[
@@ -110,21 +99,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, reactive } from 'vue'
-
-// --- 光标逻辑 ---
-const cursorX = ref(0)
-const cursorY = ref(0)
-const isHovering = ref(false)
-
-const updateCursor = (e: MouseEvent) => {
-  cursorX.value = e.clientX
-  cursorY.value = e.clientY
-  
-  // 检测是否悬停在可交互元素上
-  const target = e.target as HTMLElement
-  const clickable = target.closest('a, button, input, select, textarea, .cursor-pointer')
-  isHovering.value = !!clickable
-}
 
 // --- 点击波纹逻辑 ---
 interface Ripple {
@@ -248,14 +222,11 @@ const createConfetti = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', updateCursor)
   window.addEventListener('click', createRipple)
-  // 初始进场 logic moved to startMascotLoop
   startMascotLoop()
 })
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', updateCursor)
   window.removeEventListener('click', createRipple)
 })
 </script>
