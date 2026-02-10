@@ -238,4 +238,4 @@ onUnmounted(() => {
     cursor: text !important;
   }
 }
-
+</style>
