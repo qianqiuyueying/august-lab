@@ -4,23 +4,56 @@
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', 'JetBrains Mono', system-ui, sans-serif;
     scroll-behavior: smooth;
   }
   
+  /* 实验室风格基础 */
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
-    line-height: 1.5; /* 黄金节奏 */
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: 'JetBrains Mono', 'Inter', monospace; /* 默认使用等宽字体增强工业感 */
   }
-  
-  /* 深色模式基础样式 - 实验室显示器光晕 */
+
+  /* 深色模式 - 深空工业灰 */
   .dark body {
-    @apply bg-slate-900 text-gray-50; /* 使用 Slate 950 (#0F172A) */
+    @apply bg-[#0b0c10] text-slate-200;
+  }
+
+  /* 网格背景 */
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  }
+
+  .dark .bg-grid {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+
+  /* 扫描线效果 */
+  .scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 9999;
   }
   
-  /* CSS变量：光迹渐变 */
-  :root {
-    --primary-glow: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  .dark .scanline {
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(255, 255, 255, 0.02) 50%
+    );
   }
 }
 

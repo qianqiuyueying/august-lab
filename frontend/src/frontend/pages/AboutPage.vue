@@ -1,301 +1,229 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
-    <!-- 加载状态 -->
-    <div v-if="loading" class="min-h-screen flex items-center justify-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
-    </div>
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] py-12 md:py-20 relative overflow-hidden font-mono">
+    <!-- 背景扫描线 -->
+    <div class="absolute inset-0 pointer-events-none opacity-5 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark z-0"></div>
 
-    <!-- 错误状态 -->
-    <div v-else-if="error" class="min-h-screen flex items-center justify-center">
-      <div class="text-center">
-        <h3 class="text-2xl font-bold text-red-400 mb-2">加载失败</h3>
-        <p class="text-red-300 mb-4">{{ error }}</p>
-        <button @click="loadProfile" class="px-6 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all">重试</button>
-      </div>
-    </div>
-
-    <!-- 关于我内容 -->
-    <div v-else class="py-20">
-      <ResponsiveContainer size="xl">
-        <!-- 个人介绍 - 大胆设计 -->
-        <section class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-white/20 overflow-hidden relative">
-          <!-- 背景装饰 -->
-          <div class="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20"></div>
-          <div class="absolute bottom-0 left-0 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20"></div>
-          
-          <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8 relative z-10">
-            <!-- 头像 -->
-            <div class="w-48 h-48 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-2xl transform hover:scale-110 transition-transform duration-300 ring-4 ring-white/20">
-              <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 页面头部 -->
+      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+               <div class="w-3 h-3 bg-lab-accent rounded-sm animate-pulse"></div>
+               <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Identity Matrix</span>
             </div>
-            
-            <!-- 个人信息 -->
-            <div class="flex-1 text-center lg:text-left">
-              <h1 class="text-5xl md:text-6xl font-black mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                {{ profile?.name || 'August' }}
-              </h1>
-              <p class="text-xl text-pink-300 font-bold mb-6">
-                {{ profile?.title || '全栈开发者 & 技术爱好者' }}
-              </p>
-              <div class="text-white/80 leading-relaxed text-lg" v-html="renderedBio"></div>
-            </div>
+            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">About</span> Me
+            </h1>
           </div>
-        </section>
-
-        <!-- 技能展示 -->
-        <section class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-white/20">
-          <h2 class="text-4xl md:text-5xl font-black mb-10 text-center bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            技能专长
-          </h2>
           
-          <div v-if="skillsByCategory && Object.keys(skillsByCategory).length > 0" class="space-y-10">
-            <div v-for="(skills, category) in skillsByCategory" :key="category" class="animate-fade-in">
-              <h3 class="heading-4 mb-8 text-center text-gray-800 font-bold">{{ getCategoryDisplayName(category) }}</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div 
-                  v-for="skill in skills" 
-                  :key="skill.name" 
-                  class="p-6 rounded-xl border-2 border-white/20 hover:border-pink-400/50 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1"
-                >
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="font-bold text-white text-lg">{{ skill.name }}</span>
-                    <span class="text-sm font-bold text-pink-300 bg-pink-500/20 px-3 py-1 rounded-full border border-pink-400/30">{{ skill.level }}%</span>
-                  </div>
-                  <div class="w-full bg-white/10 rounded-full h-4 overflow-hidden shadow-inner">
-                    <div 
-                      class="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 transition-all duration-1000 ease-out shadow-lg"
-                      :style="{ width: animatedSkills[skill.name] + '%' }"
-                    ></div>
-                  </div>
+          <!-- ID 卡片装饰 -->
+          <div class="hidden md:block">
+             <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 min-w-[200px] transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                <div class="flex justify-between items-center mb-2 border-b border-slate-300 dark:border-slate-700 pb-2">
+                   <span class="text-[10px] font-bold">ID_CARD</span>
+                   <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                 </div>
-              </div>
-            </div>
+                <div class="text-xs space-y-1">
+                   <div class="flex justify-between"><span class="text-slate-500">NAME:</span> <span>AUGUST</span></div>
+                   <div class="flex justify-between"><span class="text-slate-500">ROLE:</span> <span>DEV</span></div>
+                   <div class="flex justify-between"><span class="text-slate-500">LEVEL:</span> <span>ADMIN</span></div>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-300 dark:border-slate-700">
+                   <div class="h-8 bg-slate-300 dark:bg-slate-700 w-full opacity-50 barcode"></div>
+                </div>
+             </div>
           </div>
+        </div>
+      </header>
 
-          <!-- 技能为空时的占位符 -->
-          <div v-else class="text-center py-12">
-            <p class="text-gray-500">技能信息正在完善中</p>
-          </div>
-        </section>
+      <!-- 主要内容区 -->
+      <div v-if="!loading && profile" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- 左侧：个人档案 -->
+        <div class="lg:col-span-4 space-y-8">
+           <!-- 头像卡片 -->
+           <div class="bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-1 relative group overflow-hidden">
+              <div class="relative aspect-square bg-slate-100 dark:bg-slate-900 overflow-hidden">
+                 <!-- 占位符或实际头像 -->
+                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900">
+                    <span class="text-6xl">👨‍💻</span>
+                 </div>
+                 
+                 <!-- 扫描线动画 -->
+                 <div class="absolute inset-0 bg-lab-accent/20 h-1 top-0 animate-scan"></div>
+                 
+                 <!-- 角标 -->
+                 <div class="absolute top-2 left-2 text-[10px] bg-black text-white px-1 font-bold">IMG_001</div>
+              </div>
+              
+              <!-- 个人基本信息 -->
+              <div class="p-6 text-center border-t border-slate-200 dark:border-slate-800 mt-1">
+                 <h2 class="text-2xl font-black uppercase mb-1">{{ profile.name }}</h2>
+                 <p class="text-lab-darkAccent text-sm font-bold uppercase tracking-widest mb-4">{{ profile.title }}</p>
+                 
+                 <div class="flex justify-center gap-4">
+                    <a v-if="profile.github_url" :href="profile.github_url" target="_blank" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-lab-accent hover:text-black transition-colors">
+                       <span class="sr-only">GitHub</span>
+                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                    <a href="mailto:hello@august.lab" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-lab-accent hover:text-black transition-colors">
+                       <span class="sr-only">Email</span>
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </a>
+                 </div>
+              </div>
+           </div>
 
-        <!-- 联系方式 -->
-        <section class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/20">
-          <h2 class="text-4xl md:text-5xl font-black mb-10 text-center bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            联系我
-          </h2>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Email -->
-            <a href="mailto:hello@august.lab" class="contact-card group bg-white/5 backdrop-blur-sm border-2 border-white/20 hover:border-pink-400/50">
-              <div class="w-14 h-14 bg-gradient-to-br from-pink-500/30 to-red-500/30 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 border border-pink-400/30">
-                <svg class="w-7 h-7 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+           <!-- 联系终端 -->
+           <div class="bg-slate-900 text-slate-300 p-6 font-mono text-sm border-l-4 border-lab-accent">
+              <div class="mb-4 text-xs text-slate-500 uppercase">>> Contact_Protocol</div>
+              <div class="space-y-2">
+                 <p><span class="text-lab-accent">$</span> echo "Let's build together"</p>
+                 <p><span class="text-lab-accent">$</span> mail -s "Project Inquiry"</p>
+                 <a href="mailto:hello@august.lab" class="inline-block mt-2 px-4 py-2 border border-lab-accent text-lab-accent hover:bg-lab-accent hover:text-black transition-colors uppercase font-bold">
+                    INITIATE_CONTACT
+                 </a>
               </div>
-              <div>
-                <div class="font-bold text-white text-lg group-hover:text-pink-300 transition-colors">邮箱</div>
-                <div class="text-sm text-white/60 mt-1">hello@august.lab</div>
-              </div>
-            </a>
+           </div>
+        </div>
 
-            <!-- GitHub -->
-            <a v-if="profile?.github_url" :href="profile.github_url" target="_blank" class="contact-card group bg-white/5 backdrop-blur-sm border-2 border-white/20 hover:border-purple-400/50">
-              <div class="w-14 h-14 bg-gradient-to-br from-purple-500/30 to-indigo-500/30 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 border border-purple-400/30">
-                <svg class="w-7 h-7 text-purple-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
+        <!-- 右侧：详细信息 -->
+        <div class="lg:col-span-8 space-y-12">
+           <!-- Bio -->
+           <section>
+              <h2 class="text-2xl font-bold uppercase mb-6 flex items-center gap-2">
+                 <span class="w-2 h-2 bg-lab-accent"></span>
+                 Bio_Data
+              </h2>
+              <div class="bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-8 leading-relaxed text-slate-600 dark:text-slate-300 text-lg">
+                 <div v-html="renderedBio"></div>
               </div>
-              <div>
-                <div class="font-bold text-white text-lg group-hover:text-purple-300 transition-colors">GitHub</div>
-                <div class="text-sm text-white/60 mt-1">查看我的代码</div>
-              </div>
-            </a>
+           </section>
 
-            <!-- LinkedIn -->
-            <a v-if="profile?.linkedin_url" :href="profile.linkedin_url" target="_blank" class="contact-card group bg-white/5 backdrop-blur-sm border-2 border-white/20 hover:border-blue-400/50">
-              <div class="w-14 h-14 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 border border-blue-400/30">
-                <svg class="w-7 h-7 text-blue-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
+           <!-- 技能矩阵 -->
+           <section>
+              <h2 class="text-2xl font-bold uppercase mb-6 flex items-center gap-2">
+                 <span class="w-2 h-2 bg-lab-accent"></span>
+                 Skill_Matrix
+              </h2>
+              
+              <div v-if="skillsByCategory" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div v-for="(skills, category) in skillsByCategory" :key="category" class="bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-6">
+                    <h3 class="font-bold uppercase mb-4 text-sm tracking-wider border-b border-slate-100 dark:border-slate-700 pb-2">
+                       {{ getCategoryDisplayName(category) }}
+                    </h3>
+                    <div class="space-y-4">
+                       <div v-for="skill in skills" :key="skill.name">
+                          <div class="flex justify-between text-xs mb-1">
+                             <span class="font-bold">{{ skill.name }}</span>
+                             <span class="text-lab-darkAccent">{{ skill.level }}%</span>
+                          </div>
+                          <div class="h-1.5 bg-slate-100 dark:bg-slate-800 w-full overflow-hidden">
+                             <div 
+                                class="h-full bg-lab-accent transition-all duration-1000 ease-out"
+                                :style="{ width: animatedSkills[skill.name] + '%' }"
+                             ></div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
               </div>
-              <div>
-                <div class="font-bold text-white text-lg group-hover:text-blue-300 transition-colors">LinkedIn</div>
-                <div class="text-sm text-white/60 mt-1">职业档案</div>
-              </div>
-            </a>
-
-            <!-- Twitter -->
-            <a v-if="profile?.twitter_url" :href="profile.twitter_url" target="_blank" class="contact-card group bg-white/5 backdrop-blur-sm border-2 border-white/20 hover:border-sky-400/50">
-              <div class="w-14 h-14 bg-gradient-to-br from-sky-500/30 to-cyan-500/30 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 border border-sky-400/30">
-                <svg class="w-7 h-7 text-sky-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-              </div>
-              <div>
-                <div class="font-bold text-white text-lg group-hover:text-sky-300 transition-colors">Twitter</div>
-                <div class="text-sm text-white/60 mt-1">关注动态</div>
-              </div>
-            </a>
-          </div>
-
-          <!-- 联系提示 -->
-          <div class="mt-10 p-8 bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-600 rounded-3xl shadow-2xl text-white relative overflow-hidden">
-            <div class="absolute inset-0 opacity-30">
-              <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-              <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full blur-3xl"></div>
-            </div>
-            <div class="text-center relative z-10">
-              <h3 class="text-3xl font-black mb-3">让我们一起合作</h3>
-              <p class="text-lg mb-6 opacity-95">有项目想法？技术问题？或者只是想聊聊技术？随时欢迎与我联系！</p>
-              <a href="mailto:hello@august.lab" class="inline-flex items-center px-8 py-4 bg-white text-purple-600 font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-                发送邮件
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </section>
-      </ResponsiveContainer>
+           </section>
+        </div>
+      </div>
+      
+      <!-- 加载状态 -->
+      <div v-if="loading" class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
+         <div class="animate-spin h-8 w-8 border-2 border-lab-accent border-t-transparent rounded-full mb-4"></div>
+         <p>> LOADING_PROFILE...</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed, nextTick } from 'vue'
-import ResponsiveContainer from '../../shared/components/ResponsiveContainer.vue'
 import { profileAPI } from '../../shared/api'
 import type { Profile, Skill } from '../../shared/types'
 
-// 响应式数据
+// State
 const profile = ref<Profile | null>(null)
 const loading = ref(true)
-const error = ref<string | null>(null)
 const animatedSkills = ref<Record<string, number>>({})
 
-// 计算属性
+// Computed
 const skillsByCategory = computed(() => {
   if (!profile.value?.skills) return {}
-  
   const categories: Record<string, Skill[]> = {}
-  
   profile.value.skills.forEach(skill => {
-    if (!categories[skill.category]) {
-      categories[skill.category] = []
-    }
+    if (!categories[skill.category]) categories[skill.category] = []
     categories[skill.category].push(skill)
   })
-  
-  // 按技能等级排序
-  Object.keys(categories).forEach(category => {
-    categories[category].sort((a, b) => b.level - a.level)
-  })
-  
+  // Sort by level desc
+  Object.keys(categories).forEach(cat => categories[cat].sort((a, b) => b.level - a.level))
   return categories
 })
 
 const renderedBio = computed(() => {
-  if (!profile.value?.bio) {
-    return `
-      <p>我是一名热爱技术的全栈开发者，专注于创造有意义的数字体验。</p>
-      <p>致力于用代码构建更美好的世界，让技术服务于人。在工作之余，我也喜欢写博客、参与开源项目，与技术社区保持交流。</p>
-    `
-  }
-  
-  return profile.value.bio
-    .split('\n')
-    .map(paragraph => `<p>${paragraph}</p>`)
-    .join('')
+  if (!profile.value?.bio) return '<p>LOADING_BIO_ERROR: DATA_MISSING</p>'
+  return profile.value.bio.split('\n').map(p => `<p class="mb-4">${p}</p>`).join('')
 })
 
-// 方法
+// Methods
+const getCategoryDisplayName = (cat: string) => {
+  const map: Record<string, string> = {
+    'frontend': 'FRONTEND_DEV', 'backend': 'BACKEND_OPS', 'database': 'DATA_STORE',
+    'devops': 'INFRASTRUCTURE', 'tools': 'TOOLCHAIN', 'design': 'UI/UX_DESIGN'
+  }
+  return map[cat] || cat.toUpperCase()
+}
+
 const loadProfile = async () => {
   try {
     loading.value = true
-    error.value = null
     const response = await profileAPI.get()
     profile.value = response.data
     
-    // 初始化技能动画
+    // Initialize animation
     if (profile.value.skills) {
-      profile.value.skills.forEach(skill => {
-        animatedSkills.value[skill.name] = 0
-      })
-      
+      profile.value.skills.forEach(s => animatedSkills.value[s.name] = 0)
       nextTick(() => {
         setTimeout(() => {
-          animateSkills()
+          profile.value?.skills.forEach(s => animatedSkills.value[s.name] = s.level)
         }, 500)
       })
     }
   } catch (err) {
-    console.error('加载个人信息失败:', err)
-    error.value = '加载个人信息失败，请稍后重试'
+    console.error('System Error:', err)
   } finally {
     loading.value = false
   }
 }
 
-const animateSkills = () => {
-  if (!profile.value?.skills) return
-  
-  profile.value.skills.forEach((skill, index) => {
-    setTimeout(() => {
-      animatedSkills.value[skill.name] = skill.level
-    }, index * 200)
-  })
-}
-
-const getCategoryDisplayName = (category: string) => {
-  const categoryNames: Record<string, string> = {
-    'frontend': '前端开发',
-    'backend': '后端开发',
-    'database': '数据库',
-    'devops': '运维部署',
-    'tools': '开发工具',
-    'design': '设计工具',
-    'mobile': '移动开发',
-    'other': '其他技能'
-  }
-  
-  return categoryNames[category] || category
-}
-
-// 生命周期
-onMounted(() => {
-  loadProfile()
-})
+onMounted(loadProfile)
 </script>
 
 <style scoped>
-.contact-card {
-  @apply flex items-center gap-4 p-6 rounded-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1;
+.barcode {
+  background-image: linear-gradient(90deg, 
+    #000 10%, transparent 10%, transparent 15%, 
+    #000 15%, #000 18%, transparent 18%, transparent 25%,
+    #000 25%, #000 30%, transparent 30%, transparent 35%,
+    #000 35%, #000 45%, transparent 45%, transparent 50%,
+    #000 50%, #000 60%, transparent 60%, transparent 65%,
+    #000 65%, #000 75%, transparent 75%, transparent 80%,
+    #000 80%, #000 90%, transparent 90%
+  );
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
+.dark .barcode {
+  background-image: linear-gradient(90deg, 
+    #fff 10%, transparent 10%, transparent 15%, 
+    #fff 15%, #fff 18%, transparent 18%, transparent 25%,
+    #fff 25%, #fff 30%, transparent 30%, transparent 35%,
+    #fff 35%, #fff 45%, transparent 45%, transparent 50%,
+    #fff 50%, #fff 60%, transparent 60%, transparent 65%,
+    #fff 65%, #fff 75%, transparent 75%, transparent 80%,
+    #fff 80%, #fff 90%, transparent 90%
+  );
 }
 </style>

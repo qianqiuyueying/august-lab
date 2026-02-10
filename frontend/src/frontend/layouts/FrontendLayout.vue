@@ -1,122 +1,157 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- 导航头部 -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <ResponsiveContainer size="xl" :padding="{ xs: '0 1rem', sm: '0 1.5rem', lg: '0 2rem' }">
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col">
+    <!-- 背景网格 - 工业风核心 -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-20 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark"></div>
+
+    <!-- 顶部导航栏 - 硬朗的工业设计 -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#1f2833]/90 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <!-- Logo -->
-          <router-link to="/" class="flex items-center space-x-2 flex-shrink-0">
-            <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-sm">A</span>
+          <!-- Logo 区域 - 终端风格 -->
+          <router-link to="/" class="group flex items-center space-x-3">
+            <div class="w-10 h-10 bg-slate-900 dark:bg-lab-accent text-white dark:text-black flex items-center justify-center font-bold text-lg border-2 border-transparent group-hover:border-slate-900 dark:group-hover:border-white transition-all duration-300 shadow-md">
+              <span class="group-hover:animate-pulse">&gt;_</span>
             </div>
-            <span class="text-xl font-semibold text-gray-900 hidden xs:block">August.Lab</span>
+            <div class="flex flex-col leading-none">
+              <span class="font-bold text-lg tracking-wider uppercase text-slate-900 dark:text-white group-hover:text-lab-darkAccent transition-colors">AUGUST.LAB</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 tracking-[0.2em] uppercase">SYSTEM ONLINE</span>
+            </div>
           </router-link>
-          
-          <!-- 导航菜单 -->
-          <nav class="show-desktop">
-            <div class="flex space-x-8">
-              <router-link 
-                v-for="item in navItems" 
-                :key="item.name"
-                :to="item.path"
-                class="nav-link"
-                :class="{ 'nav-link-active': $route.path === item.path }"
-              >
-                {{ item.name }}
-              </router-link>
-            </div>
+
+          <!-- 桌面导航 - 标签式设计 -->
+          <nav class="hidden md:flex space-x-1">
+            <router-link 
+              v-for="item in navItems" 
+              :key="item.name"
+              :to="item.path"
+              class="relative px-5 py-2 text-sm font-bold uppercase tracking-wide transition-all duration-200 group overflow-hidden"
+              :class="[
+                $route.path === item.path 
+                  ? 'text-white bg-slate-900 dark:bg-lab-accent dark:text-black shadow-md translate-y-[-2px]' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+              ]"
+            >
+              <span class="relative z-10">{{ item.name }}</span>
+              <!-- 选中状态下的指示器 -->
+              <span v-if="$route.path === item.path" class="absolute bottom-0 left-0 w-full h-[2px] bg-lab-accent dark:bg-black"></span>
+            </router-link>
           </nav>
-          
-          <!-- 移动端菜单按钮 -->
-          <button 
-            @click="toggleMobileMenu"
-            class="show-mobile p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
-            :class="{ 'text-primary-600': mobileMenuOpen }"
-            aria-label="切换菜单"
-          >
-            <svg 
-              class="w-6 h-6 transition-transform duration-200" 
-              :class="{ 'rotate-90': mobileMenuOpen }"
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+
+          <!-- 右侧工具栏 -->
+          <div class="flex items-center space-x-4">
+             <!-- 移动端菜单按钮 -->
+            <button 
+              @click="toggleMobileMenu"
+              class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-transparent hover:border-slate-300 dark:hover:border-slate-600 transition-all"
             >
-              <path 
-                stroke-linecap="round" 
-                stroke-linejoin="round" 
-                stroke-width="2" 
-                :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'"
-              />
-            </svg>
-          </button>
-        </div>
-        
-        <!-- 移动端菜单 -->
-        <Transition
-          enter-active-class="transition-all duration-300 ease-out"
-          enter-from-class="opacity-0 -translate-y-2"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-200 ease-in"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-2"
-        >
-          <div v-show="mobileMenuOpen" class="show-mobile py-4 border-t border-gray-200">
-            <nav class="space-y-2">
-              <router-link 
-                v-for="item in navItems" 
-                :key="item.name"
-                :to="item.path"
-                @click="closeMobileMenu"
-                class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md transition-all duration-200"
-                :class="{ 'text-primary-600 bg-primary-50': $route.path === item.path }"
-              >
-                {{ item.name }}
-              </router-link>
-            </nav>
+              <span class="sr-only">Open menu</span>
+              <div class="w-6 h-5 flex flex-col justify-between">
+                <span class="w-full h-0.5 bg-current transform transition-transform duration-300" :class="{ 'rotate-45 translate-y-2': mobileMenuOpen }"></span>
+                <span class="w-full h-0.5 bg-current transition-opacity duration-300" :class="{ 'opacity-0': mobileMenuOpen }"></span>
+                <span class="w-full h-0.5 bg-current transform transition-transform duration-300" :class="{ '-rotate-45 -translate-y-2.5': mobileMenuOpen }"></span>
+              </div>
+            </button>
           </div>
-        </Transition>
-      </ResponsiveContainer>
+        </div>
+      </div>
+      
+      <!-- 移动端菜单 - 抽屉式 -->
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="transform -translate-y-2 opacity-0"
+        enter-to-class="transform translate-y-0 opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="transform translate-y-0 opacity-100"
+        leave-to-class="transform -translate-y-2 opacity-0"
+      >
+        <div v-if="mobileMenuOpen" class="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-[#1f2833] border-b-2 border-slate-200 dark:border-slate-800 shadow-xl z-40">
+          <div class="px-4 py-4 space-y-2">
+            <router-link 
+              v-for="item in navItems" 
+              :key="item.name"
+              :to="item.path"
+              @click="closeMobileMenu"
+              class="block px-4 py-3 text-base font-bold uppercase tracking-wider border-l-4 transition-all duration-200"
+              :class="[
+                $route.path === item.path 
+                  ? 'border-slate-900 dark:border-lab-accent bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white' 
+                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+              ]"
+            >
+              {{ item.name }}
+            </router-link>
+          </div>
+        </div>
+      </transition>
     </header>
-    
+
     <!-- 主要内容区域 -->
-    <main class="flex-1">
-      <router-view />
+    <main class="flex-1 relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <router-view v-slot="{ Component }">
+        <transition 
+          name="fade-slide" 
+          mode="out-in"
+          appear
+        >
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
-    
-    <!-- 页脚 - 实验室彩蛋 -->
-    <footer class="bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 py-6">
-      <ResponsiveContainer size="xl">
-        <div class="text-center">
-          <div class="flex items-center justify-center space-x-2 mb-2">
-            <div class="w-5 h-5 bg-primary-500 rounded-md flex items-center justify-center shadow-md">
-              <span class="text-white font-bold text-xs">A</span>
-            </div>
-            <span class="text-base font-semibold text-gray-900 dark:text-gray-50">August.Lab</span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 text-xs mb-2">
-            © {{ new Date().getFullYear() }} August.Lab. All rights reserved.
-          </p>
-          <!-- 实验室彩蛋：Build in Public + 实时时间 + Git commit -->
-          <div class="group relative inline-block">
-            <code class="text-gray-500 dark:text-gray-500 text-xs font-mono">
-              // Build in Public • Last sync: {{ currentTime }}
-            </code>
-            <!-- Hover时显示Git commit -->
-            <div 
-              v-if="gitCommit"
-              class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-slate-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
-            >
-              {{ gitCommit }}
-              <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-            </div>
-          </div>
-          <p class="text-gray-500 dark:text-gray-500 text-xs mt-2">
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
-              冀ICP备2025117309号
-            </a>
-          </p>
+
+    <!-- 页脚 - 系统状态栏风格 -->
+    <footer class="mt-auto bg-slate-900 dark:bg-[#050608] text-slate-400 border-t-4 border-lab-accent dark:border-lab-darkAccent py-8 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+           <!-- 列 1: 系统信息 -->
+           <div class="space-y-4">
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">System Info</h3>
+              <p class="text-xs leading-relaxed font-mono">
+                <span class="block mb-1">> KERNEL: AUGUST.LAB.CORE.V2</span>
+                <span class="block mb-1">> STATUS: OPERATIONAL</span>
+                <span class="block">> UPTIME: {{ uptime }}</span>
+              </p>
+           </div>
+           
+           <!-- 列 2: 快速链接 -->
+           <div class="space-y-4">
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">Quick Access</h3>
+              <div class="flex flex-wrap gap-4 text-xs font-mono">
+                <router-link to="/portfolio" class="hover:text-lab-accent transition-colors">[ PORTFOLIO ]</router-link>
+                <router-link to="/blog" class="hover:text-lab-accent transition-colors">[ BLOG_LOGS ]</router-link>
+                <router-link to="/about" class="hover:text-lab-accent transition-colors">[ ABOUT_DEV ]</router-link>
+              </div>
+           </div>
+
+           <!-- 列 3: 联系终端 -->
+           <div class="space-y-4">
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">Comms Link</h3>
+               <div class="flex space-x-4">
+                <a href="https://github.com" target="_blank" class="w-8 h-8 flex items-center justify-center bg-slate-800 hover:bg-lab-accent hover:text-black transition-all duration-300">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+                </a>
+                <a href="mailto:hello@august.lab" class="w-8 h-8 flex items-center justify-center bg-slate-800 hover:bg-lab-accent hover:text-black transition-all duration-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </a>
+              </div>
+           </div>
         </div>
-      </ResponsiveContainer>
+
+        <!-- 底部版权栏 -->
+        <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-mono">
+          <div class="mb-4 md:mb-0">
+            <span class="text-lab-accent">© {{ new Date().getFullYear() }} AUGUST.LAB</span>
+            <span class="mx-2 text-slate-700">|</span>
+            <span>ALL RIGHTS RESERVED</span>
+          </div>
+          <div class="flex items-center space-x-4">
+             <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1 rounded">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-slate-300">SYSTEM: NORMAL</span>
+             </div>
+             <a href="https://beian.miit.gov.cn/" target="_blank" class="hover:text-white transition-colors">冀ICP备2025117309号</a>
+          </div>
+        </div>
+      </div>
     </footer>
   </div>
 </template>
@@ -124,105 +159,62 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import ResponsiveContainer from '../../shared/components/ResponsiveContainer.vue'
-import { useResponsive } from '../../shared/composables/useResponsive'
 
 const route = useRoute()
-const { isMobile } = useResponsive()
-
 const mobileMenuOpen = ref(false)
-
-// 实验室彩蛋：实时时间
-const currentTime = ref('')
-const updateTime = () => {
-  const now = new Date()
-  currentTime.value = now.toLocaleTimeString('zh-CN', { 
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
-}
-
-// Git commit（从环境变量获取，构建时注入）
-const gitCommit = computed(() => {
-  // @ts-ignore
-  return import.meta.env.VITE_GIT_COMMIT || null
-})
+const startTime = ref(Date.now())
+const uptime = ref('00:00:00')
 
 const navItems = [
-  { name: '首页', path: '/' },
-  { name: '作品集', path: '/portfolio' },
-  { name: '博客', path: '/blog' },
-  { name: '关于我', path: '/about' }
+  { name: 'Home', path: '/' },
+  { name: 'Portfolio', path: '/portfolio' },
+  { name: 'Blog', path: '/blog' },
+  { name: 'Products', path: '/products' }, // 假设有这个路由
+  { name: 'About', path: '/about' }
 ]
 
-// 切换移动端菜单
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
 
-// 关闭移动端菜单
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
 }
 
-// 监听路由变化，自动关闭移动端菜单
-const handleRouteChange = () => {
-  if (mobileMenuOpen.value) {
-    closeMobileMenu()
-  }
+// 模拟系统运行时间
+const updateUptime = () => {
+  const diff = Math.floor((Date.now() - startTime.value) / 1000)
+  const h = Math.floor(diff / 3600).toString().padStart(2, '0')
+  const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0')
+  const s = (diff % 60).toString().padStart(2, '0')
+  uptime.value = `${h}:${m}:${s}`
 }
 
-// 监听点击外部区域关闭菜单
-const handleClickOutside = (event: Event) => {
-  if (!mobileMenuOpen.value) return
-  
-  const target = event.target as HTMLElement
-  const header = document.querySelector('header')
-  
-  if (header && !header.contains(target)) {
-    closeMobileMenu()
-  }
-}
-
-// 监听ESC键关闭菜单
-const handleEscKey = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && mobileMenuOpen.value) {
-    closeMobileMenu()
-  }
-}
-
-// 监听屏幕尺寸变化，桌面端自动关闭移动菜单
-const handleResize = () => {
-  if (!isMobile.value && mobileMenuOpen.value) {
-    closeMobileMenu()
-  }
-}
-
-let timeInterval: ReturnType<typeof setInterval> | null = null
+let timer: ReturnType<typeof setInterval>
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('keydown', handleEscKey)
-  window.addEventListener('resize', handleResize)
-  
-  // 初始化时间并每秒更新
-  updateTime()
-  timeInterval = setInterval(updateTime, 1000)
+  timer = setInterval(updateUptime, 1000)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('keydown', handleEscKey)
-  window.removeEventListener('resize', handleResize)
-  
-  if (timeInterval) {
-    clearInterval(timeInterval)
-  }
+  clearInterval(timer)
 })
-
-// 监听路由变化
-import { watch } from 'vue'
-watch(() => route.path, handleRouteChange)
 </script>
+
+<style>
+/* 页面切换动画 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
