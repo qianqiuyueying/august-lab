@@ -424,7 +424,7 @@ const goBack = () => {
     router.push('/')
   } else {
     // 默认返回到产品列表
-    router.push({ path: '/portfolio', query: { tab: 'products' } })
+    router.push('/products')
   }
 }
 

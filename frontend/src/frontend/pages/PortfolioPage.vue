@@ -1,220 +1,146 @@
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] py-12 md:py-20 relative overflow-hidden">
-    <!-- 背景扫描线 -->
-    <div class="absolute inset-0 pointer-events-none opacity-5 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark z-0"></div>
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] py-12 md:py-20 relative overflow-hidden font-mono">
+    <!-- 档案风格背景 -->
+    <div class="absolute inset-0 pointer-events-none opacity-5 dark:opacity-10 bg-[length:20px_20px] bg-grid-pattern dark:bg-grid-pattern-dark z-0"></div>
+    
+    <!-- 左侧装饰标尺 -->
+    <div class="fixed left-4 top-1/2 -translate-y-1/2 h-[60vh] w-px bg-slate-300 dark:bg-slate-700 hidden lg:block">
+      <div v-for="i in 10" :key="i" class="absolute w-2 h-px bg-slate-400 dark:bg-slate-600 left-[-1px]" :style="{ top: `${(i-1)*10}%` }"></div>
+      <div class="absolute top-0 -left-6 text-[10px] text-slate-400 rotate-[-90deg]">ARCHIVE_V.2</div>
+    </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 页面头部 - 数据面板风格 -->
+      <!-- 页面头部 -->
       <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-3 mb-4">
-               <div class="w-3 h-3 bg-lab-accent rounded-sm animate-pulse"></div>
-               <span class="font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">System Module</span>
+              <div class="w-3 h-3 border border-lab-accent rotate-45"></div>
+              <span class="font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">DIGITAL ARCHIVE</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">Project</span> Matrix
+              <ScrambleText text="PROJECT_MATRIX" />
             </h1>
+            <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm max-w-md">
+              // 这里的每一行代码，都是思想的快照。
+            </p>
           </div>
-          
-          <!-- 控制台 -->
-          <div class="flex flex-col sm:flex-row gap-4">
-             <!-- 标签切换 - 物理开关风格 -->
-             <div class="inline-flex bg-slate-200 dark:bg-slate-800 p-1 rounded-sm">
-                <button
-                  @click="currentTab = 'portfolio'"
-                  class="px-6 py-2 font-mono text-sm font-bold uppercase transition-all duration-200 rounded-sm"
-                  :class="currentTab === 'portfolio' ? 'bg-white dark:bg-lab-accent text-slate-900 dark:text-black shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
-                >
-                  作品集
-                </button>
-                <button
-                  @click="currentTab = 'products'"
-                  class="px-6 py-2 font-mono text-sm font-bold uppercase transition-all duration-200 rounded-sm"
-                  :class="currentTab === 'products' ? 'bg-white dark:bg-lab-accent text-slate-900 dark:text-black shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
-                >
-                  产品
-                </button>
-             </div>
+          <div class="flex items-center gap-4 text-xs font-bold">
+            <div class="px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+              索引数量: {{ sortedPortfolios.length }}
+            </div>
+            <StatusHud />
           </div>
         </div>
       </header>
 
-      <!-- 过滤器区域 - 终端输入风格 (修复可视性) -->
-      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 font-mono text-sm reveal-on-scroll">
-         <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
-            <div class="flex items-center gap-2 w-full md:w-auto">
-               <span class="text-lab-accent">></span>
-               <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap">筛选:</span>
-               <select 
-                  v-if="currentTab === 'portfolio'"
-                  v-model="sortBy" 
-                  class="bg-transparent border-b border-slate-300 dark:border-slate-500 text-slate-900 dark:text-white font-bold focus:ring-0 focus:border-lab-accent cursor-pointer w-full md:w-auto px-2 py-1 outline-none"
-               >
-                  <option value="display_order" class="bg-white dark:bg-slate-800">推荐顺序</option>
-                  <option value="created_at" class="bg-white dark:bg-slate-800">最新发布</option>
-                  <option value="title" class="bg-white dark:bg-slate-800">名称排序</option>
-               </select>
-               <select 
-                  v-else
-                  v-model="selectedProductType"
-                  class="bg-transparent border-b border-slate-300 dark:border-slate-500 text-slate-900 dark:text-white font-bold focus:ring-0 focus:border-lab-accent cursor-pointer w-full md:w-auto px-2 py-1 outline-none"
-               >
-                  <option value="" class="bg-white dark:bg-slate-800">全部类型</option>
-                  <option value="web_app" class="bg-white dark:bg-slate-800">Web应用</option>
-                  <option value="game" class="bg-white dark:bg-slate-800">游戏引擎</option>
-                  <option value="tool" class="bg-white dark:bg-slate-800">实用工具</option>
-               </select>
-            </div>
-            
-            <div class="flex items-center gap-4 text-xs">
-               <span class="text-slate-400">总计项目: {{ currentItemsCount }}</span>
-               <span class="w-px h-4 bg-slate-300 dark:bg-slate-700"></span>
-               <span class="text-green-500">状态: 就绪</span>
-            </div>
+      <!-- 过滤器区域 -->
+      <div class="mb-12 border-y border-slate-200 dark:border-slate-800 py-4 font-mono text-sm reveal-on-scroll flex flex-col md:flex-row justify-between items-center gap-4">
+         <div class="flex items-center gap-2 w-full md:w-auto">
+            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+            <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap uppercase">Sort Sequence:</span>
+            <select
+              v-model="sortBy"
+              class="bg-transparent text-slate-900 dark:text-white font-bold focus:ring-0 cursor-pointer w-full md:w-auto px-2 py-1 outline-none uppercase tracking-wider"
+            >
+              <option value="display_order" class="bg-white dark:bg-slate-800">推荐顺序 [DEF]</option>
+              <option value="created_at" class="bg-white dark:bg-slate-800">最新归档 [NEW]</option>
+              <option value="title" class="bg-white dark:bg-slate-800">名称索引 [A-Z]</option>
+            </select>
+         </div>
+         <div class="text-xs text-slate-400 uppercase tracking-widest">
+            READ_ONLY_ACCESS
          </div>
       </div>
 
       <!-- 内容网格 -->
       <div class="min-h-[400px] relative">
-         <!-- 加载遮罩 -->
-         <div v-if="isLoading" class="absolute inset-0 z-20 bg-slate-50/80 dark:bg-[#0b0c10]/80 backdrop-blur-sm flex items-center justify-center">
-            <div class="font-mono text-lab-accent animate-pulse">> 获取数据中...</div>
-         </div>
+        <div v-if="isLoading" class="absolute inset-0 z-20 bg-slate-50/80 dark:bg-[#0b0c10]/80 backdrop-blur-sm flex items-center justify-center">
+          <div class="font-mono text-lab-accent animate-pulse">> 正在检索档案...</div>
+        </div>
 
-         <!-- 作品列表 -->
-         <div v-if="currentTab === 'portfolio' && !isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <article 
-               v-for="(item, idx) in sortedPortfolios" 
-               :key="item.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer flex flex-col reveal-on-scroll"
-               @click="goToDetail(item.id)"
-            >
-               <!-- 角标装饰 -->
-               <div class="absolute top-0 right-0 p-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div class="w-2 h-2 bg-lab-accent rounded-full shadow-[0_0_10px_#66fcf1]"></div>
-               </div>
+        <div v-else-if="sortedPortfolios.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <article
+            v-for="(item, idx) in sortedPortfolios"
+            :key="item.id"
+            class="group relative bg-white dark:bg-[#151f2e] border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300 cursor-pointer flex flex-col reveal-on-scroll"
+            @click="goToDetail(item.id)"
+          >
+            <!-- 档案编号装饰 -->
+            <div class="absolute -top-3 -left-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 px-2 py-0.5 text-[10px] font-bold z-10 font-mono shadow-sm">
+               NO.{{ String(idx + 1).padStart(3, '0') }}
+            </div>
 
-               <!-- 图片容器 (去除灰度) -->
-               <div class="relative aspect-video overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
-                  <ResponsiveImage
-                     v-if="item.image_url"
-                     :src="item.image_url"
-                     :alt="item.title"
-                     aspect-ratio="video"
-                     class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-                  />
-                  <div v-else class="w-full h-full flex items-center justify-center font-mono text-slate-400 dark:text-slate-600 text-4xl">
-                     NO_SIGNAL
-                  </div>
-                  <!-- 扫描线遮罩 -->
-                  <div class="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
-               </div>
+            <!-- 角落装饰 -->
+            <TechBorder class="h-full flex flex-col">
+              <!-- 图片容器 -->
+              <div class="relative aspect-video overflow-hidden bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <ResponsiveImage
+                  v-if="item.image_url"
+                  :src="item.image_url"
+                  :alt="item.title"
+                  aspect-ratio="video"
+                  class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 filter sepia-[0.2] group-hover:sepia-0"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center font-mono text-slate-300 dark:text-slate-700 text-6xl">
+                   ■
+                </div>
+                <!-- 网格遮罩 -->
+                <div class="absolute inset-0 bg-[length:4px_4px] bg-[radial-gradient(rgba(0,0,0,0.1)_1px,transparent_1px)] pointer-events-none"></div>
+              </div>
 
-               <!-- 信息区域 -->
-               <div class="p-6 flex-1 flex flex-col">
-                  <div class="flex justify-between items-start mb-4">
-                     <h3 class="text-xl font-bold uppercase tracking-wide text-slate-900 dark:text-white group-hover:text-lab-darkAccent transition-colors">
-                        {{ item.title }}
-                     </h3>
-                     <span class="font-mono text-xs text-slate-400">ID:{{ String(item.id).padStart(3, '0') }}</span>
-                  </div>
-                  
-                  <p class="text-slate-600 dark:text-slate-400 text-sm font-mono mb-6 line-clamp-3 flex-1">
-                     {{ item.description || '无描述数据。' }}
-                  </p>
-                  
-                  <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50">
-                     <span 
-                        v-for="tech in item.tech_stack.slice(0, 4)" 
-                        :key="tech"
-                        class="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                     >
-                        {{ tech }}
-                     </span>
-                  </div>
-               </div>
-            </article>
-         </div>
+              <!-- 信息区域 -->
+              <div class="p-6 flex-1 flex flex-col">
+                <h3 class="text-lg font-bold uppercase tracking-wide text-slate-900 dark:text-white mb-2 group-hover:underline decoration-1 underline-offset-4 decoration-slate-400">
+                  {{ item.title }}
+                </h3>
+                <p class="text-slate-500 dark:text-slate-400 text-xs font-mono mb-6 line-clamp-3 flex-1 leading-relaxed border-l-2 border-slate-200 dark:border-slate-700 pl-3">
+                  {{ item.description || '档案描述缺失。' }}
+                </p>
+                <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-dashed border-slate-200 dark:border-slate-700">
+                  <span
+                    v-for="tech in item.tech_stack.slice(0, 4)"
+                    :key="tech"
+                    class="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700"
+                  >
+                    {{ tech }}
+                  </span>
+                </div>
+              </div>
+            </TechBorder>
+          </article>
+        </div>
 
-         <!-- 产品列表 -->
-         <div v-else-if="currentTab === 'products' && !isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <article 
-               v-for="product in filteredProducts" 
-               :key="product.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer overflow-hidden reveal-on-scroll"
-               @click="launchProduct(product)"
-            >
-               <div class="p-6 h-full flex flex-col">
-                  <div class="flex justify-between items-start mb-6">
-                     <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl group-hover:bg-lab-accent group-hover:text-black transition-colors duration-300">
-                        {{ getProductIcon(product.product_type) }}
-                     </div>
-                     <span class="font-mono text-[10px] px-2 py-1 bg-slate-100 dark:bg-slate-800 uppercase tracking-wider">
-                        {{ product.product_type }}
-                     </span>
-                  </div>
-                  
-                  <h3 class="text-xl font-bold uppercase mb-2 group-hover:text-lab-darkAccent transition-colors">
-                     {{ product.title }}
-                  </h3>
-                  
-                  <p class="text-slate-600 dark:text-slate-400 text-sm font-mono mb-6 flex-1">
-                     {{ product.description }}
-                  </p>
-                  
-                  <div class="flex items-center justify-between mt-auto">
-                     <span class="text-xs font-mono text-slate-400">> 执行程序</span>
-                     <svg class="w-4 h-4 text-lab-accent transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                  </div>
-               </div>
-               
-               <!-- 底部进度条装饰 -->
-               <div class="absolute bottom-0 left-0 h-1 bg-lab-accent w-0 group-hover:w-full transition-all duration-500 ease-in-out"></div>
-            </article>
-         </div>
-
-         <!-- 空状态 -->
-         <div v-if="!isLoading && currentItemsCount === 0" class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
-            <div class="text-4xl mb-4">⚠</div>
-            <p>> 未找到数据</p>
-            <p class="text-xs mt-2">请检查过滤参数或稍后重试。</p>
-         </div>
+        <div v-else class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
+          <div class="text-4xl mb-4">∅</div>
+          <p>> 档案库为空</p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ResponsiveImage from '../../shared/components/ResponsiveImage.vue'
 import { portfolioAPI } from '../../shared/api'
-import { useProductStore } from '../composables/useProductStore'
-import type { Portfolio, Product } from '../../shared/types'
+import type { Portfolio } from '../../shared/types'
+import ScrambleText from '../components/decorations/ScrambleText.vue'
+import TechBorder from '../components/decorations/TechBorder.vue'
+import StatusHud from '../components/decorations/StatusHud.vue'
 
-// 滚动监听
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('is-visible')
-    }
+    if (entry.isIntersecting) entry.target.classList.add('is-visible')
   })
 }, { threshold: 0.1 })
 
 const router = useRouter()
-const route = useRoute()
-const { fetchProducts } = useProductStore()
-
-// State
-const currentTab = ref<'portfolio' | 'products'>((route.query.tab as any) || 'portfolio')
 const portfolios = ref<Portfolio[]>([])
-const products = ref<Product[]>([])
 const isLoading = ref(true)
-const sortBy = ref('display_order')
-const selectedProductType = ref('')
+const sortBy = ref<'display_order' | 'created_at' | 'title'>('display_order')
 
-// Computed
 const sortedPortfolios = computed(() => {
   return [...portfolios.value].sort((a, b) => {
     if (sortBy.value === 'created_at') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -223,53 +149,20 @@ const sortedPortfolios = computed(() => {
   })
 })
 
-const filteredProducts = computed(() => {
-  return products.value.filter(p => 
-    p.is_published && (!selectedProductType.value || p.product_type === selectedProductType.value)
-  )
-})
-
-const currentItemsCount = computed(() => 
-  currentTab.value === 'portfolio' ? sortedPortfolios.value.length : filteredProducts.value.length
-)
-
-// Methods
-const loadData = async () => {
+const loadPortfolios = async () => {
   isLoading.value = true
   try {
-    const [portData, prodData] = await Promise.all([
-      portfolioAPI.getAll(),
-      fetchProducts()
-    ])
-    portfolios.value = portData.data
-    products.value = prodData
-    
-    // 下一次 tick 启动监听
+    const res = await portfolioAPI.getAll()
+    portfolios.value = res.data
     setTimeout(() => {
       document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
     }, 100)
-  } catch (e) {
-    console.error('System Error:', e)
   } finally {
     isLoading.value = false
   }
 }
 
 const goToDetail = (id: number) => router.push(`/portfolio/${id}`)
-const launchProduct = (product: Product) => router.push(`/product/${product.id}`)
 
-const getProductIcon = (type: string) => {
-  const map: Record<string, string> = { web_app: '🌐', game: '🎮', tool: '🔧', demo: '⚡' }
-  return map[type] || '📦'
-}
-
-// Watchers
-watch(currentTab, (val) => {
-  router.replace({ query: { ...route.query, tab: val } })
-  setTimeout(() => {
-      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
-  }, 100)
-})
-
-onMounted(loadData)
+onMounted(loadPortfolios)
 </script>

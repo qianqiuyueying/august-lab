@@ -36,9 +36,9 @@ export const frontendRoutes: RouteRecordRaw[] = [
         component: () => import('../pages/AboutPage.vue')
       },
       {
-        // 重定向 /products 到 /portfolio?tab=products，保持向后兼容
         path: '/products',
-        redirect: () => ({ path: '/portfolio', query: { tab: 'products' } })
+        name: 'Products',
+        component: () => import('../pages/ProductsPage.vue')
       },
       {
         path: '/product/:id',
