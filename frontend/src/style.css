@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --primary-glow: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  }
+
   html {
     font-family: 'Inter', 'JetBrains Mono', system-ui, sans-serif;
     scroll-behavior: smooth;
   }
-  
+
   /* 实验室风格基础 */
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
