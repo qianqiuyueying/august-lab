@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors">
     <!-- 加载状态 -->
     <div v-if="loading" class="min-h-screen flex items-center justify-center">
       <div class="loading-responsive">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-        <p class="text-gray-500 mt-4">加载文章中...</p>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-lab-accent"></div>
+        <p class="text-slate-500 dark:text-slate-400 mt-4">加载文章中...</p>
       </div>
     </div>
 
     <!-- 错误状态 -->
     <div v-else-if="error" class="min-h-screen flex items-center justify-center">
       <div class="error-responsive">
-        <svg class="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-16 h-16 text-red-300 dark:text-red-500/60 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h3 class="heading-5 text-red-600 mb-2">加载失败</h3>
-        <p class="text-red-500 mb-4">{{ error }}</p>
+        <h3 class="heading-5 text-red-600 dark:text-red-400 mb-2">加载失败</h3>
+        <p class="text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
         <div class="flex gap-4 justify-center">
           <button @click="loadBlog" class="btn-primary">
             重试
@@ -34,7 +34,7 @@
         <div class="mb-8">
           <router-link 
             to="/blog" 
-            class="inline-flex items-center text-primary-600 hover:text-primary-700 transition-colors duration-200"
+            class="inline-flex items-center text-primary-600 dark:text-lab-accent hover:text-primary-700 dark:hover:text-lab-accent/80 transition-colors duration-200"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -44,7 +44,7 @@
         </div>
 
         <!-- 文章内容 -->
-        <article class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <article class="bg-white dark:bg-[#1f2833] rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
           <!-- 封面图片 -->
           <div v-if="blog.cover_image" class="relative">
             <ResponsiveImage
@@ -61,7 +61,7 @@
             <!-- 文章头部 -->
             <header class="mb-8">
               <!-- 文章元信息 -->
-              <div class="flex flex-wrap items-center text-sm text-gray-500 mb-6">
+              <div class="flex flex-wrap items-center text-sm text-slate-500 dark:text-slate-400 mb-6">
                 <div class="flex items-center mr-6">
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -83,10 +83,10 @@
               </div>
               
               <!-- 文章标题 -->
-              <h1 class="heading-1 mb-6">{{ blog.title }}</h1>
+              <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">{{ blog.title }}</h1>
               
               <!-- 文章摘要 -->
-              <div v-if="blog.summary" class="text-responsive-lg text-gray-600 leading-relaxed mb-6 p-4 bg-gray-50 rounded-lg border-l-4 border-primary-500">
+              <div v-if="blog.summary" class="text-responsive-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-l-4 border-primary-500 dark:border-lab-accent">
                 {{ blog.summary }}
               </div>
               
@@ -95,20 +95,20 @@
                 <span 
                   v-for="tag in blog.tags" 
                   :key="tag"
-                  class="tag tag-secondary"
+                  class="tag tag-secondary dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600"
                 >
                   {{ tag }}
                 </span>
               </div>
             </header>
             
-            <!-- 文章正文 -->
-            <div class="prose prose-lg max-w-none" v-html="renderedContent"></div>
+            <!-- 文章正文（Markdown 渲染，深色模式由内联 class 与下方 prose 样式共同支持） -->
+            <div class="prose prose-lg prose-content max-w-none" v-html="renderedContent"></div>
             
             <!-- 文章底部 -->
-            <footer class="mt-12 pt-8 border-t border-gray-200">
+            <footer class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
               <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
                   <div>发布时间：{{ formatDate(blog.created_at) }}</div>
                   <div v-if="blog.updated_at !== blog.created_at">
                     最后更新：{{ formatDate(blog.updated_at) }}
@@ -118,7 +118,7 @@
                 <div class="flex items-center gap-4">
                   <button 
                     @click="shareArticle"
-                    class="flex items-center text-gray-600 hover:text-primary-600 transition-colors duration-200"
+                    class="flex items-center text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-lab-accent transition-colors duration-200"
                   >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
@@ -128,8 +128,8 @@
                   
                   <button 
                     @click="copyLink"
-                    class="flex items-center text-gray-600 hover:text-primary-600 transition-colors duration-200"
-                    :class="{ 'text-primary-600': linkCopied }"
+                    class="flex items-center text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-lab-accent transition-colors duration-200"
+                    :class="{ 'text-primary-600 dark:text-lab-accent': linkCopied }"
                   >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -163,35 +163,42 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const linkCopied = ref(false)
 
-// 计算属性
+// 计算属性：Markdown 渲染，输出带深色模式适配的 class
 const renderedContent = computed(() => {
   if (!blog.value?.content) return ''
   
-  // 简单的Markdown渲染（基础实现）
   let html = blog.value.content
-  
+  const h1Cls = 'text-3xl font-bold text-slate-900 dark:text-white mt-12 mb-8'
+  const h2Cls = 'text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-6'
+  const h3Cls = 'text-xl font-semibold text-slate-900 dark:text-white mt-8 mb-4'
+  const pCls = 'text-slate-600 dark:text-slate-300 leading-relaxed mb-4'
+  const preCls = 'bg-slate-900 dark:bg-slate-800 text-slate-100 dark:text-slate-200 p-4 rounded-lg overflow-x-auto my-6'
+  const codeCls = 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded text-sm'
+  const blockquoteCls = 'border-l-4 border-primary-500 dark:border-lab-accent pl-4 py-2 my-6 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 italic'
+  const linkCls = 'text-primary-600 dark:text-lab-accent hover:text-primary-700 dark:hover:text-lab-accent/80 underline'
+
   // 标题
-  html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold text-gray-900 mt-8 mb-4">$1</h3>')
-  html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold text-gray-900 mt-10 mb-6">$1</h2>')
-  html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold text-gray-900 mt-12 mb-8">$1</h1>')
+  html = html.replace(/^### (.*$)/gim, `<h3 class="${h3Cls}">$1</h3>`)
+  html = html.replace(/^## (.*$)/gim, `<h2 class="${h2Cls}">$1</h2>`)
+  html = html.replace(/^# (.*$)/gim, `<h1 class="${h1Cls}">$1</h1>`)
   
   // 粗体和斜体
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
   html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
   
-  // 代码块
-  html = html.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-6"><code>$1</code></pre>')
-  html = html.replace(/`(.*?)`/g, '<code class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm">$1</code>')
+  // 代码块（先处理块，避免被行内 code 误伤）
+  html = html.replace(/```([\s\S]*?)```/g, `<pre class="${preCls}"><code>$1</code></pre>`)
+  html = html.replace(/`(.*?)`/g, `<code class="${codeCls}">$1</code>`)
   
   // 引用
-  html = html.replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-primary-500 pl-4 py-2 my-6 bg-primary-50 text-gray-700 italic">$1</blockquote>')
+  html = html.replace(/^> (.*$)/gim, `<blockquote class="${blockquoteCls}">$1</blockquote>`)
   
   // 链接
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary-600 hover:text-primary-700 underline" target="_blank" rel="noopener noreferrer">$1</a>')
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, `<a href="$2" class="${linkCls}" target="_blank" rel="noopener noreferrer">$1</a>`)
   
   // 段落
-  html = html.replace(/\n\n/g, '</p><p class="text-gray-600 leading-relaxed mb-4">')
-  html = '<p class="text-gray-600 leading-relaxed mb-4">' + html + '</p>'
+  html = html.replace(/\n\n/g, `</p><p class="${pCls}">`)
+  html = `<p class="${pCls}">` + html + '</p>'
   
   // 换行
   html = html.replace(/\n/g, '<br>')
@@ -281,30 +288,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Prose样式增强 */
-.prose {
+/* Prose 基础：继承颜色，深色由内联 class 与 Tailwind dark: 处理 */
+.prose.prose-content {
   color: inherit;
 }
 
-.prose h1,
-.prose h2,
-.prose h3 {
-  color: #1f2937;
-}
-
-.prose p {
+.prose.prose-content p {
   margin-bottom: 1rem;
 }
 
-.prose blockquote {
+.prose.prose-content blockquote,
+.prose.prose-content pre {
   margin: 1.5rem 0;
 }
 
-.prose pre {
-  margin: 1.5rem 0;
-}
-
-.prose code {
+.prose.prose-content code {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
