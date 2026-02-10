@@ -479,8 +479,10 @@ const loadRecentAlerts = async () => {
       .slice(0, 10)
 
     for (const product of productsToFetch) {
+      const id = product?.id
+      if (id == null || id === undefined || Number.isNaN(Number(id)) || Number(id) < 0) continue
       try {
-        const logs = await getProductLogs(product.id, {
+        const logs = await getProductLogs(id, {
           log_type: 'error',
           limit: 5
         })
@@ -496,12 +498,12 @@ const loadRecentAlerts = async () => {
             title: log.message || '错误日志',
             message: log.details ? JSON.stringify(log.details) : log.message || '',
             timestamp: new Date(log.timestamp),
-            productId: product.id
+            productId: id
           })
         }
       } catch (error) {
         // 忽略单个产品加载失败
-        console.warn(`加载产品 ${product.id} 的日志失败:`, error)
+        console.warn(`加载产品 ${id} 的日志失败:`, error)
       }
     }
     

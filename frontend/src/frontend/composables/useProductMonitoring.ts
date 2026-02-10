@@ -58,6 +58,9 @@ export function useProductMonitoring() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  const isValidProductId = (id: unknown): id is number =>
+    id != null && id !== undefined && String(id) !== 'undefined' && !Number.isNaN(Number(id)) && Number(id) >= 0
+
   const getProductErrors = async (
     productId: number,
     options: {
@@ -66,6 +69,7 @@ export function useProductMonitoring() {
       limit?: number
     } = {}
   ): Promise<ProductError[]> => {
+    if (!isValidProductId(productId)) return []
     loading.value = true
     error.value = null
 
@@ -92,6 +96,7 @@ export function useProductMonitoring() {
       limit?: number
     } = {}
   ): Promise<ProductPerformanceLog[]> => {
+    if (!isValidProductId(productId)) return []
     loading.value = true
     error.value = null
 
@@ -174,9 +179,7 @@ export function useProductMonitoring() {
       limit?: number
     } = {}
   ): Promise<ProductError[]> => {
-    if (productId == null || productId === undefined || Number.isNaN(Number(productId))) {
-      return []
-    }
+    if (!isValidProductId(productId)) return []
     loading.value = true
     error.value = null
 

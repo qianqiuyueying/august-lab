@@ -112,7 +112,7 @@ export function useProductStats() {
     }
   }
   
-  // 获取产品日志（管理员功能）
+  // 获取产品日志（管理员功能），禁止使用 undefined 等无效 id 发起请求
   const getProductLogs = async (
     productId: number,
     options?: {
@@ -122,9 +122,13 @@ export function useProductStats() {
       limit?: number
     }
   ) => {
-    if (productId == null || productId === undefined || Number.isNaN(Number(productId))) {
-      return []
-    }
+    const valid =
+      productId != null &&
+      productId !== undefined &&
+      String(productId) !== 'undefined' &&
+      !Number.isNaN(Number(productId)) &&
+      Number(productId) >= 0
+    if (!valid) return []
     try {
       const params = new URLSearchParams()
       

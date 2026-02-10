@@ -654,6 +654,7 @@ const showPerformanceDetails = (record: PerformanceRecord) => {
 }
 
 const startAutoRefresh = () => {
+  if (!props.productId || props.productId == null || Number.isNaN(Number(props.productId))) return
   if (props.autoRefresh && !refreshTimer) {
     refreshTimer = window.setInterval(() => {
       loadPerformanceData()
