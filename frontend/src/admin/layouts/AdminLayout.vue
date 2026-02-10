@@ -210,21 +210,19 @@ const menuItems: MenuItem[] = [
     title: '仪表盘'
   },
   {
-    index: 'portfolio-group',
+    index: '/admin/blog',
+    icon: Document,
+    title: '博客管理'
+  },
+  {
+    index: '/admin/portfolio',
     icon: Briefcase,
-    title: '作品集管理',
-    children: [
-      {
-        index: '/admin/portfolio',
-        icon: Briefcase,
-        title: '作品管理'
-      },
-      {
-        index: '/admin/products',
-        icon: Box,
-        title: '产品管理'
-      }
-    ]
+    title: '作品管理'
+  },
+  {
+    index: '/admin/products',
+    icon: Box,
+    title: '产品管理'
   },
   {
     index: 'product-analytics-group',
