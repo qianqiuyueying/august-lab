@@ -174,6 +174,9 @@ export function useProductMonitoring() {
       limit?: number
     } = {}
   ): Promise<ProductError[]> => {
+    if (productId == null || productId === undefined || Number.isNaN(Number(productId))) {
+      return []
+    }
     loading.value = true
     error.value = null
 

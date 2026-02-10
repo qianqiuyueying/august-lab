@@ -122,6 +122,9 @@ export function useProductStats() {
       limit?: number
     }
   ) => {
+    if (productId == null || productId === undefined || Number.isNaN(Number(productId))) {
+      return []
+    }
     try {
       const params = new URLSearchParams()
       

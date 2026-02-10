@@ -472,10 +472,13 @@ const loadSystemStatus = async () => {
 
 const loadRecentAlerts = async () => {
   try {
-    // 从所有产品的错误日志中生成告警
+    // 从部分产品的错误日志中生成告警（限制数量，避免一次请求过多触发限流）
     const allAlerts: MonitoringAlert[] = []
-    
-    for (const product of products.value) {
+    const productsToFetch = products.value
+      .filter((p) => p?.id != null && p.id !== undefined && !Number.isNaN(Number(p.id)))
+      .slice(0, 10)
+
+    for (const product of productsToFetch) {
       try {
         const logs = await getProductLogs(product.id, {
           log_type: 'error',
