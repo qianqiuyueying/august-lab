@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import os
 from datetime import datetime, timezone
 
@@ -114,14 +115,59 @@ async def health_check():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
-# 前端 SPA：镜像内存在构建产物时由后端直接提供（必须放在最后，否则会覆盖 /health 等）
-spa_dir = Path("/app/frontend/dist")
-if spa_dir.exists():
-    app.mount("/", StaticFiles(directory=str(spa_dir), html=True), name="spa")
+# 前端 SPA 目录：Docker 内为 /app/frontend/dist，本地/其他环境用项目下的 frontend/dist
+_spa_candidates = [
+    Path("/app/frontend/dist"),
+    backend_dir.parent / "frontend" / "dist",
+]
+spa_dir = next((d for d in _spa_candidates if d.exists()), None)
+
+
+def _spa_file_path(relative_path: str) -> Path | None:
+    """解析 SPA 静态文件路径，防止路径穿越；不存在或非法则返回 None。"""
+    if not spa_dir or not relative_path:
+        return None
+    # 规范路径，禁止 ..
+    parts = Path(relative_path).parts
+    if ".." in parts or relative_path.startswith("/"):
+        return None
+    full = (spa_dir / relative_path).resolve()
+    try:
+        full.resolve().relative_to(spa_dir.resolve())
+    except ValueError:
+        return None
+    return full if full.is_file() else None
+
+
+# 前端 SPA 回退：必须放在最后注册，保证 /api、/health、/uploads、/products 先匹配
+if spa_dir and (spa_dir / "index.html").exists():
+    @app.get("/{path:path}", response_class=FileResponse, include_in_schema=False)
+    async def spa_fallback(path: str):
+        # 先尝试作为静态文件（如 /assets/xxx.js）
+        if path:
+            file_path = _spa_file_path(path)
+            if file_path:
+                return FileResponse(str(file_path))
+        # 否则返回 index.html（Vue Router 前端路由）
+        index_path = spa_dir / "index.html"
+        if not index_path.exists():
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="SPA index not found")
+        return FileResponse(str(index_path))
 else:
     @app.get("/")
     async def root():
         return {"message": "August.Lab API Server"}
+
+
+@app.on_event("startup")
+async def _log_routes():
+    """启动时输出 SPA 目录与路由情况，便于排查 404。"""
+    import logging
+    log = logging.getLogger("uvicorn.error")
+    log.info(f"SPA directory: {spa_dir} (exists={spa_dir is not None and spa_dir.exists() if spa_dir else False})")
+    if spa_dir:
+        log.info(f"SPA index.html exists: {(spa_dir / 'index.html').exists()}")
 
 if __name__ == "__main__":
     import uvicorn

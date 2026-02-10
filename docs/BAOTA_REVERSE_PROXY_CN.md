@@ -81,6 +81,42 @@ map $http_upgrade $connection_upgrade {
 
 ---
 
+## 404 排查：/admin、/api/products 等返回 404
+
+**现象**：访问 `http://你的域名/admin` 或 `http://你的域名/api/products` 返回 **404 Not Found**。
+
+**原因说明：**
+
+- 本项目的 **backend（端口 8000）** 同时提供：① 前端 SPA（含 `/admin` 等前端路由）；② 所有 API（如 `/api/products`）。
+- 若宝塔里该站点**没有**把整站反向代理到 `http://127.0.0.1:8000`，而是：
+  - 只把「网站根目录」指向某个静态目录（如 `frontend/dist`），或
+  - 只配置了「代理目录」为 `/api` 且目标不对，
+  则会出现：
+  - **/admin 404**：Nginx 会去找服务器上的文件 `/admin` 或 `admin/index.html`，不存在就 404（前端路由应由后端返回 `index.html`）。
+  - **/api/products 404**：请求没被转到后端，或只转了一部分路径，Nginx 没有对应 location 就 404。
+
+**正确做法：整站反代到 backend**
+
+1. 宝塔 → **网站** → 你的域名（如 wangzihao.space）→ **设置** → **反向代理**。
+2. 确保有一条**整站**反向代理：
+   - **代理目录**：根目录 `/`（或「整站」），**不要**只填 `/api`。
+   - **目标 URL**：`http://127.0.0.1:8000`（若 502 再按本文「502 排查」改为 `http://172.17.0.1:8000`）。
+3. 若之前有「仅代理 /api」的规则，可删除或改为整站代理，避免根路径和前端路由未走 backend。
+4. 保存后**重载 Nginx**。
+
+**自检（在服务器上执行）：**
+
+```bash
+# 后端是否正常
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/health   # 应为 200
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/api/products   # 应为 200
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/admin   # 应为 200（后端会返回 index.html）
+```
+
+若本机 curl 已返回 200，但浏览器访问域名仍 404，说明 Nginx 未把该路径反代到 8000，请按上面步骤检查并改为**整站代理**。
+
+---
+
 ## 502 排查步骤
 
 ### 步骤 1：确认 backend 在主机本机可访问
