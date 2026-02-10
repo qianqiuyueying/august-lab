@@ -1,9 +1,12 @@
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col">
+  <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col md:cursor-none">
     <!-- 背景网格 - 工业风核心 -->
     <div class="fixed inset-0 z-0 pointer-events-none opacity-20 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark"></div>
     <!-- 噪点纹理 -->
     <div class="bg-noise"></div>
+    
+    <!-- 互动装饰层 (看板娘 & 动效) -->
+    <InteractiveOverlay />
 
     <!-- 顶部导航栏 - 硬朗的工业设计 -->
     <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#1f2833]/90 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 shadow-sm">
@@ -161,6 +164,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import InteractiveOverlay from '../components/decorations/InteractiveOverlay.vue'
 
 const route = useRoute()
 const mobileMenuOpen = ref(false)
@@ -220,3 +224,18 @@ onUnmounted(() => {
   transform: translateY(-10px);
 }
 </style>
+
+<style>
+/* 全局光标控制 */
+@media (min-width: 768px) {
+  /* 强制在可交互元素上也隐藏系统光标，由自定义光标接管 */
+  a, button, [role="button"], .cursor-pointer {
+    cursor: none !important;
+  }
+  
+  /* 输入框恢复系统光标，避免输入困难 */
+  input, textarea, [contenteditable="true"] {
+    cursor: text !important;
+  }
+}
+
