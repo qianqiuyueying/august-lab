@@ -58,7 +58,7 @@ function removeElementPlusDarkTheme() {
 }
 
 /**
- * 获取当前主题状态
+ * 获取当前主题状态（仅用于管理后台）
  */
 function getThemeState(): boolean {
   if (typeof window === 'undefined') return false
@@ -87,11 +87,19 @@ function applyLightTheme() {
   removeElementPlusDarkTheme()
 }
 
-// 立即初始化深色模式（在应用启动前）
-// 这样确保所有组件都能正确应用深色模式
+// 立即初始化深色/浅色模式（在应用启动前）
+// 前台固定为深色模式；后台根据用户偏好
 if (typeof window !== 'undefined') {
-  const isDark = getThemeState()
-  if (isDark) {
+  const path = window.location.pathname
+  if (path.startsWith('/admin')) {
+    const isDark = getThemeState()
+    if (isDark) {
+      applyDarkTheme()
+    } else {
+      applyLightTheme()
+    }
+  } else {
+    // 前台始终使用深色模式
     applyDarkTheme()
   }
 }
@@ -111,16 +119,24 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
-  // 确保深色模式状态正确应用（每次路由切换时检查）
-  // 防止页面切换时组件先于主题状态渲染
-  const isDark = getThemeState()
+  // 确保主题状态正确应用（每次路由切换时检查）
+  // 前台固定深色，后台根据用户偏好
   const html = document.documentElement
+  const isAdminRoute = to.path.startsWith('/admin')
   const hasDarkClass = html.classList.contains('dark')
-  
-  if (isDark && !hasDarkClass) {
-    applyDarkTheme()
-  } else if (!isDark && hasDarkClass) {
-    applyLightTheme()
+
+  if (isAdminRoute) {
+    const isDark = getThemeState()
+    if (isDark && !hasDarkClass) {
+      applyDarkTheme()
+    } else if (!isDark && hasDarkClass) {
+      applyLightTheme()
+    }
+  } else {
+    // 前台路由：始终保持深色模式
+    if (!hasDarkClass) {
+      applyDarkTheme()
+    }
   }
   
   const token = localStorage.getItem('admin_token')
