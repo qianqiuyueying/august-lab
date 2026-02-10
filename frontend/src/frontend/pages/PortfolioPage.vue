@@ -5,7 +5,7 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 - 数据面板风格 -->
-      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8">
+      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-3 mb-4">
@@ -26,51 +26,51 @@
                   class="px-6 py-2 font-mono text-sm font-bold uppercase transition-all duration-200 rounded-sm"
                   :class="currentTab === 'portfolio' ? 'bg-white dark:bg-lab-accent text-slate-900 dark:text-black shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
                 >
-                  Works
+                  作品集
                 </button>
                 <button
                   @click="currentTab = 'products'"
                   class="px-6 py-2 font-mono text-sm font-bold uppercase transition-all duration-200 rounded-sm"
                   :class="currentTab === 'products' ? 'bg-white dark:bg-lab-accent text-slate-900 dark:text-black shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
                 >
-                  Products
+                  产品
                 </button>
              </div>
           </div>
         </div>
       </header>
 
-      <!-- 过滤器区域 - 终端输入风格 -->
-      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 font-mono text-sm">
+      <!-- 过滤器区域 - 终端输入风格 (修复可视性) -->
+      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 font-mono text-sm reveal-on-scroll">
          <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
             <div class="flex items-center gap-2 w-full md:w-auto">
                <span class="text-lab-accent">></span>
-               <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap">FILTER:</span>
+               <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap">筛选:</span>
                <select 
                   v-if="currentTab === 'portfolio'"
                   v-model="sortBy" 
-                  class="bg-transparent border-none text-slate-900 dark:text-white font-bold focus:ring-0 cursor-pointer w-full md:w-auto"
+                  class="bg-transparent border-b border-slate-300 dark:border-slate-500 text-slate-900 dark:text-white font-bold focus:ring-0 focus:border-lab-accent cursor-pointer w-full md:w-auto px-2 py-1 outline-none"
                >
-                  <option value="display_order">RECOMMENDED</option>
-                  <option value="created_at">LATEST_DEPLOY</option>
-                  <option value="title">ALPHABETICAL</option>
+                  <option value="display_order" class="bg-white dark:bg-slate-800">推荐顺序</option>
+                  <option value="created_at" class="bg-white dark:bg-slate-800">最新发布</option>
+                  <option value="title" class="bg-white dark:bg-slate-800">名称排序</option>
                </select>
                <select 
                   v-else
                   v-model="selectedProductType"
-                  class="bg-transparent border-none text-slate-900 dark:text-white font-bold focus:ring-0 cursor-pointer w-full md:w-auto"
+                  class="bg-transparent border-b border-slate-300 dark:border-slate-500 text-slate-900 dark:text-white font-bold focus:ring-0 focus:border-lab-accent cursor-pointer w-full md:w-auto px-2 py-1 outline-none"
                >
-                  <option value="">ALL_TYPES</option>
-                  <option value="web_app">WEB_APP</option>
-                  <option value="game">GAME_ENGINE</option>
-                  <option value="tool">UTILITY</option>
+                  <option value="" class="bg-white dark:bg-slate-800">全部类型</option>
+                  <option value="web_app" class="bg-white dark:bg-slate-800">Web应用</option>
+                  <option value="game" class="bg-white dark:bg-slate-800">游戏引擎</option>
+                  <option value="tool" class="bg-white dark:bg-slate-800">实用工具</option>
                </select>
             </div>
             
             <div class="flex items-center gap-4 text-xs">
-               <span class="text-slate-400">TOTAL_ITEMS: {{ currentItemsCount }}</span>
+               <span class="text-slate-400">总计项目: {{ currentItemsCount }}</span>
                <span class="w-px h-4 bg-slate-300 dark:bg-slate-700"></span>
-               <span class="text-green-500">STATUS: READY</span>
+               <span class="text-green-500">状态: 就绪</span>
             </div>
          </div>
       </div>
@@ -79,7 +79,7 @@
       <div class="min-h-[400px] relative">
          <!-- 加载遮罩 -->
          <div v-if="isLoading" class="absolute inset-0 z-20 bg-slate-50/80 dark:bg-[#0b0c10]/80 backdrop-blur-sm flex items-center justify-center">
-            <div class="font-mono text-lab-accent animate-pulse">> FETCHING_DATA...</div>
+            <div class="font-mono text-lab-accent animate-pulse">> 获取数据中...</div>
          </div>
 
          <!-- 作品列表 -->
@@ -87,7 +87,7 @@
             <article 
                v-for="(item, idx) in sortedPortfolios" 
                :key="item.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer flex flex-col"
+               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer flex flex-col reveal-on-scroll"
                @click="goToDetail(item.id)"
             >
                <!-- 角标装饰 -->
@@ -95,14 +95,14 @@
                   <div class="w-2 h-2 bg-lab-accent rounded-full shadow-[0_0_10px_#66fcf1]"></div>
                </div>
 
-               <!-- 图片容器 -->
+               <!-- 图片容器 (去除灰度) -->
                <div class="relative aspect-video overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
                   <ResponsiveImage
                      v-if="item.image_url"
                      :src="item.image_url"
                      :alt="item.title"
                      aspect-ratio="video"
-                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                     class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                   />
                   <div v-else class="w-full h-full flex items-center justify-center font-mono text-slate-400 dark:text-slate-600 text-4xl">
                      NO_SIGNAL
@@ -121,7 +121,7 @@
                   </div>
                   
                   <p class="text-slate-600 dark:text-slate-400 text-sm font-mono mb-6 line-clamp-3 flex-1">
-                     {{ item.description || 'No description data.' }}
+                     {{ item.description || '无描述数据。' }}
                   </p>
                   
                   <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50">
@@ -142,7 +142,7 @@
             <article 
                v-for="product in filteredProducts" 
                :key="product.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer overflow-hidden"
+               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer overflow-hidden reveal-on-scroll"
                @click="launchProduct(product)"
             >
                <div class="p-6 h-full flex flex-col">
@@ -164,7 +164,7 @@
                   </p>
                   
                   <div class="flex items-center justify-between mt-auto">
-                     <span class="text-xs font-mono text-slate-400">> EXECUTE</span>
+                     <span class="text-xs font-mono text-slate-400">> 执行程序</span>
                      <svg class="w-4 h-4 text-lab-accent transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </div>
                </div>
@@ -177,8 +177,8 @@
          <!-- 空状态 -->
          <div v-if="!isLoading && currentItemsCount === 0" class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
             <div class="text-4xl mb-4">⚠</div>
-            <p>> NO_DATA_FOUND</p>
-            <p class="text-xs mt-2">Check filter parameters or try again later.</p>
+            <p>> 未找到数据</p>
+            <p class="text-xs mt-2">请检查过滤参数或稍后重试。</p>
          </div>
       </div>
     </div>
@@ -192,6 +192,15 @@ import ResponsiveImage from '../../shared/components/ResponsiveImage.vue'
 import { portfolioAPI } from '../../shared/api'
 import { useProductStore } from '../composables/useProductStore'
 import type { Portfolio, Product } from '../../shared/types'
+
+// 滚动监听
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible')
+    }
+  })
+}, { threshold: 0.1 })
 
 const router = useRouter()
 const route = useRoute()
@@ -234,6 +243,11 @@ const loadData = async () => {
     ])
     portfolios.value = portData.data
     products.value = prodData
+    
+    // 下一次 tick 启动监听
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
+    }, 100)
   } catch (e) {
     console.error('System Error:', e)
   } finally {
@@ -252,6 +266,9 @@ const getProductIcon = (type: string) => {
 // Watchers
 watch(currentTab, (val) => {
   router.replace({ query: { ...route.query, tab: val } })
+  setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
+  }, 100)
 })
 
 onMounted(loadData)

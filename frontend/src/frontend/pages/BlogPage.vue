@@ -5,7 +5,7 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 - 数据面板风格 -->
-      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8">
+      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-3 mb-4">
@@ -13,18 +13,18 @@
                <span class="font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Knowledge Base</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">Dev</span> Logs
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">开发</span> 日志
             </h1>
           </div>
           
           <!-- 统计信息 -->
           <div class="flex flex-col sm:flex-row gap-4">
              <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 min-w-[140px]">
-                <div class="text-xs font-mono text-slate-500 mb-1">TOTAL_LOGS</div>
+                <div class="text-xs font-mono text-slate-500 mb-1">总计日志</div>
                 <div class="text-2xl font-bold font-mono text-slate-900 dark:text-white">{{ publishedBlogs.length }}</div>
              </div>
              <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 min-w-[140px]">
-                <div class="text-xs font-mono text-slate-500 mb-1">LAST_UPDATE</div>
+                <div class="text-xs font-mono text-slate-500 mb-1">最后更新</div>
                 <div class="text-2xl font-bold font-mono text-slate-900 dark:text-white">{{ lastUpdateDate }}</div>
              </div>
           </div>
@@ -32,18 +32,18 @@
       </header>
 
       <!-- 过滤器区域 - 终端输入风格 -->
-      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 font-mono text-sm">
+      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 font-mono text-sm reveal-on-scroll">
          <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
             <div class="flex items-center gap-2 w-full md:w-auto">
                <span class="text-lab-accent">></span>
-               <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap">SORT_BY:</span>
+               <span class="text-slate-500 dark:text-slate-400 whitespace-nowrap">排序:</span>
                <select 
                   v-model="sortBy" 
-                  class="bg-transparent border-none text-slate-900 dark:text-white font-bold focus:ring-0 cursor-pointer w-full md:w-auto uppercase"
+                  class="bg-transparent border-b border-slate-300 dark:border-slate-500 text-slate-900 dark:text-white font-bold focus:ring-0 focus:border-lab-accent cursor-pointer w-full md:w-auto uppercase px-2 py-1 outline-none"
                >
-                  <option value="created_at">DATE_PUBLISHED</option>
-                  <option value="updated_at">DATE_MODIFIED</option>
-                  <option value="title">TITLE_INDEX</option>
+                  <option value="created_at" class="bg-white dark:bg-slate-800">发布日期</option>
+                  <option value="updated_at" class="bg-white dark:bg-slate-800">修改日期</option>
+                  <option value="title" class="bg-white dark:bg-slate-800">标题索引</option>
                </select>
             </div>
             
@@ -52,10 +52,10 @@
                  @click="toggleSortOrder"
                  class="hover:text-lab-accent transition-colors uppercase"
                >
-                 ORDER: {{ sortOrder === 'desc' ? 'DESC' : 'ASC' }}
+                 顺序: {{ sortOrder === 'desc' ? '降序' : '升序' }}
                </button>
                <span class="w-px h-4 bg-slate-300 dark:bg-slate-700"></span>
-               <span class="text-green-500">SYSTEM: ONLINE</span>
+               <span class="text-green-500">系统: 在线</span>
             </div>
          </div>
       </div>
@@ -72,7 +72,7 @@
             <article 
                v-for="(blog, index) in sortedBlogs" 
                :key="blog.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-6 md:p-8 hover:border-l-8 hover:border-l-lab-accent transition-all duration-200 cursor-pointer overflow-hidden"
+               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-6 md:p-8 hover:border-l-8 hover:border-l-lab-accent transition-all duration-200 cursor-pointer overflow-hidden reveal-on-scroll"
                @click="goToDetail(blog.id)"
             >
                <div class="flex flex-col md:flex-row gap-8 relative z-10">
@@ -85,12 +85,12 @@
                         </div>
                         <div class="flex items-center gap-2">
                            <span class="w-2 h-2 bg-slate-300 dark:bg-slate-600 rounded-sm"></span>
-                           <span>{{ getReadingTime(blog.content) }} MIN READ</span>
+                           <span>{{ getReadingTime(blog.content) }} 分钟阅读</span>
                         </div>
                      </div>
                      <div class="mt-4 md:mt-0">
                         <span class="text-[10px] font-mono font-bold uppercase px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                           {{ blog.tags[0] || 'LOG' }}
+                           {{ blog.tags[0] || '日志' }}
                         </span>
                      </div>
                   </div>
@@ -115,7 +115,7 @@
                            </span>
                         </div>
                         <div class="flex items-center gap-2 text-xs font-mono font-bold uppercase text-lab-accent group-hover:translate-x-2 transition-transform">
-                           <span>Access Log</span>
+                           <span>访问日志</span>
                            <span class="text-lg">→</span>
                         </div>
                      </div>
@@ -132,7 +132,7 @@
          <!-- 空状态 -->
          <div v-if="!loading && sortedBlogs.length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
             <div class="text-4xl mb-4">∅</div>
-            <p>> NO_LOGS_FOUND</p>
+            <p>> 未找到日志</p>
          </div>
       </div>
     </div>
@@ -175,12 +175,26 @@ const lastUpdateDate = computed(() => {
   return new Date(maxDate).toISOString().split('T')[0]
 })
 
+// 滚动监听
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible')
+    }
+  })
+}, { threshold: 0.1 })
+
 // Methods
 const loadBlogs = async () => {
   try {
     loading.value = true
     const response = await blogAPI.getAll()
     blogs.value = response.data
+    
+    // 下一次 tick 启动监听
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
+    }, 100)
   } catch (err) {
     console.error('System Error:', err)
   } finally {

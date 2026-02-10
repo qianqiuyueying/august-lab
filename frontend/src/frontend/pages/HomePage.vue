@@ -5,26 +5,26 @@
       <!-- 动态数据背景 -->
       <div class="absolute inset-0 pointer-events-none opacity-5 dark:opacity-10">
          <div class="absolute top-10 left-10 font-mono text-xs space-y-2">
-            <p>> INITIALIZING SYSTEM...</p>
-            <p>> LOADING ASSETS... [OK]</p>
-            <p>> CONNECTING TO NEURAL NET... [OK]</p>
+            <p>> 初始化系统...</p>
+            <p>> 加载资源... [OK]</p>
+            <p>> 连接神经网络... [OK]</p>
          </div>
          <div class="absolute bottom-10 right-10 font-mono text-xs text-right space-y-2">
             <p>CPU: 45% | MEM: 32% | NET: 1.2Gbps</p>
-            <p>LOCATION: SECTOR 7G</p>
+            <p>位置: 第7区</p>
          </div>
       </div>
 
-      <div class="relative z-10 max-w-5xl mx-auto text-center px-4">
+      <div class="relative z-10 max-w-5xl mx-auto text-center px-4 reveal-on-scroll is-visible">
         <!-- 装饰性标签 - 芯片风格 -->
         <div class="inline-flex items-center gap-2 px-3 py-1 mb-8 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-sm font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">
           <span class="w-2 h-2 bg-lab-accent rounded-full animate-pulse"></span>
-          <span>System Status: Online</span>
+          <span>系统状态: 在线</span>
         </div>
         
         <!-- 主标题 - 打字机效果 -->
         <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 relative inline-block">
-          <span class="text-slate-900 dark:text-white">HELLO, I'M </span>
+          <span class="text-slate-900 dark:text-white">你好，我是 </span>
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent relative">
             AUGUST
             <!-- 故障效果层 -->
@@ -35,9 +35,9 @@
         
         <!-- 副标题 - 数据流 -->
         <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 font-mono mb-12 max-w-2xl mx-auto leading-relaxed border-l-2 border-lab-accent pl-6 text-left">
-          <span class="text-lab-accent">const</span> role = <span class="text-green-500">'Full Stack Developer'</span>;<br>
-          <span class="text-lab-accent">const</span> mission = <span class="text-green-500">'Crafting Digital Experiences'</span>;<br>
-          <span class="text-slate-400">// Combining creativity with engineering precision.</span>
+          <span class="text-lab-accent">const</span> role = <span class="text-green-500">'全栈开发者'</span>;<br>
+          <span class="text-lab-accent">const</span> mission = <span class="text-green-500">'打造极致数字体验'</span>;<br>
+          <span class="text-slate-400">// 将创意与工程精确融合。</span>
         </p>
         
         <!-- CTA 按钮组 - 硬朗风格 -->
@@ -47,7 +47,7 @@
             class="group relative px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest hover:bg-lab-accent dark:hover:bg-lab-accent transition-colors duration-300 overflow-hidden"
           >
             <span class="relative z-10 flex items-center gap-2">
-              Explore Projects
+              探索项目
               <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </span>
             <!-- 按钮背景扫描动画 -->
@@ -58,30 +58,30 @@
             to="/about" 
             class="px-8 py-4 bg-transparent border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white font-bold uppercase tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300"
           >
-            Read Documentation
+            阅读文档
           </router-link>
         </div>
       </div>
     </section>
 
     <!-- 精选作品 - 仪表盘风格 -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
       <div class="flex items-end justify-between mb-12 border-b-2 border-slate-200 dark:border-slate-800 pb-4">
         <div>
           <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">
-            <span class="text-lab-accent mr-2">/</span>Selected Works
+            <span class="text-lab-accent mr-2">/</span>精选作品
           </h2>
-          <p class="font-mono text-sm text-slate-500 dark:text-slate-400">Deployments & Experiments</p>
+          <p class="font-mono text-sm text-slate-500 dark:text-slate-400">已部署项目 & 实验</p>
         </div>
         <router-link to="/portfolio" class="hidden md:flex items-center gap-2 font-mono text-sm font-bold uppercase hover:text-lab-accent transition-colors">
-          View All Modules <span class="text-lg">→</span>
+          查看所有模块 <span class="text-lg">→</span>
         </router-link>
       </div>
 
       <ErrorBoundary 
         :on-retry="loadPortfolios"
-        fallback-title="DATA FETCH FAILED"
-        fallback-message="Unable to retrieve project data. Retrying connection..."
+        fallback-title="数据获取失败"
+        fallback-message="无法检索项目数据。正在重试连接..."
       >
         <div v-if="portfolioLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
            <div v-for="i in 3" :key="i" class="bg-slate-100 dark:bg-slate-800 h-96 animate-pulse rounded-sm"></div>
@@ -94,14 +94,14 @@
             class="group bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 cursor-pointer flex flex-col h-full"
             @click="goToPortfolioDetail(portfolio.id)"
           >
-            <!-- 图片区域 - 带遮罩 -->
+            <!-- 图片区域 - 带遮罩 (去除灰度滤镜) -->
             <div class="relative aspect-video overflow-hidden border-b border-slate-200 dark:border-slate-800">
               <ResponsiveImage
                 v-if="portfolio.image_url"
                 :src="portfolio.image_url"
                 :alt="portfolio.title"
                 aspect-ratio="video"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 grayscale group-hover:grayscale-0"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div v-else class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono text-4xl text-slate-300">
                 NO_IMG
@@ -120,7 +120,7 @@
               </div>
               
               <p class="text-slate-600 dark:text-slate-400 text-sm font-mono mb-6 line-clamp-3 flex-1">
-                {{ portfolio.description || '// No description available.' }}
+                {{ portfolio.description || '// 暂无描述数据。' }}
               </p>
               
               <!-- 底部标签 -->
@@ -140,16 +140,16 @@
     </section>
 
     <!-- 最新日志 - 终端列表风格 -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 reveal-on-scroll">
       <div class="flex items-end justify-between mb-12 border-b-2 border-slate-200 dark:border-slate-800 pb-4">
         <div>
           <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">
-            <span class="text-lab-accent mr-2">/</span>Dev Logs
+            <span class="text-lab-accent mr-2">/</span>开发日志
           </h2>
-          <p class="font-mono text-sm text-slate-500 dark:text-slate-400">Thoughts & Updates</p>
+          <p class="font-mono text-sm text-slate-500 dark:text-slate-400">思考 & 更新</p>
         </div>
         <router-link to="/blog" class="hidden md:flex items-center gap-2 font-mono text-sm font-bold uppercase hover:text-lab-accent transition-colors">
-          Access Archives <span class="text-lg">→</span>
+          访问归档 <span class="text-lg">→</span>
         </router-link>
       </div>
 
@@ -177,7 +177,7 @@
               </div>
               <div class="md:text-right">
                 <span class="inline-block px-4 py-2 border border-slate-300 dark:border-slate-600 font-mono text-xs font-bold uppercase hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
-                  Read File
+                  阅读文件
                 </span>
               </div>
             </div>
@@ -196,6 +196,15 @@ import ResponsiveImage from '../../shared/components/ResponsiveImage.vue'
 import ErrorBoundary from '../../shared/components/ErrorBoundary.vue'
 import { useDataSync } from '../../shared/composables/useDataStore'
 import type { Product } from '../../shared/types'
+
+// 滚动监听
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible')
+    }
+  })
+}, { threshold: 0.1 })
 
 const router = useRouter()
 
@@ -228,9 +237,15 @@ const extractSummary = (content: string) => {
 onMounted(async () => {
   startAutoSync()
   await Promise.all([loadPortfolios(), loadBlogs()])
+  
+  // 启动滚动监听
+  document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
 })
 
-onUnmounted(() => stopAutoSync())
+onUnmounted(() => {
+  stopAutoSync()
+  observer.disconnect()
+})
 </script>
 
 <style scoped>

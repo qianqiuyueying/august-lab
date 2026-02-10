@@ -5,7 +5,7 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 -->
-      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8">
+      <header class="mb-16 border-b-2 border-slate-200 dark:border-slate-800 pb-8 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-3 mb-4">
@@ -13,7 +13,7 @@
                <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Identity Matrix</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">About</span> Me
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">关于</span> 我
             </h1>
           </div>
           
@@ -21,13 +21,13 @@
           <div class="hidden md:block">
              <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 min-w-[200px] transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <div class="flex justify-between items-center mb-2 border-b border-slate-300 dark:border-slate-700 pb-2">
-                   <span class="text-[10px] font-bold">ID_CARD</span>
+                   <span class="text-[10px] font-bold">身份卡</span>
                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                 </div>
                 <div class="text-xs space-y-1">
-                   <div class="flex justify-between"><span class="text-slate-500">NAME:</span> <span>AUGUST</span></div>
-                   <div class="flex justify-between"><span class="text-slate-500">ROLE:</span> <span>DEV</span></div>
-                   <div class="flex justify-between"><span class="text-slate-500">LEVEL:</span> <span>ADMIN</span></div>
+                   <div class="flex justify-between"><span class="text-slate-500">姓名:</span> <span>AUGUST</span></div>
+                   <div class="flex justify-between"><span class="text-slate-500">角色:</span> <span>开发者</span></div>
+                   <div class="flex justify-between"><span class="text-slate-500">等级:</span> <span>管理员</span></div>
                 </div>
                 <div class="mt-2 pt-2 border-t border-slate-300 dark:border-slate-700">
                    <div class="h-8 bg-slate-300 dark:bg-slate-700 w-full opacity-50 barcode"></div>
@@ -40,7 +40,7 @@
       <!-- 主要内容区 -->
       <div v-if="!loading && profile" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <!-- 左侧：个人档案 -->
-        <div class="lg:col-span-4 space-y-8">
+        <div class="lg:col-span-4 space-y-8 reveal-on-scroll">
            <!-- 头像卡片 -->
            <div class="bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-1 relative group overflow-hidden">
               <div class="relative aspect-square bg-slate-100 dark:bg-slate-900 overflow-hidden">
@@ -76,24 +76,24 @@
 
            <!-- 联系终端 -->
            <div class="bg-slate-900 text-slate-300 p-6 font-mono text-sm border-l-4 border-lab-accent">
-              <div class="mb-4 text-xs text-slate-500 uppercase">>> Contact_Protocol</div>
+              <div class="mb-4 text-xs text-slate-500 uppercase">>> 联系协议</div>
               <div class="space-y-2">
-                 <p><span class="text-lab-accent">$</span> echo "Let's build together"</p>
-                 <p><span class="text-lab-accent">$</span> mail -s "Project Inquiry"</p>
+                 <p><span class="text-lab-accent">$</span> echo "让我们一起构建"</p>
+                 <p><span class="text-lab-accent">$</span> mail -s "项目咨询"</p>
                  <a href="mailto:hello@august.lab" class="inline-block mt-2 px-4 py-2 border border-lab-accent text-lab-accent hover:bg-lab-accent hover:text-black transition-colors uppercase font-bold">
-                    INITIATE_CONTACT
+                    发起联系
                  </a>
               </div>
            </div>
         </div>
 
         <!-- 右侧：详细信息 -->
-        <div class="lg:col-span-8 space-y-12">
+        <div class="lg:col-span-8 space-y-12 reveal-on-scroll">
            <!-- Bio -->
            <section>
               <h2 class="text-2xl font-bold uppercase mb-6 flex items-center gap-2">
                  <span class="w-2 h-2 bg-lab-accent"></span>
-                 Bio_Data
+                 个人简介
               </h2>
               <div class="bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 p-8 leading-relaxed text-slate-600 dark:text-slate-300 text-lg">
                  <div v-html="renderedBio"></div>
@@ -104,7 +104,7 @@
            <section>
               <h2 class="text-2xl font-bold uppercase mb-6 flex items-center gap-2">
                  <span class="w-2 h-2 bg-lab-accent"></span>
-                 Skill_Matrix
+                 技能矩阵
               </h2>
               
               <div v-if="skillsByCategory" class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -135,7 +135,7 @@
       <!-- 加载状态 -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
          <div class="animate-spin h-8 w-8 border-2 border-lab-accent border-t-transparent rounded-full mb-4"></div>
-         <p>> LOADING_PROFILE...</p>
+         <p>> 加载配置中...</p>
       </div>
     </div>
   </div>
@@ -169,11 +169,20 @@ const renderedBio = computed(() => {
   return profile.value.bio.split('\n').map(p => `<p class="mb-4">${p}</p>`).join('')
 })
 
+// 滚动监听
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible')
+    }
+  })
+}, { threshold: 0.1 })
+
 // Methods
 const getCategoryDisplayName = (cat: string) => {
   const map: Record<string, string> = {
-    'frontend': 'FRONTEND_DEV', 'backend': 'BACKEND_OPS', 'database': 'DATA_STORE',
-    'devops': 'INFRASTRUCTURE', 'tools': 'TOOLCHAIN', 'design': 'UI/UX_DESIGN'
+    'frontend': '前端开发', 'backend': '后端开发', 'database': '数据库',
+    'devops': '运维部署', 'tools': '开发工具', 'design': '设计工具'
   }
   return map[cat] || cat.toUpperCase()
 }
@@ -193,6 +202,11 @@ const loadProfile = async () => {
         }, 500)
       })
     }
+    
+    // 下一次 tick 启动监听
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
+    }, 100)
   } catch (err) {
     console.error('System Error:', err)
   } finally {

@@ -5,31 +5,31 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 - 控制台风格 -->
-      <header class="mb-12 border-b-2 border-slate-200 dark:border-slate-800 pb-8">
+      <header class="mb-12 border-b-2 border-slate-200 dark:border-slate-800 pb-8 reveal-on-scroll">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-3 mb-4">
                <div class="w-3 h-3 bg-lab-accent rounded-sm animate-pulse"></div>
-               <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Applications_Deck</span>
+               <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Applications Deck</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">Products</span>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lab-accent to-lab-darkAccent">在线</span> 产品
             </h1>
           </div>
           
           <div class="flex items-center gap-4 text-xs font-bold">
              <div class="px-3 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                ACTIVE_NODES: {{ filteredProducts.length }}
+                活跃节点: {{ filteredProducts.length }}
              </div>
              <div class="px-3 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-green-500">
-                SYSTEM_STATUS: STABLE
+                系统状态: 稳定
              </div>
           </div>
         </div>
       </header>
 
       <!-- 控制面板 -->
-      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4">
+      <div class="mb-12 bg-slate-100 dark:bg-[#1f2833] border border-slate-200 dark:border-slate-700 p-4 reveal-on-scroll">
          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <!-- 搜索框 -->
             <div class="relative group">
@@ -37,28 +37,28 @@
                <input 
                   v-model="searchQuery" 
                   type="text" 
-                  placeholder="SEARCH_MODULE..." 
+                  placeholder="搜索模块..." 
                   class="w-full bg-transparent border-b-2 border-slate-300 dark:border-slate-600 focus:border-lab-accent pl-8 py-2 text-sm font-bold uppercase outline-none transition-colors text-slate-900 dark:text-white"
                >
             </div>
 
             <!-- 类型筛选 -->
             <div class="flex items-center gap-2 text-sm">
-               <span class="text-slate-500 dark:text-slate-400">TYPE:</span>
+               <span class="text-slate-500 dark:text-slate-400">类型:</span>
                <select 
                   v-model="selectedType" 
                   class="bg-transparent border-none font-bold uppercase text-slate-900 dark:text-white focus:ring-0 cursor-pointer"
                >
-                  <option value="">ALL_MODULES</option>
-                  <option value="web_app">WEB_APP</option>
-                  <option value="game">SIMULATION</option>
-                  <option value="tool">UTILITY</option>
+                  <option value="" class="bg-white dark:bg-slate-800">所有模块</option>
+                  <option value="web_app" class="bg-white dark:bg-slate-800">Web应用</option>
+                  <option value="game" class="bg-white dark:bg-slate-800">模拟程序</option>
+                  <option value="tool" class="bg-white dark:bg-slate-800">实用工具</option>
                </select>
             </div>
 
             <!-- 统计 -->
             <div class="md:text-right text-xs text-slate-500 dark:text-slate-400">
-               <span>DEPLOYED_REGIONS: GLOBAL</span>
+               <span>部署区域: 全球</span>
             </div>
          </div>
       </div>
@@ -69,16 +69,16 @@
          <div v-if="isLoading" class="absolute inset-0 z-20 bg-slate-50/80 dark:bg-[#0b0c10]/80 backdrop-blur-sm flex items-center justify-center">
             <div class="flex flex-col items-center">
                <div class="w-12 h-12 border-4 border-slate-200 dark:border-slate-800 border-t-lab-accent rounded-full animate-spin mb-4"></div>
-               <div class="font-mono text-xs uppercase animate-pulse">Loading_Modules...</div>
+               <div class="font-mono text-xs uppercase animate-pulse">正在加载模块...</div>
             </div>
          </div>
 
          <!-- 错误提示 -->
          <div v-if="error" class="flex flex-col items-center justify-center py-20 text-red-500">
             <div class="text-4xl mb-4">⚠</div>
-            <p class="font-bold uppercase">SYSTEM_ERROR: {{ error }}</p>
+            <p class="font-bold uppercase">系统错误: {{ error }}</p>
             <button @click="loadProducts" class="mt-4 px-4 py-2 border border-red-500 hover:bg-red-500 hover:text-white transition-colors uppercase text-xs font-bold">
-               RETRY_CONNECTION
+               重试连接
             </button>
          </div>
 
@@ -87,7 +87,7 @@
             <article 
                v-for="(product, idx) in filteredProducts" 
                :key="product.id"
-               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 flex flex-col h-full overflow-hidden"
+               class="group relative bg-white dark:bg-[#1f2833] border border-slate-200 dark:border-slate-800 hover:border-lab-accent dark:hover:border-lab-accent transition-all duration-300 flex flex-col h-full overflow-hidden reveal-on-scroll"
                @click="launchProduct(product)"
             >
                <!-- 顶部状态栏 -->
@@ -100,13 +100,13 @@
                   </div>
                </div>
 
-               <!-- 预览区域 -->
+               <!-- 预览区域 (去除灰度) -->
                <div class="relative aspect-video bg-slate-200 dark:bg-slate-900 overflow-hidden group-hover:opacity-90 transition-opacity">
                   <img 
                      v-if="product.preview_image" 
                      :src="product.preview_image" 
                      :alt="product.title"
-                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                     class="w-full h-full object-cover transition-all duration-500"
                   >
                   <div v-else class="w-full h-full flex items-center justify-center text-4xl text-slate-400">
                      {{ getProductIcon(product.product_type) }}
@@ -115,7 +115,7 @@
                   <!-- 启动覆盖层 -->
                   <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
                      <button class="px-6 py-2 border-2 border-lab-accent text-lab-accent font-bold uppercase tracking-widest hover:bg-lab-accent hover:text-black transition-all transform translate-y-4 group-hover:translate-y-0">
-                        Launch_App
+                        启动应用
                      </button>
                   </div>
                </div>
@@ -147,8 +147,8 @@
          <!-- 空状态 -->
          <div v-else class="flex flex-col items-center justify-center py-20 text-slate-400 font-mono">
             <div class="text-4xl mb-4">∅</div>
-            <p>> NO_MODULES_FOUND</p>
-            <p class="text-xs mt-2">Adjust search parameters.</p>
+            <p>> 未找到模块</p>
+            <p class="text-xs mt-2">请调整搜索参数。</p>
          </div>
       </div>
     </div>
@@ -186,12 +186,26 @@ const filteredProducts = computed(() => {
   })
 })
 
+// 滚动监听
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible')
+    }
+  })
+}, { threshold: 0.1 })
+
 // Methods
 const loadProducts = async () => {
   isLoading.value = true
   error.value = null
   try {
     products.value = await fetchProducts()
+    
+    // 下一次 tick 启动监听
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el))
+    }, 100)
   } catch (err: any) {
     error.value = err.message || 'CONNECTION_FAILED'
   } finally {

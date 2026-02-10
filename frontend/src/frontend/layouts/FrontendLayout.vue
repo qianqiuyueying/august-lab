@@ -2,6 +2,8 @@
   <div class="min-h-screen bg-slate-50 dark:bg-[#0b0c10] text-slate-900 dark:text-lab-text transition-colors duration-300 font-mono relative overflow-hidden flex flex-col">
     <!-- 背景网格 - 工业风核心 -->
     <div class="fixed inset-0 z-0 pointer-events-none opacity-20 dark:opacity-10 bg-[length:40px_40px] bg-grid-pattern dark:bg-grid-pattern-dark"></div>
+    <!-- 噪点纹理 -->
+    <div class="bg-noise"></div>
 
     <!-- 顶部导航栏 - 硬朗的工业设计 -->
     <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#1f2833]/90 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 shadow-sm">
@@ -14,7 +16,7 @@
             </div>
             <div class="flex flex-col leading-none">
               <span class="font-bold text-lg tracking-wider uppercase text-slate-900 dark:text-white group-hover:text-lab-darkAccent transition-colors">AUGUST.LAB</span>
-              <span class="text-[10px] text-slate-500 dark:text-slate-400 tracking-[0.2em] uppercase">SYSTEM ONLINE</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 tracking-[0.2em] uppercase">系统在线</span>
             </div>
           </router-link>
 
@@ -104,27 +106,27 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
            <!-- 列 1: 系统信息 -->
            <div class="space-y-4">
-              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">System Info</h3>
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">系统信息</h3>
               <p class="text-xs leading-relaxed font-mono">
-                <span class="block mb-1">> KERNEL: AUGUST.LAB.CORE.V2</span>
-                <span class="block mb-1">> STATUS: OPERATIONAL</span>
-                <span class="block">> UPTIME: {{ uptime }}</span>
+                <span class="block mb-1">> 核心: AUGUST.LAB.CORE.V2</span>
+                <span class="block mb-1">> 状态: 运行中</span>
+                <span class="block">> 运行时间: {{ uptime }}</span>
               </p>
            </div>
            
            <!-- 列 2: 快速链接 -->
            <div class="space-y-4">
-              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">Quick Access</h3>
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">快速访问</h3>
               <div class="flex flex-wrap gap-4 text-xs font-mono">
-                <router-link to="/portfolio" class="hover:text-lab-accent transition-colors">[ PORTFOLIO ]</router-link>
-                <router-link to="/blog" class="hover:text-lab-accent transition-colors">[ BLOG_LOGS ]</router-link>
-                <router-link to="/about" class="hover:text-lab-accent transition-colors">[ ABOUT_DEV ]</router-link>
+                <router-link to="/portfolio" class="hover:text-lab-accent transition-colors">[ 作品集 ]</router-link>
+                <router-link to="/blog" class="hover:text-lab-accent transition-colors">[ 博客日志 ]</router-link>
+                <router-link to="/about" class="hover:text-lab-accent transition-colors">[ 关于开发者 ]</router-link>
               </div>
            </div>
 
            <!-- 列 3: 联系终端 -->
            <div class="space-y-4">
-              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">Comms Link</h3>
+              <h3 class="text-white font-bold uppercase tracking-widest text-sm border-b border-slate-700 pb-2 inline-block">通信链路</h3>
                <div class="flex space-x-4">
                 <a href="https://github.com" target="_blank" class="w-8 h-8 flex items-center justify-center bg-slate-800 hover:bg-lab-accent hover:text-black transition-all duration-300">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
@@ -141,12 +143,12 @@
           <div class="mb-4 md:mb-0">
             <span class="text-lab-accent">© {{ new Date().getFullYear() }} AUGUST.LAB</span>
             <span class="mx-2 text-slate-700">|</span>
-            <span>ALL RIGHTS RESERVED</span>
+            <span>版权所有</span>
           </div>
           <div class="flex items-center space-x-4">
              <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1 rounded">
                 <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span class="text-slate-300">SYSTEM: NORMAL</span>
+                <span class="text-slate-300">系统状态: 正常</span>
              </div>
              <a href="https://beian.miit.gov.cn/" target="_blank" class="hover:text-white transition-colors">冀ICP备2025117309号</a>
           </div>
@@ -166,11 +168,11 @@ const startTime = ref(Date.now())
 const uptime = ref('00:00:00')
 
 const navItems = [
-  { name: 'Home', path: '/' },
-  { name: 'Portfolio', path: '/portfolio' },
-  { name: 'Blog', path: '/blog' },
-  { name: 'Products', path: '/products' }, // 假设有这个路由
-  { name: 'About', path: '/about' }
+  { name: '首页', path: '/' },
+  { name: '作品集', path: '/portfolio' },
+  { name: '博客', path: '/blog' },
+  { name: '产品', path: '/products' },
+  { name: '关于', path: '/about' }
 ]
 
 const toggleMobileMenu = () => {
