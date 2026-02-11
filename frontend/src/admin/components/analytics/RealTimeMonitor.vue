@@ -355,8 +355,8 @@ const formatLastUpdateTime = (timestamp: Date) => {
 }
 
 .dark .real-time-monitor {
-  background: #1e293b; /* Slate 800 */
-  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  background: var(--lab-card);
+  border-color: var(--lab-border);
 }
 
 .monitor-header {
@@ -364,13 +364,13 @@ const formatLastUpdateTime = (timestamp: Date) => {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #f3f4f6;
-  background: #fafafa;
+  border-bottom: 1px solid #e5e7eb;
+  background: transparent;
 }
 
 .dark .monitor-header {
-  background: #0f172a; /* Slate 950 */
-  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  background: transparent;
+  border-bottom-color: var(--lab-border);
 }
 
 .header-left {
@@ -407,8 +407,8 @@ const formatLastUpdateTime = (timestamp: Date) => {
 }
 
 .dark .status-text {
-  color: #9ca3af; /* Gray 400 */
-  background: #334155; /* Slate 700 */
+  color: var(--lab-muted);
+  background: var(--lab-surface);
 }
 
 .header-actions {
@@ -425,7 +425,7 @@ const formatLastUpdateTime = (timestamp: Date) => {
 }
 
 .dark .real-time-metrics {
-  background: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  background: var(--lab-border);
 }
 
 .metric-item {
@@ -435,7 +435,7 @@ const formatLastUpdateTime = (timestamp: Date) => {
 }
 
 .dark .metric-item {
-  background: #1e293b; /* Slate 800 */
+  background: var(--lab-card);
 }
 
 .metric-label {
@@ -513,8 +513,8 @@ const formatLastUpdateTime = (timestamp: Date) => {
 }
 
 .dark .stream-container {
-  background: #0f172a; /* Slate 950 */
-  border-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  background: var(--lab-surface);
+  border-color: var(--lab-border);
 }
 
 .stream-container.auto-scroll {

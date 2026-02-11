@@ -701,14 +701,21 @@ onMounted(() => {
 }
 
 .extension-meta :deep(.el-tag) {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  flex-shrink: 0;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  min-width: max-content !important;
+  max-width: none !important;
+}
+
+.extension-meta :deep(.el-tag *),
+.extension-meta :deep(.el-tag .el-icon) {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .extension-meta :deep(.el-tag .el-icon) {
-  flex-shrink: 0;
   margin-right: 4px;
 }
 

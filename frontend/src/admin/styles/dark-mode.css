@@ -343,6 +343,20 @@
   background-color: #161b22 !important;
 }
 
+/* 扩展管理页：meta 区域 tag 不换行（与页面 scoped 样式双保险） */
+.extension-meta .el-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  min-width: max-content !important;
+  max-width: none !important;
+}
+
+.extension-meta .el-tag * {
+  white-space: nowrap !important;
+}
+
 /* Tabs Dark Mode Fix */
 .dark .el-tabs__item {
   color: var(--lab-muted) !important;
