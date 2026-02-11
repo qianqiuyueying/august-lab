@@ -3,8 +3,8 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">博客管理</h1>
-        <p class="text-gray-600 mt-1">管理您的博客文章</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">博客管理</h1>
+        <p class="text-gray-600 dark:text-lab-muted mt-1">管理您的博客文章</p>
       </div>
       <el-button type="primary" @click="showCreateDialog = true">
         <el-icon><Plus /></el-icon>
@@ -57,8 +57,8 @@
         <el-table-column prop="title" label="标题" min-width="250" sortable="custom">
           <template #default="{ row }">
             <div>
-              <div class="font-medium text-gray-900 mb-1">{{ row.title }}</div>
-              <div class="text-sm text-gray-500 line-clamp-2">{{ row.excerpt || '暂无摘要' }}</div>
+              <div class="font-medium text-gray-900 dark:text-white mb-1">{{ row.title }}</div>
+              <div class="text-sm text-gray-500 dark:text-lab-muted line-clamp-2">{{ row.excerpt || '暂无摘要' }}</div>
             </div>
           </template>
         </el-table-column>
@@ -95,7 +95,7 @@
         
         <el-table-column prop="reading_time" label="阅读时间" width="100">
           <template #default="{ row }">
-            <span class="text-sm text-gray-500">{{ row.reading_time || 0 }} 分钟</span>
+            <span class="text-sm text-gray-500 dark:text-lab-muted">{{ row.reading_time || 0 }} 分钟</span>
           </template>
         </el-table-column>
         
@@ -141,8 +141,8 @@
       
       <!-- 空状态 -->
       <div v-if="!loading && blogs.length === 0" class="text-center py-12">
-        <el-icon size="64" class="text-gray-300 mb-4"><Document /></el-icon>
-        <p class="text-gray-500 mb-4">暂无博客文章</p>
+        <el-icon size="64" class="text-gray-300 dark:text-lab-muted mb-4"><Document /></el-icon>
+        <p class="text-gray-500 dark:text-lab-muted mb-4">暂无博客文章</p>
         <el-button type="primary" @click="showCreateDialog = true">
           写第一篇博客
         </el-button>

@@ -3,8 +3,8 @@
     <!-- 页面头部 -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">作品管理</h1>
-        <p class="text-gray-600 mt-1">管理您的作品集</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">作品管理</h1>
+        <p class="text-gray-600 dark:text-lab-muted mt-1">管理您的作品集</p>
       </div>
       <el-button type="primary" @click="showCreateDialog = true">
         <el-icon><Plus /></el-icon>
@@ -56,7 +56,7 @@
         <el-table-column prop="title" label="标题" min-width="200" sortable="custom">
           <template #default="{ row }">
             <div class="flex items-center space-x-3">
-              <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+              <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-lab-surface flex-shrink-0">
                 <img 
                   v-if="row.image_url" 
                   :src="row.image_url" 
@@ -64,13 +64,13 @@
                   class="w-full h-full object-cover"
                   @error="handleImageError"
                 />
-                <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+                <div v-else class="w-full h-full flex items-center justify-center text-gray-400 dark:text-lab-muted">
                   <el-icon><Picture /></el-icon>
                 </div>
               </div>
               <div>
-                <div class="font-medium text-gray-900">{{ row.title }}</div>
-                <div class="text-sm text-gray-500 truncate max-w-xs">{{ row.description }}</div>
+                <div class="font-medium text-gray-900 dark:text-white">{{ row.title }}</div>
+                <div class="text-sm text-gray-500 dark:text-lab-muted truncate max-w-xs">{{ row.description }}</div>
               </div>
             </div>
           </template>
@@ -135,8 +135,8 @@
       
       <!-- 空状态 -->
       <div v-if="!loading && portfolios.length === 0" class="text-center py-12">
-        <el-icon size="64" class="text-gray-300 mb-4"><Briefcase /></el-icon>
-        <p class="text-gray-500 mb-4">暂无作品</p>
+        <el-icon size="64" class="text-gray-300 dark:text-lab-muted mb-4"><Briefcase /></el-icon>
+        <p class="text-gray-500 dark:text-lab-muted mb-4">暂无作品</p>
         <el-button type="primary" @click="showCreateDialog = true">
           创建第一个作品
         </el-button>

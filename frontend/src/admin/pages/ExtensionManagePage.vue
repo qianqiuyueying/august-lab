@@ -495,27 +495,17 @@ onMounted(() => {
 
 <style scoped>
 .extension-management {
-  padding: 24px;
-  background: #f5f5f5;
-  min-height: 100vh;
-}
-
-.dark .extension-management {
-  background: #0f172a; /* Slate 950 */
+  padding: 0;
 }
 
 .page-header {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
+  padding: 0 0 24px 0;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .dark .page-header {
-  background: #1e293b; /* Slate 800 */
-  box-shadow: none;
-  border: 1px solid rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  border-bottom-color: var(--lab-border);
 }
 
 .header-content {
@@ -661,11 +651,7 @@ onMounted(() => {
 }
 
 .extension-card.disabled :deep(.el-card__body) {
-  background: #f8f9fa;
-}
-
-.dark .extension-card.disabled :deep(.el-card__body) {
-  background: #0f172a; /* Slate 950 */
+  opacity: 0.85;
 }
 
 .extension-header, .product-type-header {
@@ -711,6 +697,19 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
+  align-items: center;
+}
+
+.extension-meta :deep(.el-tag) {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.extension-meta :deep(.el-tag .el-icon) {
+  flex-shrink: 0;
+  margin-right: 4px;
 }
 
 .meta-item {

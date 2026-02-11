@@ -572,23 +572,17 @@ onMounted(async () => {
 
 <style scoped>
 .product-monitoring-page {
-  min-height: 100vh;
-  background: #f5f5f5;
-}
-
-.dark .product-monitoring-page {
-  background: #0f172a; /* Slate 950 */
+  min-height: 100%;
 }
 
 .page-header {
-  background: white;
   border-bottom: 1px solid #e5e7eb;
-  padding: 24px;
+  padding: 0 0 24px 0;
+  margin-bottom: 24px;
 }
 
 .dark .page-header {
-  background: #1e293b; /* Slate 800 */
-  border-bottom-color: rgba(148, 163, 184, 0.15); /* Slate 400 15% */
+  border-bottom-color: var(--lab-border);
 }
 
 .header-content {
@@ -928,12 +922,8 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .product-monitoring-page {
-    padding: 0;
-  }
-  
   .page-header {
-    padding: 16px;
+    padding: 0 0 16px 0;
   }
   
   .header-content {
