@@ -6,6 +6,29 @@ import './style.css'
 import './admin/styles/dark-mode.css'
 
 import App from './App.vue'
+
+/**
+ * 抑制 ResizeObserver 的已知无害控制台错误。
+ * 当一帧内发生多次尺寸变化（如 el-table 列宽重算、布局重排）时，浏览器会抛出此错误。
+ * 来自 UI 库（如 Element Plus）内部，不影响功能，仅避免控制台噪音。
+ * @see https://github.com/WICG/resize-observer/issues/38
+ */
+if (typeof window !== 'undefined') {
+  const prevOnError = window.onerror
+  window.onerror = function (
+    message: string | Event,
+    source?: string,
+    lineno?: number,
+    colno?: number,
+    error?: Error
+  ): boolean {
+    const msg = typeof message === 'string' ? message : (message as ErrorEvent)?.message ?? ''
+    if (msg.includes('ResizeObserver loop')) {
+      return true // 阻止默认控制台输出
+    }
+    return prevOnError ? prevOnError.call(window, message, source, lineno, colno, error) : false
+  }
+}
 import { frontendRoutes } from './frontend/router'
 import { adminRoutes } from './admin/router'
 import { setupGlobalErrorHandler } from './shared/composables/useErrorHandler'
