@@ -3,9 +3,9 @@
     <div v-if="blog" class="max-w-4xl mx-auto">
       <!-- 博客头部 -->
       <header class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ blog.title }}</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ blog.title }}</h1>
         
-        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-lab-muted mb-4">
           <div class="flex items-center">
             <el-icon class="mr-1"><Calendar /></el-icon>
             <span>{{ formatDate(blog.published_at || blog.created_at) }}</span>
@@ -35,7 +35,7 @@
         </div>
         
         <!-- 摘要 -->
-        <div v-if="blog.excerpt" class="text-lg text-gray-700 leading-relaxed mb-8 p-4 bg-gray-50 rounded-lg border-l-4 border-primary-500">
+        <div v-if="blog.excerpt" class="text-lg text-gray-700 dark:text-lab-muted leading-relaxed mb-8 p-4 bg-gray-50 dark:bg-lab-surface rounded-lg border-l-4 border-primary-500">
           {{ blog.excerpt }}
         </div>
       </header>
@@ -46,9 +46,9 @@
       </article>
       
       <!-- 博客底部信息 -->
-      <footer class="mt-12 pt-8 border-t border-gray-200">
+      <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-lab-border">
         <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="text-sm text-gray-500">
+          <div class="text-sm text-gray-500 dark:text-lab-muted">
             <p>创建时间：{{ formatDate(blog.created_at) }}</p>
             <p v-if="blog.updated_at && blog.updated_at !== blog.created_at">
               更新时间：{{ formatDate(blog.updated_at) }}
@@ -60,27 +60,27 @@
               {{ blog.is_published ? '已发布' : '草稿' }}
             </el-tag>
             
-            <div class="text-sm text-gray-500">
+            <div class="text-sm text-gray-500 dark:text-lab-muted">
               字数：{{ contentWordCount }}
             </div>
           </div>
         </div>
         
         <!-- SEO信息（仅在有SEO设置时显示） -->
-        <div v-if="hasSeoInfo" class="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 class="text-sm font-medium text-blue-900 mb-2">SEO 信息</h3>
+        <div v-if="hasSeoInfo" class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800/50">
+          <h3 class="text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">SEO 信息</h3>
           <div class="space-y-2 text-sm">
             <div v-if="blog.seo_title">
-              <span class="font-medium text-blue-800">SEO标题：</span>
-              <span class="text-blue-700">{{ blog.seo_title }}</span>
+              <span class="font-medium text-blue-800 dark:text-blue-300">SEO标题：</span>
+              <span class="text-blue-700 dark:text-blue-200">{{ blog.seo_title }}</span>
             </div>
             <div v-if="blog.seo_description">
-              <span class="font-medium text-blue-800">SEO描述：</span>
-              <span class="text-blue-700">{{ blog.seo_description }}</span>
+              <span class="font-medium text-blue-800 dark:text-blue-300">SEO描述：</span>
+              <span class="text-blue-700 dark:text-blue-200">{{ blog.seo_description }}</span>
             </div>
             <div v-if="blog.seo_keywords">
-              <span class="font-medium text-blue-800">SEO关键词：</span>
-              <span class="text-blue-700">{{ blog.seo_keywords }}</span>
+              <span class="font-medium text-blue-800 dark:text-blue-300">SEO关键词：</span>
+              <span class="text-blue-700 dark:text-blue-200">{{ blog.seo_keywords }}</span>
             </div>
           </div>
         </div>
@@ -88,8 +88,8 @@
     </div>
     
     <div v-else class="text-center py-12">
-      <el-icon size="64" class="text-gray-300 mb-4"><Document /></el-icon>
-      <p class="text-gray-500">暂无预览内容</p>
+      <el-icon size="64" class="text-gray-300 dark:text-lab-muted mb-4"><Document /></el-icon>
+      <p class="text-gray-500 dark:text-lab-muted">暂无预览内容</p>
     </div>
   </div>
 </template>

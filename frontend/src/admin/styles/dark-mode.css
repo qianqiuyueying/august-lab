@@ -343,6 +343,72 @@
   background-color: #161b22 !important;
 }
 
+/* 博客预览组件（BlogPreview / 预览弹窗）深色模式 */
+.dark .blog-preview .prose {
+  color: var(--lab-text) !important;
+}
+
+.dark .blog-preview .markdown-content,
+.dark .blog-preview .markdown-content * {
+  color: inherit;
+}
+
+.dark .blog-preview .markdown-content h1,
+.dark .blog-preview .markdown-content h2,
+.dark .blog-preview .markdown-content h3,
+.dark .blog-preview .markdown-content h4,
+.dark .blog-preview .markdown-content h5,
+.dark .blog-preview .markdown-content h6 {
+  color: var(--lab-text) !important;
+  border-bottom-color: var(--lab-border) !important;
+}
+
+.dark .blog-preview .markdown-content p {
+  color: var(--lab-text) !important;
+}
+
+.dark .blog-preview .markdown-content blockquote {
+  color: var(--lab-muted) !important;
+  border-left-color: var(--lab-border) !important;
+}
+
+.dark .blog-preview .markdown-content code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .blog-preview .markdown-content pre {
+  background-color: #161b22 !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .blog-preview .markdown-content pre code {
+  color: inherit !important;
+}
+
+.dark .blog-preview .markdown-content th,
+.dark .blog-preview .markdown-content td {
+  border-color: var(--lab-border) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .blog-preview .markdown-content th {
+  background-color: #161b22 !important;
+}
+
+.dark .blog-preview .markdown-content a {
+  color: var(--lab-accent) !important;
+}
+
+.dark .blog-preview .markdown-content a:hover {
+  color: var(--lab-accent) !important;
+  opacity: 0.9;
+}
+
+.dark .blog-preview .markdown-content hr {
+  border-top-color: var(--lab-border) !important;
+}
+
 /* 扩展管理页：meta 区域 tag 不换行（与页面 scoped 样式双保险） */
 .extension-meta .el-tag {
   display: inline-flex !important;

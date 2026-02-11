@@ -153,7 +153,7 @@
     <el-dialog 
       v-model="showCreateDialog" 
       :title="editingBlog ? '编辑博客' : '新建博客'"
-      width="90%"
+      width="72%"
       :fullscreen="isFullscreen"
       @close="resetForm"
     >
@@ -183,7 +183,7 @@
     <el-dialog 
       v-model="showPreviewDialog" 
       title="博客预览"
-      width="80%"
+      width="72%"
       :fullscreen="previewFullscreen"
     >
       <template #header>
