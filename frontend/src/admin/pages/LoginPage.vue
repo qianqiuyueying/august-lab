@@ -1,20 +1,31 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50/50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center px-4">
-    <div class="max-w-md w-full space-y-8">
+  <div
+    class="admin-app min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-[#0F172A]"
+  >
+    <div class="max-w-md w-full space-y-10">
       <div class="text-center">
-        <div class="flex items-center justify-center space-x-2 mb-6">
-          <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center shadow-md">
-            <span class="text-white font-bold">A</span>
+        <div class="flex items-center justify-center gap-3 mb-6">
+          <div
+            class="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-base"
+            style="background: linear-gradient(135deg, #3b82f6, #8b5cf6)"
+          >
+            A
           </div>
-          <span class="text-2xl font-bold text-gray-900 dark:text-gray-50">管理后台</span>
+          <span
+            class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50"
+          >
+            管理后台
+          </span>
         </div>
-        <h2 class="text-xl text-gray-600 dark:text-gray-400">登录到管理系统</h2>
+        <p class="text-base text-gray-600 dark:text-gray-400">
+          登录到管理系统
+        </p>
       </div>
-      
-      <el-card class="shadow-xl border border-gray-200 dark:border-slate-700/50">
-        <el-form 
+
+      <el-card class="admin-card !p-6">
+        <el-form
           ref="loginFormRef"
-          :model="loginForm" 
+          :model="loginForm"
           :rules="rules"
           @submit.prevent="handleLogin"
         >
@@ -26,7 +37,7 @@
               :prefix-icon="User"
             />
           </el-form-item>
-          
+
           <el-form-item prop="password">
             <el-input
               v-model="loginForm.password"
@@ -38,11 +49,11 @@
               @keyup.enter="handleLogin"
             />
           </el-form-item>
-          
-          <el-form-item>
-            <el-button 
-              type="primary" 
-              size="large" 
+
+          <el-form-item class="mb-0">
+            <el-button
+              type="primary"
+              size="large"
               :loading="formState.submitting"
               :disabled="loginAttempts >= maxAttempts"
               @click="handleLogin"

@@ -1,11 +1,11 @@
 <template>
   <div class="product-management">
     <!-- 页面头部 -->
-    <div class="page-header">
+    <div class="page-header admin-page-header admin-section">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="page-title">产品管理</h1>
-          <p class="page-description">管理和发布Web应用产品</p>
+          <h1 class="page-title admin-page-title">产品管理</h1>
+          <p class="page-description admin-page-desc">管理和发布Web应用产品</p>
         </div>
         <div class="header-actions">
           <el-button type="primary" @click="openCreateDialog">
@@ -17,7 +17,7 @@
     </div>
 
     <!-- 筛选和搜索 -->
-    <div class="filters-section">
+    <div class="filters-section admin-section">
       <el-card shadow="never">
         <div class="filters-row">
           <div class="filter-group">
@@ -71,7 +71,7 @@
     </div>
 
     <!-- 产品列表 -->
-    <div class="products-section">
+    <div class="products-section admin-section">
       <el-card shadow="never">
         <el-table
           v-loading="loading"

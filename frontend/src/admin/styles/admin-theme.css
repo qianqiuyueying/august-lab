@@ -1,0 +1,236 @@
+/**
+ * August.Lab 后台设计系统
+ * 理性之骨，灵性之魂 —— 实验室人格化 UI
+ * 仅作用于 .admin-app 容器内
+ */
+
+/* ========== 设计令牌 ========== */
+.admin-app {
+  --admin-glow: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  --admin-primary: #3b82f6;
+  --admin-primary-hover: #2563eb;
+  --admin-container-max: 1152px;
+  --admin-section-gap: 3rem;   /* 2xl 模块化留白 */
+  --admin-card-radius: 12px;
+  --admin-card-padding: 1.5rem;
+  --admin-border-light: 1px solid rgba(59, 130, 246, 0.1);
+  --admin-border-dark: rgba(148, 163, 184, 0.15);
+}
+
+.dark .admin-app {
+  --admin-bg: #0f172a;
+  --admin-card-bg: #1e293b;
+  --admin-border: rgba(148, 163, 184, 0.15);
+}
+
+.admin-app:not(.dark) {
+  --admin-bg: #f9fafb;
+  --admin-card-bg: #ffffff;
+  --admin-border: rgba(59, 130, 246, 0.12);
+}
+
+/* ========== 布局：黄金节奏与模块化留白 ========== */
+.admin-app .admin-main-wrap {
+  max-width: var(--admin-container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .admin-app .admin-main-wrap {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .admin-app .admin-main-wrap {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.admin-app .admin-section {
+  margin-bottom: var(--admin-section-gap);
+}
+
+.admin-app .admin-section:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 卡片：漂浮感（通电悬浮实验模块） ========== */
+.admin-app .el-card,
+.admin-app .admin-card {
+  border-radius: var(--admin-card-radius) !important;
+  border: 1px solid var(--admin-border) !important;
+  box-shadow: none !important;
+  background: var(--admin-card-bg) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-app .el-card__body {
+  padding: var(--admin-card-padding) !important;
+}
+
+.admin-app .el-card::before,
+.admin-app .admin-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: var(--admin-glow);
+  opacity: 0;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+.admin-app .el-card:hover,
+.admin-app .admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.admin-app .el-card:hover::before,
+.admin-app .admin-card:hover::before {
+  height: 2px;
+  opacity: 1;
+}
+
+.dark .admin-app .el-card:hover,
+.dark .admin-app .admin-card:hover {
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.admin-app .el-card__header {
+  border-bottom: 1px solid var(--admin-border) !important;
+  padding: 0 0 1rem 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ========== 主按钮：通电反馈 ========== */
+.admin-app .el-button--primary {
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+.admin-app .el-button--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--admin-glow);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-app .el-button--primary:hover::after {
+  opacity: 1;
+}
+
+.admin-app .el-button--primary:active {
+  transform: scale(0.98);
+}
+
+/* ========== 表格：行悬停示波器触发线 ========== */
+.admin-app .el-table__body tr {
+  position: relative;
+}
+
+.admin-app .el-table__body tr:hover > td.el-table__cell:first-child {
+  box-shadow: inset 4px 0 0 0 var(--admin-primary);
+}
+
+.dark .admin-app .el-table__body tr:hover > td.el-table__cell {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.dark .admin-app .el-table__body tr:hover > td.el-table__cell:first-child {
+  box-shadow: inset 4px 0 0 0 #60a5fa;
+}
+
+/* ========== 输入框：焦点 2px 主色 ========== */
+.admin-app .el-input__wrapper {
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.admin-app .el-input__wrapper.is-focus,
+.admin-app .el-input__wrapper:focus-within {
+  box-shadow: 0 0 0 2px var(--admin-primary) !important;
+}
+
+/* ========== 页面标题区 ========== */
+.admin-app .admin-page-header {
+  margin-bottom: var(--admin-section-gap);
+}
+
+.admin-app .admin-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.admin-app .admin-page-desc {
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  opacity: 0.85;
+}
+
+.dark .admin-app .admin-page-title {
+  color: #f9fafb;
+}
+
+.dark .admin-app .admin-page-desc {
+  color: #9ca3af;
+}
+
+.admin-app:not(.dark) .admin-page-title {
+  color: #111827;
+}
+
+.admin-app:not(.dark) .admin-page-desc {
+  color: #6b7280;
+}
+
+/* ========== 侧栏导航：激活态光迹下划线 ========== */
+.admin-app .admin-menu .el-menu-item.is-active {
+  position: relative;
+  font-weight: 500;
+}
+
+.admin-app .admin-menu .el-menu-item.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--admin-glow);
+  border-radius: 0;
+}
+
+.admin-app .admin-menu .el-menu-item:hover {
+  background-color: rgba(59, 130, 246, 0.06) !important;
+}
+
+.dark .admin-app .admin-menu .el-menu-item:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+}

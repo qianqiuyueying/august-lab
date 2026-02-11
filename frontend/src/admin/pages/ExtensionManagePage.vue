@@ -1,10 +1,10 @@
 <template>
   <div class="extension-management">
-    <div class="page-header">
+    <div class="page-header admin-page-header admin-section">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="page-title">扩展管理</h1>
-          <p class="page-description">管理系统扩展和产品类型</p>
+          <h1 class="page-title admin-page-title">扩展管理</h1>
+          <p class="page-description admin-page-desc">管理系统扩展和产品类型</p>
         </div>
         <div class="header-actions">
           <el-button 
@@ -26,7 +26,7 @@
     </div>
 
     <!-- 扩展统计 -->
-    <div class="stats-grid">
+    <div class="stats-grid admin-section">
       <el-card class="stat-card">
         <div class="stat-content">
           <div class="stat-icon">

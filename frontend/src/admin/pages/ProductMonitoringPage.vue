@@ -1,11 +1,11 @@
 <template>
   <div class="product-monitoring-page">
     <!-- 页面头部 -->
-    <div class="page-header">
+    <div class="page-header admin-page-header admin-section">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="page-title">产品监控</h1>
-          <p class="page-description">实时监控产品运行状态、性能指标和错误日志</p>
+          <h1 class="page-title admin-page-title">产品监控</h1>
+          <p class="page-description admin-page-desc">实时监控产品运行状态、性能指标和错误日志</p>
         </div>
         <div class="header-actions">
           <el-select

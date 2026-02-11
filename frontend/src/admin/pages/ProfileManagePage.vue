@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- 页面头部 -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="admin-page-header flex items-center justify-between admin-section">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">个人信息管理</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">管理您的个人资料和联系信息</p>
+        <h1 class="admin-page-title text-gray-900 dark:text-gray-50">个人信息管理</h1>
+        <p class="admin-page-desc mt-1">管理您的个人资料和联系信息</p>
       </div>
       <div class="flex space-x-3">
         <el-button @click="previewProfile" :disabled="!hasChanges">
@@ -21,7 +21,7 @@
     <el-row :gutter="24">
       <!-- 左侧编辑表单 -->
       <el-col :span="16">
-        <el-card>
+        <el-card class="admin-section">
           <template #header>
             <span class="font-semibold">编辑个人信息</span>
           </template>
@@ -166,7 +166,7 @@
       <!-- 右侧实时预览 -->
       <el-col :span="8">
         <div class="sticky top-6">
-          <el-card>
+          <el-card class="admin-section">
             <template #header>
               <span class="font-semibold">实时预览</span>
             </template>

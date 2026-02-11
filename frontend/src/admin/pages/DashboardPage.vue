@@ -1,17 +1,21 @@
 <template>
   <div>
-    <!-- 欢迎信息 -->
-    <div class="mb-8">
-      <h1 :class="['text-2xl font-bold mb-2', isDark ? 'text-gray-100' : 'text-gray-900']">欢迎回来！</h1>
-      <p :class="isDark ? 'text-gray-400' : 'text-gray-600'">这里是您的管理后台概览</p>
+    <!-- 欢迎信息：模块化留白 -->
+    <div class="admin-page-header admin-section">
+      <h1 :class="['admin-page-title mb-1', isDark ? 'text-gray-100' : 'text-gray-900']">
+        欢迎回来
+      </h1>
+      <p :class="['admin-page-desc', isDark ? 'text-gray-400' : 'text-gray-600']">
+        这里是您的管理后台概览
+      </p>
     </div>
 
     <!-- 统计卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <el-card 
-        v-for="stat in stats" 
-        :key="stat.title" 
-        class="text-center hover:shadow-md transition-shadow cursor-pointer"
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 admin-section">
+      <el-card
+        v-for="stat in stats"
+        :key="stat.title"
+        class="text-center cursor-pointer"
         :class="stat.color"
       >
         <div class="flex items-center justify-center mb-3">
@@ -30,7 +34,7 @@
       </el-card>
     </div>
     
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 admin-section">
       <!-- 最新作品 -->
       <el-card>
         <template #header>
@@ -125,7 +129,7 @@
     </div>
 
     <!-- 快速操作 -->
-    <el-card class="mt-6">
+    <el-card class="admin-section">
       <template #header>
         <span :class="['font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">快速操作</span>
       </template>

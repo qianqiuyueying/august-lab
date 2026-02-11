@@ -1,33 +1,51 @@
 <template>
   <div
-    class="min-h-screen"
-    :class="isDark ? 'bg-slate-900 text-gray-100' : 'bg-gray-100 text-gray-900'"
+    class="admin-app min-h-screen"
+    :class="isDark ? 'bg-[#0F172A] text-gray-100' : 'bg-gray-50 text-gray-900'"
   >
     <el-container class="min-h-screen">
-      <!-- 侧边栏 -->
+      <!-- 侧边栏：实验室模块区 -->
       <el-aside
         :width="sidebarWidth"
-        :class="['shadow-sm transition-all duration-300', isDark ? 'bg-slate-800 border-r border-slate-700/50' : 'bg-white']"
+        :class="[
+          'transition-all duration-300 border-r',
+          isDark
+            ? 'bg-[#1E293B] border-[rgba(148,163,184,0.15)]'
+            : 'bg-white border-[rgba(59,130,246,0.1)]'
+        ]"
       >
         <!-- 侧边栏头部 -->
-        <div :class="['p-4 border-b', isDark ? 'border-slate-700/50' : 'border-gray-200']">
+        <div
+          :class="[
+            'p-4 border-b',
+            isDark ? 'border-[rgba(148,163,184,0.15)]' : 'border-gray-200/80'
+          ]"
+        >
           <div class="flex items-center" :class="collapsed ? 'justify-center' : 'space-x-2'">
-            <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center shadow-md">
-              <span class="text-white font-bold text-sm">A</span>
+            <div
+              class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+              style="background: linear-gradient(135deg, #3b82f6, #8b5cf6)"
+            >
+              A
             </div>
-            <span v-if="!collapsed" :class="['text-lg font-semibold', isDark ? 'text-gray-100' : 'text-gray-900']">管理后台</span>
+            <span
+              v-if="!collapsed"
+              :class="['text-lg font-semibold tracking-tight', isDark ? 'text-gray-100' : 'text-gray-900']"
+            >
+              管理后台
+            </span>
           </div>
         </div>
-        
+
         <!-- 导航菜单 -->
         <el-menu
           :default-active="$route.path"
           :collapse="collapsed"
           router
-          class="border-none"
-          :background-color="isDark ? '#1e293b' : '#ffffff'"
-          :text-color="isDark ? '#d1d5db' : '#303133'"
-          :active-text-color="isDark ? '#60a5fa' : '#409eff'"
+          class="admin-menu border-none"
+          :background-color="isDark ? '#1E293B' : '#ffffff'"
+          :text-color="isDark ? '#94a3b8' : '#374151'"
+          :active-text-color="isDark ? '#60a5fa' : '#2563eb'"
         >
           <template v-for="item in menuItems" :key="item.index">
             <!-- 有子菜单的项 -->
@@ -56,11 +74,13 @@
       </el-aside>
       
       <el-container>
-        <!-- 顶部栏 -->
+        <!-- 顶部栏：64px 固定节奏 -->
         <el-header
           :class="[
-            'shadow-sm border-b flex items-center justify-between px-6',
-            isDark ? 'bg-slate-800 border-slate-700/50 text-gray-100' : 'bg-white border-gray-200 text-gray-900'
+            'h-16 border-b flex items-center justify-between px-6 sticky top-0 z-50',
+            isDark
+              ? 'bg-[#1E293B] border-[rgba(148,163,184,0.15)] text-gray-100'
+              : 'bg-white border-[rgba(59,130,246,0.1)] text-gray-900'
           ]"
         >
           <div class="flex items-center space-x-4">
@@ -126,10 +146,10 @@
           </div>
         </el-header>
         
-        <!-- 主要内容 -->
+        <!-- 主要内容：黄金节奏 + 模块化留白 -->
         <el-main
-          class="p-6 overflow-auto"
-          :class="isDark ? 'bg-slate-900 text-gray-100' : 'bg-gray-50 text-gray-900'"
+          class="admin-main-wrap p-6 overflow-auto"
+          :class="isDark ? 'bg-[#0F172A] text-gray-100' : 'bg-gray-50 text-gray-900'"
         >
           <router-view />
         </el-main>
@@ -240,11 +260,6 @@ const menuItems: MenuItem[] = [
         title: '产品监控'
       }
     ]
-  },
-  {
-    index: '/admin/blog',
-    icon: Document,
-    title: '博客管理'
   },
   {
     index: '/admin/extensions',
