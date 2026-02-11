@@ -229,6 +229,12 @@ const expertSkills = computed(() => {
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
+  transition: all 0.3s;
+}
+
+.dark .profile-preview {
+  background-color: var(--lab-card);
+  border: 1px solid var(--lab-border);
 }
 
 .profile-preview.full-view {
@@ -248,6 +254,10 @@ const expertSkills = computed(() => {
   border-bottom: 1px solid #e4e7ed;
 }
 
+.dark .profile-header {
+  border-bottom-color: var(--lab-border);
+}
+
 .avatar-section {
   flex-shrink: 0;
 }
@@ -258,6 +268,10 @@ const expertSkills = computed(() => {
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid #e4e7ed;
+}
+
+.dark .avatar-container {
+  border-color: var(--lab-border);
 }
 
 .avatar-image {
@@ -276,6 +290,11 @@ const expertSkills = computed(() => {
   color: #c0c4cc;
 }
 
+.dark .avatar-placeholder {
+  background-color: var(--lab-surface);
+  color: var(--lab-muted);
+}
+
 .basic-info {
   flex: 1;
 }
@@ -287,11 +306,19 @@ const expertSkills = computed(() => {
   color: #303133;
 }
 
+.dark .profile-name {
+  color: var(--lab-text);
+}
+
 .profile-title {
   margin: 0 0 16px 0;
   font-size: 16px;
   color: #606266;
   font-weight: 500;
+}
+
+.dark .profile-title {
+  color: var(--lab-muted);
 }
 
 .contact-info {
@@ -308,6 +335,10 @@ const expertSkills = computed(() => {
   color: #606266;
 }
 
+.dark .contact-item {
+  color: var(--lab-muted);
+}
+
 .contact-item .el-icon {
   color: #909399;
 }
@@ -321,6 +352,11 @@ const expertSkills = computed(() => {
   padding-bottom: 8px;
 }
 
+.dark .section-title {
+  color: var(--lab-text);
+  border-bottom-color: var(--lab-accent);
+}
+
 .bio-section {
   margin-bottom: 24px;
 }
@@ -330,6 +366,10 @@ const expertSkills = computed(() => {
   color: #606266;
 }
 
+.dark .bio-content {
+  color: var(--lab-muted);
+}
+
 .bio-content :deep(p) {
   margin: 0 0 12px 0;
 }
@@ -337,6 +377,10 @@ const expertSkills = computed(() => {
 .bio-content :deep(strong) {
   color: #303133;
   font-weight: 600;
+}
+
+.dark .bio-content :deep(strong) {
+  color: var(--lab-text);
 }
 
 .bio-content :deep(em) {
@@ -372,16 +416,34 @@ const expertSkills = computed(() => {
   transition: all 0.3s;
 }
 
+.dark .social-link {
+  border-color: var(--lab-border);
+  color: var(--lab-muted);
+  background-color: var(--lab-surface);
+}
+
 .social-link:hover {
   border-color: #409eff;
   color: #409eff;
   background-color: #f0f9ff;
 }
 
+.dark .social-link:hover {
+  border-color: var(--lab-accent);
+  color: var(--lab-accent);
+  background-color: rgba(0, 240, 255, 0.1);
+}
+
 .social-link.github:hover {
   border-color: #333;
   color: #333;
   background-color: #f6f8fa;
+}
+
+.dark .social-link.github:hover {
+  border-color: #fff;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .social-link.linkedin:hover {
@@ -412,11 +474,19 @@ const expertSkills = computed(() => {
   padding: 16px;
 }
 
+.dark .skill-category {
+  background-color: var(--lab-surface);
+}
+
 .category-name {
   margin: 0 0 12px 0;
   font-size: 16px;
   font-weight: 600;
   color: #409eff;
+}
+
+.dark .category-name {
+  color: var(--lab-accent);
 }
 
 .category-skills {
@@ -432,6 +502,11 @@ const expertSkills = computed(() => {
   border: 1px solid #e4e7ed;
 }
 
+.dark .skill-item {
+  background-color: var(--lab-card);
+  border-color: var(--lab-border);
+}
+
 .skill-header {
   display: flex;
   justify-content: space-between;
@@ -444,10 +519,18 @@ const expertSkills = computed(() => {
   color: #303133;
 }
 
+.dark .skill-name {
+  color: var(--lab-text);
+}
+
 .skill-level {
   font-size: 12px;
   color: #909399;
   font-weight: 600;
+}
+
+.dark .skill-level {
+  color: var(--lab-muted);
 }
 
 .skill-progress {
@@ -458,11 +541,19 @@ const expertSkills = computed(() => {
   margin-bottom: 8px;
 }
 
+.dark .skill-progress {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .skill-progress-bar {
   height: 100%;
   background: linear-gradient(90deg, #409eff 0%, #67c23a 100%);
   border-radius: 3px;
   transition: width 0.3s ease;
+}
+
+.dark .skill-progress-bar {
+  background: linear-gradient(90deg, var(--lab-accent) 0%, #00ff94 100%);
 }
 
 .skill-description {
@@ -489,11 +580,20 @@ const expertSkills = computed(() => {
   border: 1px solid #e4e7ed;
 }
 
+.dark .stat-card {
+  background-color: var(--lab-surface);
+  border-color: var(--lab-border);
+}
+
 .stat-number {
   font-size: 24px;
   font-weight: 600;
   color: #409eff;
   margin-bottom: 4px;
+}
+
+.dark .stat-number {
+  color: var(--lab-accent);
 }
 
 .stat-label {

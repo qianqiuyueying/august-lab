@@ -331,6 +331,48 @@
   background-color: #161b22 !important;
 }
 
+/* Tabs Dark Mode Fix */
+.dark .el-tabs__item {
+  color: var(--lab-muted) !important;
+}
+
+.dark .el-tabs__item.is-active {
+  color: var(--lab-accent) !important;
+}
+
+.dark .el-tabs__item:hover {
+  color: var(--lab-text) !important;
+}
+
+.dark .el-tabs__nav-wrap::after {
+  background-color: var(--lab-border) !important;
+}
+
+.dark .el-tabs__active-bar {
+  background-color: var(--lab-accent) !important;
+}
+
+.dark .el-tabs--border-card {
+  background-color: var(--lab-card) !important;
+  border-color: var(--lab-border) !important;
+}
+
+.dark .el-tabs--border-card > .el-tabs__header {
+  background-color: var(--lab-surface) !important;
+  border-bottom-color: var(--lab-border) !important;
+}
+
+.dark .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+  background-color: var(--lab-card) !important;
+  border-right-color: var(--lab-border) !important;
+  border-left-color: var(--lab-border) !important;
+  color: var(--lab-accent) !important;
+}
+
+.dark .el-tabs--border-card > .el-tabs__content {
+  background-color: var(--lab-card) !important;
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 6px;

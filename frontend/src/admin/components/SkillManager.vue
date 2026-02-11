@@ -417,6 +417,12 @@ const processImport = () => {
   border: 1px solid #e4e7ed;
   border-radius: 8px;
   background-color: #fafafa;
+  transition: all 0.3s;
+}
+
+.dark .skill-item {
+  background-color: var(--lab-surface);
+  border-color: var(--lab-border);
 }
 
 .skill-content {
@@ -449,6 +455,10 @@ const processImport = () => {
   font-size: 14px;
   color: #606266;
   font-weight: 500;
+}
+
+.dark .level-label {
+  color: var(--lab-muted);
 }
 
 .level-slider {
@@ -493,10 +503,18 @@ const processImport = () => {
   border-radius: 8px;
 }
 
+.dark .skill-stats {
+  background-color: var(--lab-surface);
+}
+
 .stats-title {
   margin: 0 0 16px 0;
   font-size: 16px;
   color: #303133;
+}
+
+.dark .stats-title {
+  color: var(--lab-text);
 }
 
 .stats-grid {
@@ -513,10 +531,19 @@ const processImport = () => {
   border: 1px solid #e4e7ed;
 }
 
+.dark .stat-item {
+  background-color: var(--lab-card);
+  border-color: var(--lab-border);
+}
+
 .stat-label {
   font-size: 14px;
   color: #606266;
   margin-bottom: 4px;
+}
+
+.dark .stat-label {
+  color: var(--lab-muted);
 }
 
 .stat-count {
@@ -524,6 +551,10 @@ const processImport = () => {
   font-weight: 600;
   color: #409eff;
   margin-bottom: 2px;
+}
+
+.dark .stat-count {
+  color: var(--lab-accent);
 }
 
 .stat-avg {
@@ -548,6 +579,11 @@ const processImport = () => {
   padding-bottom: 8px;
 }
 
+.dark .category-title {
+  color: var(--lab-text);
+  border-bottom-color: var(--lab-border);
+}
+
 .preset-skill-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -556,6 +592,10 @@ const processImport = () => {
 
 .preset-skill-item {
   margin: 0;
+}
+
+.dark .el-checkbox {
+  color: var(--lab-text);
 }
 
 .import-section {

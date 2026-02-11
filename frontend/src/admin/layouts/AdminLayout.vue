@@ -105,7 +105,7 @@
             class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-lab-border hover:border-primary-500 dark:hover:border-lab-accent text-sm font-medium transition-all hover:shadow-lg hover:shadow-primary-500/20 dark:hover:shadow-lab-accent/20"
           >
             <el-icon><Monitor /></el-icon>
-            <span class="hidden sm:inline">Live Preview</span>
+            <span class="hidden sm:inline">预览网站</span>
           </button>
           
           <!-- 用户下拉 -->
@@ -113,7 +113,7 @@
             <div class="flex items-center gap-3 cursor-pointer pl-4 border-l border-gray-200 dark:border-lab-border">
               <div class="text-right hidden sm:block">
                 <div class="text-sm font-medium dark:text-white">{{ userInfo.name }}</div>
-                <div class="text-xs text-gray-500 dark:text-lab-muted">Administrator</div>
+                <div class="text-xs text-gray-500 dark:text-lab-muted">管理员</div>
               </div>
               <el-avatar :size="36" :src="userInfo.avatar" class="border-2 border-white dark:border-lab-border shadow-sm">
                 {{ userInfo.name.charAt(0) }}
@@ -136,7 +136,7 @@
 
       <!-- 内容区域 -->
       <main class="flex-1 p-6 overflow-x-hidden">
-        <div class="max-w-7xl mx-auto animate-fade-in">
+        <div class="w-full max-w-[95%] mx-auto animate-fade-in">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
               <component :is="Component" />
@@ -191,70 +191,70 @@ const userInfo = ref({
 
 const pageTitle = computed(() => {
   const titleMap: Record<string, string> = {
-    '/admin': 'Dashboard',
-    '/admin/portfolio': 'Portfolio',
-    '/admin/products': 'Products',
-    '/admin/analytics': 'Analytics',
-    '/admin/monitoring': 'Monitoring',
-    '/admin/blog': 'Blog',
-    '/admin/extensions': 'Extensions',
-    '/admin/profile': 'Profile'
+    '/admin': '仪表盘',
+    '/admin/portfolio': '作品管理',
+    '/admin/products': '产品管理',
+    '/admin/analytics': '数据分析',
+    '/admin/monitoring': '系统监控',
+    '/admin/blog': '博客管理',
+    '/admin/extensions': '扩展管理',
+    '/admin/profile': '个人资料'
   }
   // 支持匹配父路径
-  if (route.path.startsWith('/admin/portfolio')) return 'Portfolio Manager'
-  if (route.path.startsWith('/admin/products')) return 'Product Manager'
-  if (route.path.startsWith('/admin/analytics')) return 'Analytics Center'
-  if (route.path.startsWith('/admin/monitoring')) return 'System Monitor'
-  return titleMap[route.path] || 'Admin Console'
+  if (route.path.startsWith('/admin/portfolio')) return '作品管理'
+  if (route.path.startsWith('/admin/products')) return '产品管理'
+  if (route.path.startsWith('/admin/analytics')) return '数据分析'
+  if (route.path.startsWith('/admin/monitoring')) return '系统监控'
+  return titleMap[route.path] || '管理后台'
 })
 
 const menuItems: MenuItem[] = [
   {
     index: '/admin',
     icon: House,
-    title: 'Dashboard'
+    title: '仪表盘'
   },
   {
     index: '/admin/blog',
     icon: Document,
-    title: 'Blog Posts'
+    title: '博客管理'
   },
   {
     index: '/admin/portfolio',
     icon: Briefcase,
-    title: 'Portfolio'
+    title: '作品管理'
   },
   {
     index: '/admin/products',
     icon: Box,
-    title: 'Products'
+    title: '产品管理'
   },
   {
     index: 'product-analytics-group',
     icon: Setting,
-    title: 'Analytics',
+    title: '数据分析',
     children: [
       {
         index: '/admin/analytics',
         icon: Setting,
-        title: 'Overview'
+        title: '概览'
       },
       {
         index: '/admin/monitoring',
         icon: Warning,
-        title: 'Health Check'
+        title: '健康检查'
       }
     ]
   },
   {
     index: '/admin/extensions',
     icon: Tools,
-    title: 'Extensions'
+    title: '扩展管理'
   },
   {
     index: '/admin/profile',
     icon: User,
-    title: 'Profile'
+    title: '个人资料'
   }
 ]
 
@@ -265,11 +265,11 @@ const toggleSidebar = () => {
 const logout = async () => {
   try {
     await ElMessageBox.confirm(
-      'Are you sure you want to logout?',
-      'Confirm Logout',
+      '确定要退出登录吗？',
+      '确认退出',
       {
-        confirmButtonText: 'Logout',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: '退出',
+        cancelButtonText: '取消',
         type: 'warning',
         customClass: 'dark:bg-lab-card dark:border-lab-border'
       }
@@ -282,7 +282,7 @@ const logout = async () => {
     }
     
     localStorage.removeItem('admin_token')
-    ElMessage.success('Logged out successfully')
+    ElMessage.success('已安全退出')
     router.push('/admin/login')
     
   } catch (error) {
