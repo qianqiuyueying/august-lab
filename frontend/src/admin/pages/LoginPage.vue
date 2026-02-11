@@ -1,69 +1,80 @@
 <template>
-  <div
-    class="admin-app min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-[#0F172A]"
-  >
-    <div class="max-w-md w-full space-y-10">
-      <div class="text-center">
-        <div class="flex items-center justify-center gap-3 mb-6">
-          <div
-            class="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-base"
-            style="background: linear-gradient(135deg, #3b82f6, #8b5cf6)"
-          >
-            A
-          </div>
-          <span
-            class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50"
-          >
-            管理后台
-          </span>
+  <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-lab-bg text-white">
+    <!-- 背景动画 -->
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-lab-accent to-transparent animate-scan opacity-50"></div>
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-lab-accent/10 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="w-full max-w-md p-8 relative z-10 animate-scale-in">
+      <!-- Logo -->
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-lab-accent to-blue-600 shadow-[0_0_30px_rgba(0,240,255,0.3)] mb-6 transform hover:scale-105 transition-transform duration-300">
+          <span class="text-black font-bold text-3xl font-mono">A</span>
         </div>
-        <p class="text-base text-gray-600 dark:text-gray-400">
-          登录到管理系统
-        </p>
+        <h1 class="text-3xl font-display font-bold tracking-tight mb-2">
+          AUGUST<span class="text-lab-accent">.ADMIN</span>
+        </h1>
+        <p class="text-lab-muted">Secure Access Portal</p>
       </div>
 
-      <el-card class="admin-card !p-6">
-        <el-form
+      <!-- 登录卡片 -->
+      <div class="glass-panel rounded-2xl p-8 border border-lab-border shadow-2xl backdrop-blur-xl bg-lab-card/50">
+        <el-form 
           ref="loginFormRef"
-          :model="loginForm"
+          :model="loginForm" 
           :rules="rules"
           @submit.prevent="handleLogin"
+          class="space-y-6"
         >
           <el-form-item prop="username">
-            <el-input
-              v-model="loginForm.username"
-              placeholder="用户名"
-              size="large"
-              :prefix-icon="User"
-            />
+            <div class="relative w-full group">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-lab-muted group-focus-within:text-lab-accent transition-colors">
+                <el-icon><User /></el-icon>
+              </div>
+              <input
+                v-model="loginForm.username"
+                type="text"
+                class="w-full bg-lab-surface border border-lab-border rounded-lg py-3 pl-10 pr-4 text-lab-text placeholder-lab-muted focus:outline-none focus:border-lab-accent focus:ring-1 focus:ring-lab-accent transition-all"
+                placeholder="Username"
+              />
+            </div>
           </el-form-item>
-
+          
           <el-form-item prop="password">
-            <el-input
-              v-model="loginForm.password"
-              type="password"
-              placeholder="密码"
-              size="large"
-              :prefix-icon="Lock"
-              show-password
-              @keyup.enter="handleLogin"
-            />
+            <div class="relative w-full group">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-lab-muted group-focus-within:text-lab-accent transition-colors">
+                <el-icon><Lock /></el-icon>
+              </div>
+              <input
+                v-model="loginForm.password"
+                type="password"
+                class="w-full bg-lab-surface border border-lab-border rounded-lg py-3 pl-10 pr-4 text-lab-text placeholder-lab-muted focus:outline-none focus:border-lab-accent focus:ring-1 focus:ring-lab-accent transition-all"
+                placeholder="Password"
+                @keyup.enter="handleLogin"
+              />
+            </div>
           </el-form-item>
-
-          <el-form-item class="mb-0">
-            <el-button
-              type="primary"
-              size="large"
-              :loading="formState.submitting"
-              :disabled="loginAttempts >= maxAttempts"
+          
+          <div class="pt-2">
+            <button 
+              type="button"
               @click="handleLogin"
-              class="w-full"
+              :disabled="formState.submitting || loginAttempts >= maxAttempts"
+              class="w-full bg-lab-accent hover:bg-lab-accent-hover text-black font-bold py-3 px-4 rounded-lg transition-all transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none flex items-center justify-center gap-2"
             >
-              {{ formState.submitting ? '登录中...' : '登录' }}
-            </el-button>
-          </el-form-item>
+              <span v-if="formState.submitting" class="animate-spin rounded-full h-4 w-4 border-2 border-black border-t-transparent"></span>
+              {{ formState.submitting ? 'Authenticating...' : 'Sign In' }}
+            </button>
+          </div>
         </el-form>
-      </el-card>
+      </div>
+      
+      <div class="mt-8 text-center text-xs text-lab-muted">
+        <p>&copy; 2026 August System. All rights reserved.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -100,82 +111,68 @@ const {
   },
   {
     username: [
-      validators.required('请输入用户名'),
-      validators.minLength(3, '用户名至少需要3个字符'),
-      validators.maxLength(20, '用户名最多20个字符')
+      validators.required('Username is required'),
+      validators.minLength(3, 'Minimum 3 characters'),
+      validators.maxLength(20, 'Maximum 20 characters')
     ],
     password: [
-      validators.required('请输入密码'),
-      validators.minLength(6, '密码至少需要6个字符'),
-      validators.maxLength(50, '密码最多50个字符')
+      validators.required('Password is required'),
+      validators.minLength(6, 'Minimum 6 characters'),
+      validators.maxLength(50, 'Maximum 50 characters')
     ]
   }
 )
 
 const rules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度应为3-20个字符', trigger: 'blur' }
+    { required: true, message: 'Username is required', trigger: 'blur' },
+    { min: 3, max: 20, message: 'Length should be 3 to 20', trigger: 'blur' }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 50, message: '密码长度应为6-50个字符', trigger: 'blur' }
+    { required: true, message: 'Password is required', trigger: 'blur' },
+    { min: 6, max: 50, message: 'Length should be 6 to 50', trigger: 'blur' }
   ]
 }
 
-
-
 const handleLogin = async () => {
-  // 检查登录尝试次数
   if (loginAttempts.value >= maxAttempts) {
-    showWarning('登录尝试次数过多，请稍后再试')
+    showWarning('Too many attempts. Please try again later.')
     return
   }
   
   const success = await submitForm(
     async (data) => {
-      // 调用登录API
       const response = await authAPI.login({
         username: data.username,
         password: data.password
       })
       
-      // 保存登录状态
       localStorage.setItem('admin_token', response.data.access_token)
-      
-      // 重置登录尝试次数
       loginAttempts.value = 0
       
-      // 跳转到管理后台
       const redirect = router.currentRoute.value.query.redirect as string
       router.push(redirect || '/admin')
     },
     {
       showSuccess: true,
-      successMessage: '登录成功，正在跳转...',
+      successMessage: 'Welcome back!',
       preventDuplicate: true
     }
   )
   
   if (!success) {
     loginAttempts.value++
-    
-    // 清空密码字段
     loginForm.password = ''
-    
-    // 显示剩余尝试次数
     const remainingAttempts = maxAttempts - loginAttempts.value
     if (remainingAttempts > 0) {
-      showWarning(`登录失败，还可尝试 ${remainingAttempts} 次`)
+      showWarning(`Login failed. ${remainingAttempts} attempts remaining.`)
     }
   }
 }
 
-// 检查是否已经登录
 onMounted(() => {
   const token = localStorage.getItem('admin_token')
   if (token) {
-    // 验证token有效性
     safeExecute(
       async () => {
         await authAPI.verify()
@@ -183,10 +180,20 @@ onMounted(() => {
       },
       undefined,
       () => {
-        // token无效，清除
         localStorage.removeItem('admin_token')
       }
     )
   }
 })
 </script>
+
+<style scoped>
+/* Custom Input Styles to override Element Plus defaults if needed, though we used native inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #121212 inset !important;
+    -webkit-text-fill-color: white !important;
+}
+</style>

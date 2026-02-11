@@ -1,11 +1,11 @@
 <template>
   <div class="product-analytics">
     <!-- 页面头部 -->
-    <div class="page-header admin-page-header admin-section">
+    <div class="page-header">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="page-title admin-page-title">产品分析</h1>
-          <p class="page-description admin-page-desc">查看产品使用数据和性能指标</p>
+          <h1 class="page-title">产品分析</h1>
+          <p class="page-description">查看产品使用数据和性能指标</p>
         </div>
         <div class="header-actions">
           <el-button :loading="diagnosing" @click="runDiagnostic">
@@ -34,7 +34,7 @@
     </div>
 
     <!-- 产品选择器 -->
-    <div class="product-selector admin-section">
+    <div class="product-selector">
       <el-card shadow="never">
         <div class="selector-content">
           <label class="selector-label">选择产品:</label>

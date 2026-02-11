@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- 页面头部 -->
-    <div class="admin-page-header flex items-center justify-between admin-section">
+    <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="admin-page-title text-gray-900 dark:text-gray-100">作品管理</h1>
-        <p class="admin-page-desc mt-1">管理您的作品集</p>
+        <h1 class="text-2xl font-bold text-gray-900">作品管理</h1>
+        <p class="text-gray-600 mt-1">管理您的作品集</p>
       </div>
       <el-button type="primary" @click="showCreateDialog = true">
         <el-icon><Plus /></el-icon>
@@ -13,7 +13,7 @@
     </div>
 
     <!-- 搜索和筛选 -->
-    <el-card class="admin-section">
+    <el-card class="mb-6">
       <div class="flex flex-col md:flex-row gap-4">
         <el-input
           v-model="searchQuery"
@@ -44,7 +44,7 @@
     </el-card>
 
     <!-- 作品列表 -->
-    <el-card class="admin-section">
+    <el-card>
       <el-table 
         v-loading="loading" 
         :data="portfolios" 

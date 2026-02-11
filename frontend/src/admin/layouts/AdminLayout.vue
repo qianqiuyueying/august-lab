@@ -1,160 +1,150 @@
 <template>
   <div
-    class="admin-app min-h-screen"
-    :class="isDark ? 'bg-[#0F172A] text-gray-100' : 'bg-gray-50 text-gray-900'"
+    class="min-h-screen flex bg-gray-50 dark:bg-lab-bg text-gray-900 dark:text-lab-text transition-colors duration-300 font-sans"
   >
-    <el-container class="min-h-screen">
-      <!-- 侧边栏：实验室模块区 -->
-      <el-aside
-        :width="sidebarWidth"
-        :class="[
-          'transition-all duration-300 border-r',
-          isDark
-            ? 'bg-[#1E293B] border-[rgba(148,163,184,0.15)]'
-            : 'bg-white border-[rgba(59,130,246,0.1)]'
-        ]"
-      >
-        <!-- 侧边栏头部 -->
-        <div
-          :class="[
-            'p-4 border-b',
-            isDark ? 'border-[rgba(148,163,184,0.15)]' : 'border-gray-200/80'
-          ]"
-        >
-          <div class="flex items-center" :class="collapsed ? 'justify-center' : 'space-x-2'">
-            <div
-              class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-              style="background: linear-gradient(135deg, #3b82f6, #8b5cf6)"
-            >
-              A
-            </div>
-            <span
-              v-if="!collapsed"
-              :class="['text-lg font-semibold tracking-tight', isDark ? 'text-gray-100' : 'text-gray-900']"
-            >
-              管理后台
-            </span>
+    <!-- 侧边栏 -->
+    <aside
+      class="fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-out glass-panel border-r border-gray-200 dark:border-lab-border"
+      :class="collapsed ? 'w-16' : 'w-64'"
+    >
+      <!-- Logo 区域 -->
+      <div class="h-16 flex items-center justify-center border-b border-gray-200 dark:border-lab-border/50">
+        <div class="flex items-center gap-3 overflow-hidden px-4 w-full" :class="collapsed ? 'justify-center' : ''">
+          <div class="w-8 h-8 rounded bg-gradient-to-br from-lab-accent to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.3)] shrink-0">
+            <span class="text-black font-bold text-sm font-mono">A</span>
           </div>
+          <span 
+            v-show="!collapsed" 
+            class="text-lg font-bold tracking-wider font-display whitespace-nowrap dark:text-white"
+          >
+            AUGUST<span class="text-lab-accent">.ADMIN</span>
+          </span>
         </div>
+      </div>
 
-        <!-- 导航菜单 -->
+      <!-- 导航菜单 -->
+      <el-scrollbar class="flex-1">
         <el-menu
           :default-active="$route.path"
           :collapse="collapsed"
           router
-          class="admin-menu border-none"
-          :background-color="isDark ? '#1E293B' : '#ffffff'"
-          :text-color="isDark ? '#94a3b8' : '#374151'"
-          :active-text-color="isDark ? '#60a5fa' : '#2563eb'"
+          class="border-none bg-transparent !w-full"
+          :collapse-transition="false"
         >
           <template v-for="item in menuItems" :key="item.index">
             <!-- 有子菜单的项 -->
             <el-sub-menu v-if="item.children" :index="item.index">
               <template #title>
-                <el-icon><component :is="item.icon" /></el-icon>
-                <span>{{ item.title }}</span>
+                <el-icon :size="18"><component :is="item.icon" /></el-icon>
+                <span class="font-medium">{{ item.title }}</span>
               </template>
               <el-menu-item 
                 v-for="child in item.children" 
                 :key="child.index"
                 :index="child.index"
+                class="!pl-12"
               >
-                <el-icon><component :is="child.icon" /></el-icon>
-                <template #title>{{ child.title }}</template>
+                <template #title>
+                  <span class="text-sm">{{ child.title }}</span>
+                </template>
               </el-menu-item>
             </el-sub-menu>
             
             <!-- 普通菜单项 -->
             <el-menu-item v-else :index="item.index">
-              <el-icon><component :is="item.icon" /></el-icon>
-              <template #title>{{ item.title }}</template>
+              <el-icon :size="18"><component :is="item.icon" /></el-icon>
+              <template #title>
+                <span class="font-medium">{{ item.title }}</span>
+              </template>
             </el-menu-item>
           </template>
         </el-menu>
-      </el-aside>
-      
-      <el-container>
-        <!-- 顶部栏：64px 固定节奏 -->
-        <el-header
-          :class="[
-            'h-16 border-b flex items-center justify-between px-6 sticky top-0 z-50',
-            isDark
-              ? 'bg-[#1E293B] border-[rgba(148,163,184,0.15)] text-gray-100'
-              : 'bg-white border-[rgba(59,130,246,0.1)] text-gray-900'
-          ]"
-        >
-          <div class="flex items-center space-x-4">
-            <!-- 侧边栏折叠按钮 -->
-            <el-button 
-              type="text" 
-              @click="toggleSidebar"
-              :class="isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
-            >
-              <el-icon size="18">
-                <component :is="collapsed ? Expand : Fold" />
-              </el-icon>
-            </el-button>
-            
-            <!-- 页面标题 -->
-            <div :class="['text-lg font-medium', isDark ? 'text-gray-100' : 'text-gray-900']">
-              {{ pageTitle }}
-            </div>
-          </div>
-          
-          <!-- 右侧操作区 -->
-          <div class="flex items-center space-x-4">
-            <!-- 深色/浅色模式切换 -->
-            <el-button
-              type="text"
-              @click="toggleTheme"
-              :class="isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'"
-            >
-              <el-icon>
-                <component :is="isDark ? Sunny : Moon" />
-              </el-icon>
-              <span class="ml-1">{{ isDark ? '浅色模式' : '深色模式' }}</span>
-            </el-button>
+      </el-scrollbar>
 
-            <!-- 前台预览按钮 -->
-            <el-button 
-              type="text" 
-              @click="goToFrontend"
-              :class="isDark ? 'text-gray-300 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'"
-            >
-              <el-icon><Monitor /></el-icon>
-              <span class="ml-1">预览网站</span>
-            </el-button>
-            
-            <!-- 用户下拉菜单 -->
-            <el-dropdown>
-              <div :class="['flex items-center space-x-2 cursor-pointer px-2 py-1 rounded', isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50']">
-                <el-avatar :size="32" :src="userInfo.avatar">
-                  {{ userInfo.name.charAt(0) }}
-                </el-avatar>
-                <span :class="['text-sm', isDark ? 'text-gray-200' : 'text-gray-700']">{{ userInfo.name }}</span>
-                <el-icon :class="isDark ? 'text-gray-400' : 'text-gray-400'"><ArrowDown /></el-icon>
-              </div>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="logout">
-                    <el-icon><SwitchButton /></el-icon>
-                    <span class="ml-2">退出登录</span>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
-        </el-header>
-        
-        <!-- 主要内容：黄金节奏 + 模块化留白 -->
-        <el-main
-          class="admin-main-wrap p-6 overflow-auto"
-          :class="isDark ? 'bg-[#0F172A] text-gray-100' : 'bg-gray-50 text-gray-900'"
+      <!-- 底部操作 -->
+      <div class="p-4 border-t border-gray-200 dark:border-lab-border/50">
+        <button 
+          @click="toggleSidebar"
+          class="w-full flex items-center justify-center p-2 rounded hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-500 dark:text-lab-muted"
         >
-          <router-view />
-        </el-main>
-      </el-container>
-    </el-container>
+          <el-icon><component :is="collapsed ? Expand : Fold" /></el-icon>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div 
+      class="flex-1 flex flex-col min-h-screen transition-all duration-300"
+      :class="collapsed ? 'ml-16' : 'ml-64'"
+    >
+      <!-- 顶部栏 -->
+      <header class="h-16 sticky top-0 z-40 glass-panel border-b border-gray-200 dark:border-lab-border/50 px-6 flex items-center justify-between backdrop-blur-md bg-white/80 dark:bg-lab-bg/80">
+        <!-- 页面标题 -->
+        <div class="flex items-center">
+          <h1 class="text-xl font-display font-semibold text-gray-800 dark:text-white tracking-tight">
+            {{ pageTitle }}
+          </h1>
+        </div>
+
+        <!-- 右侧工具栏 -->
+        <div class="flex items-center gap-4">
+          <!-- 主题切换 -->
+          <button
+            @click="toggleTheme"
+            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-gray-600 dark:text-lab-muted hover:text-primary-600 dark:hover:text-lab-accent"
+            title="切换主题"
+          >
+            <el-icon :size="20">
+              <component :is="isDark ? Sunny : Moon" />
+            </el-icon>
+          </button>
+
+          <!-- 预览按钮 -->
+          <button 
+            @click="goToFrontend"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-lab-border hover:border-primary-500 dark:hover:border-lab-accent text-sm font-medium transition-all hover:shadow-lg hover:shadow-primary-500/20 dark:hover:shadow-lab-accent/20"
+          >
+            <el-icon><Monitor /></el-icon>
+            <span class="hidden sm:inline">Live Preview</span>
+          </button>
+          
+          <!-- 用户下拉 -->
+          <el-dropdown trigger="click">
+            <div class="flex items-center gap-3 cursor-pointer pl-4 border-l border-gray-200 dark:border-lab-border">
+              <div class="text-right hidden sm:block">
+                <div class="text-sm font-medium dark:text-white">{{ userInfo.name }}</div>
+                <div class="text-xs text-gray-500 dark:text-lab-muted">Administrator</div>
+              </div>
+              <el-avatar :size="36" :src="userInfo.avatar" class="border-2 border-white dark:border-lab-border shadow-sm">
+                {{ userInfo.name.charAt(0) }}
+              </el-avatar>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu class="w-48">
+                <el-dropdown-item @click="router.push('/admin/profile')">
+                  <el-icon><User /></el-icon>个人资料
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="logout">
+                  <el-icon class="text-red-500"><SwitchButton /></el-icon>
+                  <span class="text-red-500">退出登录</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </header>
+
+      <!-- 内容区域 -->
+      <main class="flex-1 p-6 overflow-x-hidden">
+        <div class="max-w-7xl mx-auto animate-fade-in">
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
+        </div>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -167,7 +157,6 @@ import {
   Briefcase, 
   Document, 
   User, 
-  ArrowDown, 
   SwitchButton,
   Setting,
   Monitor,
@@ -202,74 +191,70 @@ const userInfo = ref({
 
 const pageTitle = computed(() => {
   const titleMap: Record<string, string> = {
-    '/admin': '仪表盘',
-    '/admin/portfolio': '作品管理',
-    '/admin/products': '产品管理',
-    '/admin/analytics': '产品分析',
-    '/admin/monitoring': '产品监控',
-    '/admin/blog': '博客管理',
-    '/admin/extensions': '扩展管理',
-    '/admin/profile': '个人信息管理'
+    '/admin': 'Dashboard',
+    '/admin/portfolio': 'Portfolio',
+    '/admin/products': 'Products',
+    '/admin/analytics': 'Analytics',
+    '/admin/monitoring': 'Monitoring',
+    '/admin/blog': 'Blog',
+    '/admin/extensions': 'Extensions',
+    '/admin/profile': 'Profile'
   }
   // 支持匹配父路径
-  if (route.path.startsWith('/admin/portfolio')) {
-    return '作品管理'
-  }
-  if (route.path.startsWith('/admin/products') || route.path.startsWith('/admin/analytics') || route.path.startsWith('/admin/monitoring')) {
-    return titleMap[route.path] || '产品管理'
-  }
-  return titleMap[route.path] || '管理后台'
+  if (route.path.startsWith('/admin/portfolio')) return 'Portfolio Manager'
+  if (route.path.startsWith('/admin/products')) return 'Product Manager'
+  if (route.path.startsWith('/admin/analytics')) return 'Analytics Center'
+  if (route.path.startsWith('/admin/monitoring')) return 'System Monitor'
+  return titleMap[route.path] || 'Admin Console'
 })
-
-const sidebarWidth = computed(() => collapsed.value ? '64px' : '250px')
 
 const menuItems: MenuItem[] = [
   {
     index: '/admin',
     icon: House,
-    title: '仪表盘'
+    title: 'Dashboard'
   },
   {
     index: '/admin/blog',
     icon: Document,
-    title: '博客管理'
+    title: 'Blog Posts'
   },
   {
     index: '/admin/portfolio',
     icon: Briefcase,
-    title: '作品管理'
+    title: 'Portfolio'
   },
   {
     index: '/admin/products',
     icon: Box,
-    title: '产品管理'
+    title: 'Products'
   },
   {
     index: 'product-analytics-group',
     icon: Setting,
-    title: '产品分析',
+    title: 'Analytics',
     children: [
       {
         index: '/admin/analytics',
         icon: Setting,
-        title: '产品分析'
+        title: 'Overview'
       },
       {
         index: '/admin/monitoring',
         icon: Warning,
-        title: '产品监控'
+        title: 'Health Check'
       }
     ]
   },
   {
     index: '/admin/extensions',
     icon: Tools,
-    title: '扩展管理'
+    title: 'Extensions'
   },
   {
     index: '/admin/profile',
     icon: User,
-    title: '个人信息'
+    title: 'Profile'
   }
 ]
 
@@ -280,29 +265,28 @@ const toggleSidebar = () => {
 const logout = async () => {
   try {
     await ElMessageBox.confirm(
-      '确定要退出登录吗？',
-      '确认退出',
+      'Are you sure you want to logout?',
+      'Confirm Logout',
       {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+        confirmButtonText: 'Logout',
+        cancelButtonText: 'Cancel',
+        type: 'warning',
+        customClass: 'dark:bg-lab-card dark:border-lab-border'
       }
     )
     
     try {
-      // 调用登出API
       await authAPI.logout()
     } catch (error) {
-      console.warn('登出API调用失败:', error)
+      console.warn('Logout API failed:', error)
     }
     
-    // 清除登录状态
     localStorage.removeItem('admin_token')
-    ElMessage.success('已退出登录')
+    ElMessage.success('Logged out successfully')
     router.push('/admin/login')
     
   } catch (error) {
-    // 用户取消退出
+    // Cancelled
   }
 }
 
@@ -310,14 +294,33 @@ const goToFrontend = () => {
   window.open('/', '_blank')
 }
 
-// 验证登录状态
 onMounted(async () => {
   try {
     await authAPI.verify()
   } catch (error) {
-    console.error('Token验证失败:', error)
+    console.error('Token verification failed:', error)
     localStorage.removeItem('admin_token')
     router.push('/admin/login')
   }
 })
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Custom Scrollbar for Menu */
+:deep(.el-scrollbar__bar.is-vertical) {
+  width: 4px;
+}
+:deep(.el-scrollbar__thumb) {
+  background-color: rgba(156, 163, 175, 0.3);
+}
+</style>

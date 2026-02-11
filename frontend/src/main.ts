@@ -4,7 +4,6 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import './style.css'
 import './admin/styles/dark-mode.css'
-import './admin/styles/admin-theme.css'
 
 import App from './App.vue'
 import { frontendRoutes } from './frontend/router'

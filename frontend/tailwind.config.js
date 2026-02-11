@@ -10,15 +10,22 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'], // 核心字体
+        display: ['Space Grotesk', 'Inter', 'sans-serif'], // 标题字体
       },
       colors: {
-        // 工业风色板
+        // 工业风色板 - 增强版
         lab: {
-          bg: '#0b0c10',
-          card: '#1f2833',
-          text: '#c5c6c7',
-          accent: '#66fcf1',
-          darkAccent: '#45a29e',
+          bg: '#050505', // 更深邃的黑
+          card: '#0A0A0A', // 极简黑卡片
+          surface: '#121212', // 表面层
+          border: '#2A2A2A', // 细微边框
+          text: '#E1E1E1', // 主要文本
+          muted: '#888888', // 次要文本
+          accent: '#00F0FF', // 赛博蓝高亮
+          accentHover: '#00C2CC',
+          success: '#00FF94',
+          warning: '#FFD600',
+          error: '#FF2E2E',
         },
         slate: {
           850: '#151f2e',
@@ -54,6 +61,9 @@ export default {
       animation: {
         'cursor-blink': 'blink 1s step-end infinite',
         'scan': 'scan 8s linear infinite',
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.5s ease-out forwards',
+        'scale-in': 'scaleIn 0.3s ease-out forwards',
       },
       keyframes: {
         blink: {
@@ -63,6 +73,18 @@ export default {
         scan: {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(100%)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         }
       }
     },
