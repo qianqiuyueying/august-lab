@@ -373,3 +373,70 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   color: #909399;
 }
 </style>
+
+<style>
+/* 深色模式：编辑弹窗内预览区域（不受 scoped 覆盖） */
+.dark .markdown-editor .preview-pane {
+  background-color: var(--lab-bg) !important;
+}
+
+.dark .markdown-editor .markdown-body {
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-editor .markdown-body h1,
+.dark .markdown-editor .markdown-body h2,
+.dark .markdown-editor .markdown-body h3,
+.dark .markdown-editor .markdown-body h4,
+.dark .markdown-editor .markdown-body h5,
+.dark .markdown-editor .markdown-body h6 {
+  color: var(--lab-text) !important;
+  border-bottom-color: var(--lab-border) !important;
+}
+
+.dark .markdown-editor .markdown-body p {
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-editor .markdown-body code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-editor .markdown-body pre {
+  background-color: #161b22 !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-editor .markdown-body pre code {
+  color: inherit !important;
+}
+
+.dark .markdown-editor .markdown-body blockquote {
+  color: var(--lab-muted) !important;
+  border-left-color: var(--lab-border) !important;
+}
+
+.dark .markdown-editor .markdown-body th,
+.dark .markdown-editor .markdown-body td {
+  border-color: var(--lab-border) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-editor .markdown-body th {
+  background-color: #161b22 !important;
+}
+
+.dark .markdown-editor .markdown-body a {
+  color: var(--lab-accent) !important;
+}
+
+.dark .markdown-editor .empty-content,
+.dark .markdown-editor .error-content {
+  color: var(--lab-muted) !important;
+}
+
+.dark .markdown-editor .error-content {
+  color: #f56c6c !important;
+}
+</style>
