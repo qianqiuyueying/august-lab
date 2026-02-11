@@ -184,25 +184,37 @@
   box-shadow: 0 0 0 1px var(--lab-accent) inset !important;
 }
 
-/* 标签 */
+/* 标签 Tag - 深色模式全覆盖 */
 .dark .el-tag {
   border: none !important;
   font-weight: 500;
+  background-color: var(--lab-surface) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .el-tag--primary {
+  background-color: rgba(0, 240, 255, 0.15) !important;
+  color: var(--lab-accent) !important;
 }
 
 .dark .el-tag--success {
-  background-color: rgba(0, 255, 148, 0.1) !important;
+  background-color: rgba(0, 255, 148, 0.15) !important;
   color: #00FF94 !important;
 }
 
 .dark .el-tag--warning {
-  background-color: rgba(255, 214, 0, 0.1) !important;
+  background-color: rgba(255, 214, 0, 0.15) !important;
   color: #FFD600 !important;
 }
 
 .dark .el-tag--danger {
-  background-color: rgba(255, 46, 46, 0.1) !important;
+  background-color: rgba(255, 46, 46, 0.15) !important;
   color: #FF2E2E !important;
+}
+
+.dark .el-tag--info {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--lab-muted) !important;
 }
 
 /* 对话框 */
