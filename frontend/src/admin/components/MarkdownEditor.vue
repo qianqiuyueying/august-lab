@@ -231,11 +231,22 @@ const insertMarkdown = (prefix: string, suffix: string) => {
 .editor-content.split .editor-pane,
 .editor-content.split .preview-pane {
   width: 50%;
+  min-height: 0;
 }
 
 .editor-pane {
   border-right: 1px solid #dcdfe6;
   transition: border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.editor-pane :deep(.el-textarea) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .editor-pane :deep(.el-textarea__inner) {
@@ -247,6 +258,10 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   line-height: 1.6;
   background-color: transparent;
   color: inherit;
+  flex: 1;
+  min-height: 0;
+  height: 100% !important;
+  box-sizing: border-box;
 }
 
 .preview-pane {
