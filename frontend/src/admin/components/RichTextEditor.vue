@@ -338,6 +338,7 @@ onMounted(() => {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   overflow: hidden;
+  transition: all 0.3s;
 }
 
 .toolbar {
@@ -348,6 +349,7 @@ onMounted(() => {
   background-color: #f5f7fa;
   border-bottom: 1px solid #dcdfe6;
   flex-wrap: wrap;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .toolbar-group {
@@ -369,6 +371,7 @@ onMounted(() => {
   color: #606266;
   background-color: #fff;
   overflow-y: auto;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .editor-content:empty:before {
@@ -418,6 +421,7 @@ onMounted(() => {
   background-color: #f5f7fa;
   border-top: 1px solid #dcdfe6;
   text-align: right;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .word-count {

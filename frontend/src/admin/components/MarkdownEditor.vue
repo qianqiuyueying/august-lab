@@ -200,6 +200,7 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   overflow: hidden;
+  transition: all 0.3s;
 }
 
 .editor-toolbar {
@@ -209,11 +210,14 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   padding: 8px 12px;
   background-color: #f5f7fa;
   border-bottom: 1px solid #dcdfe6;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .editor-content {
   display: flex;
   min-height: 400px;
+  background-color: #fff;
+  transition: background-color 0.3s;
 }
 
 .editor-content.edit .editor-pane {
@@ -231,6 +235,7 @@ const insertMarkdown = (prefix: string, suffix: string) => {
 
 .editor-pane {
   border-right: 1px solid #dcdfe6;
+  transition: border-color 0.3s;
 }
 
 .editor-pane :deep(.el-textarea__inner) {
@@ -240,17 +245,21 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 14px;
   line-height: 1.6;
+  background-color: transparent;
+  color: inherit;
 }
 
 .preview-pane {
   padding: 16px;
   overflow-y: auto;
   background-color: #fff;
+  transition: background-color 0.3s;
 }
 
 .markdown-body {
   line-height: 1.6;
   color: #333;
+  transition: color 0.3s;
 }
 
 .markdown-body :deep(h1),
@@ -356,6 +365,7 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   background-color: #f5f7fa;
   border-top: 1px solid #dcdfe6;
   text-align: right;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .word-count {

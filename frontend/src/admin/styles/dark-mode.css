@@ -39,6 +39,7 @@
   --el-fill-color: var(--lab-surface) !important;
   --el-fill-color-light: #1a1a1a !important;
   --el-fill-color-lighter: #262626 !important;
+  --el-fill-color-extra-light: #333333 !important;
   
   /* 主色调 - 使用 Lab Accent */
   --el-color-primary: var(--lab-accent) !important;
@@ -48,6 +49,13 @@
   --el-color-primary-light-8: #ccfcff !important;
   --el-color-primary-light-9: #e5feff !important;
   --el-color-primary-dark-2: #00c0cc !important;
+
+  /* 输入框特定变量 */
+  --el-input-bg-color: var(--lab-surface) !important;
+  --el-input-text-color: var(--lab-text) !important;
+  --el-input-border-color: var(--lab-border) !important;
+  --el-input-hover-border-color: var(--lab-accent) !important;
+  --el-input-focus-border-color: var(--lab-accent) !important;
 }
 
 /* 组件特定覆盖 */
@@ -104,6 +112,7 @@
   --el-table-row-hover-bg-color: rgba(255, 255, 255, 0.03) !important;
   --el-table-header-bg-color: transparent !important;
   --el-table-border-color: var(--lab-border) !important;
+  color: var(--lab-text) !important;
 }
 
 .dark .el-table th.el-table__cell {
@@ -118,6 +127,10 @@
 
 .dark .el-table td.el-table__cell {
   border-bottom: 1px solid var(--lab-border) !important;
+}
+
+.dark .el-table__inner-wrapper::before {
+  background-color: var(--lab-border) !important;
 }
 
 /* 按钮 - 赛博风格 */
@@ -135,6 +148,18 @@
   box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
 }
 
+.dark .el-button--default {
+  background-color: transparent !important;
+  border-color: var(--lab-border) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .el-button--default:hover {
+  border-color: var(--lab-accent) !important;
+  color: var(--lab-accent) !important;
+  background-color: rgba(0, 240, 255, 0.05) !important;
+}
+
 /* 输入框 */
 .dark .el-input__wrapper {
   background-color: rgba(255, 255, 255, 0.03) !important;
@@ -142,6 +167,20 @@
 }
 
 .dark .el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--lab-accent) inset !important;
+}
+
+.dark .el-input__inner {
+  color: var(--lab-text) !important;
+}
+
+.dark .el-textarea__inner {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: 0 0 0 1px var(--lab-border) inset !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .el-textarea__inner:focus {
   box-shadow: 0 0 0 1px var(--lab-accent) inset !important;
 }
 
@@ -164,6 +203,132 @@
 .dark .el-tag--danger {
   background-color: rgba(255, 46, 46, 0.1) !important;
   color: #FF2E2E !important;
+}
+
+/* 对话框 */
+.dark .el-dialog {
+  background-color: var(--lab-card) !important;
+  border: 1px solid var(--lab-border) !important;
+}
+
+.dark .el-dialog__title {
+  color: var(--lab-text) !important;
+}
+
+/* 下拉菜单 */
+.dark .el-dropdown-menu {
+  background-color: var(--lab-card) !important;
+  border: 1px solid var(--lab-border) !important;
+}
+
+.dark .el-dropdown-menu__item {
+  color: var(--lab-text) !important;
+}
+
+.dark .el-dropdown-menu__item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--lab-accent) !important;
+}
+
+.dark .el-dropdown-menu__item--divided {
+  border-top-color: var(--lab-border) !important;
+}
+
+/* Select */
+.dark .el-select-dropdown {
+  background-color: var(--lab-card) !important;
+  border: 1px solid var(--lab-border) !important;
+}
+
+.dark .el-select-dropdown__item {
+  color: var(--lab-text) !important;
+}
+
+.dark .el-select-dropdown__item.hover, 
+.dark .el-select-dropdown__item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .el-select-dropdown__item.selected {
+  color: var(--lab-accent) !important;
+  font-weight: 600;
+}
+
+/* Markdown Editor / Rich Text Editor Dark Mode Overrides */
+.dark .rich-text-editor,
+.dark .markdown-editor {
+  border-color: var(--lab-border) !important;
+  background-color: var(--lab-surface) !important;
+}
+
+.dark .editor-toolbar,
+.dark .toolbar {
+  background-color: #1a1a1a !important; /* Slightly lighter than surface */
+  border-bottom-color: var(--lab-border) !important;
+}
+
+.dark .editor-content {
+  background-color: var(--lab-bg) !important;
+  color: var(--lab-text) !important;
+}
+
+.dark .editor-content:empty:before {
+  color: var(--lab-muted) !important;
+}
+
+.dark .editor-footer {
+  background-color: #1a1a1a !important;
+  border-top-color: var(--lab-border) !important;
+}
+
+/* Rich Text Editor Toolbar Buttons */
+.dark .toolbar .el-button {
+  background-color: transparent !important;
+  border: 1px solid var(--lab-border) !important;
+  color: var(--lab-muted) !important;
+}
+
+.dark .toolbar .el-button:hover {
+  color: var(--lab-text) !important;
+  border-color: var(--lab-muted) !important;
+}
+
+.dark .toolbar .el-button.active {
+  background-color: rgba(0, 240, 255, 0.1) !important;
+  color: var(--lab-accent) !important;
+  border-color: var(--lab-accent) !important;
+}
+
+/* Markdown Preview Dark Mode */
+.dark .markdown-body {
+  color: var(--lab-text) !important;
+}
+
+.dark .markdown-body h1,
+.dark .markdown-body h2 {
+  border-bottom-color: var(--lab-border) !important;
+}
+
+.dark .markdown-body code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .markdown-body pre {
+  background-color: #161b22 !important;
+}
+
+.dark .markdown-body blockquote {
+  color: var(--lab-muted) !important;
+  border-left-color: var(--lab-border) !important;
+}
+
+.dark .markdown-body th,
+.dark .markdown-body td {
+  border-color: var(--lab-border) !important;
+}
+
+.dark .markdown-body th {
+  background-color: #161b22 !important;
 }
 
 /* 滚动条 */
