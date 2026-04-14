@@ -1,24 +1,16 @@
-FROM python:3.14-slim AS builder
-
-WORKDIR /app
-
-RUN pip install --no-cache-dir uv
-
-COPY backend/requirements.txt .
-RUN uv pip install --system --no-cache-dir -r requirements.txt
-
-COPY backend/app/ ./app/
-COPY backend/alembic/ ./alembic/
-COPY backend/alembic.ini .
-
 FROM python:3.14-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir uv
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir \
+    --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    --trusted-host pypi.tuna.tsinghua.edu.cn \
+    -r requirements.txt
 
-COPY --from=builder /usr/local/lib/python3.14/site-packages/ /usr/local/lib/python3.14/site-packages/
-COPY --from=builder /app/ .
+COPY backend/app/ ./app/
+COPY backend/alembic/ ./alembic/
+COPY backend/alembic.ini .
 
 RUN mkdir -p /app/data
 
