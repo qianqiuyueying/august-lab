@@ -90,7 +90,7 @@ jobs:
 
       - name: 部署到服务器
         run: |
-          ssh root@192.144.154.17 << 'REMOTE_SCRIPT'
+          ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
             DEPLOY_DIR="/opt/blog"
             mkdir -p "$DEPLOY_DIR"
@@ -98,24 +98,23 @@ jobs:
             # 配置 BT-Panel Nginx 反向代理（如果还没有的话）
             NGINX_CONF="/www/server/panel/vhost/nginx/blog.conf"
             if [ ! -f "$NGINX_CONF" ]; then
-              cat > "$NGINX_CONF" << 'NGINX_EOF'
-            upstream blog {
-                server 127.0.0.1:8080;
-            }
-
-            server {
-                listen 80;
-                server_name _;
-
-                location / {
-                    proxy_pass http://blog;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                }
-            }
-            NGINX_EOF
+              printf '%s\n' \
+                "upstream blog {" \
+                "    server 127.0.0.1:8080;" \
+                "}" \
+                "" \
+                "server {" \
+                "    listen 80;" \
+                "    server_name _;" \
+                "" \
+                "    location / {" \
+                "        proxy_pass http://blog;" \
+                "        proxy_set_header Host \$host;" \
+                "        proxy_set_header X-Real-IP \$remote_addr;" \
+                "        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;" \
+                "        proxy_set_header X-Forwarded-Proto \$scheme;" \
+                "    }" \
+                "}" > "$NGINX_CONF"
               nginx -t && nginx -s reload
               echo "Nginx config applied"
             fi
