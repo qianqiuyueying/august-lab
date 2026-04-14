@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import SearchBar from './SearchBar';
 
 const mockNavigate = vi.fn();
@@ -14,7 +15,11 @@ vi.mock('react-router-dom', async () => {
 });
 
 function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+  return render(
+    <MotionConfig reducedMotion="user">
+      <MemoryRouter>{ui}</MemoryRouter>
+    </MotionConfig>
+  );
 }
 
 describe('SearchBar', () => {

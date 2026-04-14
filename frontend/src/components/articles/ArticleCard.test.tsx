@@ -1,11 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import ArticleCard from './ArticleCard';
 import type { ArticleListItem } from '../../types';
 
 function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+  return render(
+    <MotionConfig reducedMotion="user">
+      <MemoryRouter>{ui}</MemoryRouter>
+    </MotionConfig>
+  );
 }
 
 const mockArticle: ArticleListItem = {

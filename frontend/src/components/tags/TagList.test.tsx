@@ -1,10 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import TagList from './TagList';
 
 function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+  return render(
+    <MotionConfig reducedMotion="user">
+      <MemoryRouter>{ui}</MemoryRouter>
+    </MotionConfig>
+  );
 }
 
 const mockTags = [
