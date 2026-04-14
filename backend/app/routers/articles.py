@@ -123,7 +123,13 @@ async def create_article(
 
     db.add(article)
     await db.commit()
-    await db.refresh(article)
+
+    result = await db.execute(
+        select(Article)
+        .where(Article.id == article.id)
+        .options(selectinload(Article.tags), selectinload(Article.author))
+    )
+    article = result.scalar_one()
     return article
 
 
@@ -160,7 +166,13 @@ async def update_article(
             article.tags.append(tag)
 
     await db.commit()
-    await db.refresh(article)
+
+    result = await db.execute(
+        select(Article)
+        .where(Article.id == article.id)
+        .options(selectinload(Article.tags), selectinload(Article.author))
+    )
+    article = result.scalar_one()
     return article
 
 

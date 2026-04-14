@@ -29,10 +29,10 @@ jobs:
           uv venv
           uv pip install -r requirements.txt
 
-      - name: 检查导入
+      - name: 运行测试
         run: |
           cd backend
-          uv run python -c "from app.main import app; print('Backend imports OK')"
+          uv run pytest tests/ -v
 
   frontend-build:
     name: 前端构建
@@ -51,6 +51,11 @@ jobs:
         run: |
           cd frontend
           npm ci
+
+      - name: 运行测试
+        run: |
+          cd frontend
+          npm run test
 
       - name: 类型检查 + 构建
         run: |

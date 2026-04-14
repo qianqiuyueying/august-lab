@@ -12,6 +12,7 @@ engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
 )
+__all__ = ["Base", "engine", "async_session", "get_db"]
 
 async_session = async_sessionmaker(
     engine,
