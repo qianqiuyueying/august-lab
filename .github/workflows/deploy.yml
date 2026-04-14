@@ -90,12 +90,54 @@ jobs:
 
       - name: 部署到服务器
         run: |
-          scp -r \
-            Dockerfile \
-            docker-compose.yml \
-            nginx.conf \
-            backend/ \
-            frontend/dist/ \
-            root@192.144.154.17:/opt/blog/
+          ssh root@192.144.154.17 << 'REMOTE_SCRIPT'
+            set -e
+            DEPLOY_DIR="/opt/blog"
+            mkdir -p "$DEPLOY_DIR"
 
-          ssh root@192.144.154.17 "cd /opt/blog && docker compose up -d --build"
+            # 配置 BT-Panel Nginx 反向代理（如果还没有的话）
+            NGINX_CONF="/www/server/panel/vhost/nginx/blog.conf"
+            if [ ! -f "$NGINX_CONF" ]; then
+              cat > "$NGINX_CONF" << 'NGINX_EOF'
+            upstream blog {
+                server 127.0.0.1:8080;
+            }
+
+            server {
+                listen 80;
+                server_name _;
+
+                location / {
+                    proxy_pass http://blog;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                }
+            }
+            NGINX_EOF
+              nginx -t && nginx -s reload
+              echo "Nginx config applied"
+            fi
+
+            # 拉取最新代码
+            cd "$DEPLOY_DIR"
+            git init -q 2>/dev/null || true
+            git remote set-url origin git@github.com:qianqiuyueying/august-lab.git 2>/dev/null || git remote add origin git@github.com:qianqiuyueying/august-lab.git
+            git fetch origin main
+            git reset --hard origin/main
+
+            # 构建前端
+            cd "$DEPLOY_DIR/frontend"
+            npm ci
+            npm run build
+
+            # 启动容器
+            cd "$DEPLOY_DIR"
+            docker compose up -d --build
+
+            # 验证
+            sleep 5
+            curl -sf http://localhost/api/health && echo " | Backend OK" || echo " | Backend NOT READY"
+            curl -sf -o /dev/null -w "HTTP %{http_code} | Frontend" http://localhost/ || echo " | Frontend NOT READY"
+          REMOTE_SCRIPT
