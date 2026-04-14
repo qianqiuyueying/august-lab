@@ -8,7 +8,7 @@ interface ArticleContentProps {
 
 export default function ArticleContent({ content }: ArticleContentProps) {
   return (
-    <div className="prose prose-lg dark:prose-invert max-w-none">
+    <div className="prose prose-zinc dark:prose-invert max-w-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
         {content}
       </ReactMarkdown>

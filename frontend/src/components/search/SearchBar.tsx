@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
@@ -13,20 +14,22 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex gap-2">
-      <input
+    <motion.form onSubmit={handleSearch} className="flex gap-2">
+      <motion.input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="搜索文章..."
-        className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+        whileFocus={{ scale: 1.01 }}
+        className="flex-1 sm:flex-none sm:w-64 border border-zinc-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
       />
-      <button
+      <motion.button
         type="submit"
-        className="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-500 text-sm"
+        whileTap={{ scale: 0.96 }}
+        className="px-4 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition-colors"
       >
         搜索
-      </button>
-    </form>
+      </motion.button>
+    </motion.form>
   );
 }

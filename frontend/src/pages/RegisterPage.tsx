@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { register } from '../api/auth';
 
 export default function RegisterPage() {
@@ -16,23 +17,43 @@ export default function RegisterPage() {
     try {
       await register(username, password);
       navigate('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.detail || '注册失败');
+    } catch (err) {
+      setError((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || '注册失败');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 sm:p-8">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">注册</h1>
+    <div className="max-w-md mx-auto py-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm"
+      >
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="text-2xl font-bold mb-6 text-center text-zinc-900 dark:text-white"
+        >
+          注册
+        </motion.h1>
 
-        {error && <div className="text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded mb-4">{error}</div>}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mb-4 text-sm"
+          >
+            {error}
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
               用户名
             </label>
             <input
@@ -40,11 +61,11 @@ export default function RegisterPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
               密码
             </label>
             <input
@@ -53,22 +74,26 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             />
           </div>
-          <button
+          <motion.button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-500 disabled:opacity-50"
+            whileTap={{ scale: loading ? 1 : 0.98 }}
+            className="w-full bg-accent text-white py-2.5 rounded-lg hover:bg-accent-hover disabled:opacity-50 font-medium transition-colors"
           >
             {loading ? '注册中...' : '注册'}
-          </button>
+          </motion.button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          已有账号？ <Link to="/login" className="text-indigo-600 hover:text-indigo-500">登录</Link>
+        <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+          已有账号？{' '}
+          <Link to="/login" className="text-accent hover:text-accent-hover font-medium">
+            登录
+          </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
