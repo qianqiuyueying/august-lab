@@ -1,0 +1,101 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-test:
+    name: 后端测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "backend/.python-version"
+
+      - name: 安装依赖
+        run: |
+          cd backend
+          uv venv
+          uv pip install -r requirements.txt
+
+      - name: 检查导入
+        run: |
+          cd backend
+          uv run python -c "from app.main import app; print('Backend imports OK')"
+
+  frontend-build:
+    name: 前端构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 安装依赖
+        run: |
+          cd frontend
+          npm ci
+
+      - name: 类型检查 + 构建
+        run: |
+          cd frontend
+          npm run build
+
+  deploy:
+    name: 部署到服务器
+    needs: [backend-test, frontend-build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 构建前端
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: 配置 SSH 密钥
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 添加服务器到已知主机
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 192.144.154.17 >> ~/.ssh/known_hosts
+
+      - name: 部署到服务器
+        run: |
+          scp -r \
+            Dockerfile \
+            docker-compose.yml \
+            nginx.conf \
+            backend/ \
+            frontend/dist/ \
+            root@192.144.154.17:/opt/blog/
+
+          ssh root@192.144.154.17 "cd /opt/blog && docker compose up -d --build"

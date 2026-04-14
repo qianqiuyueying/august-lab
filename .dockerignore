@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+
+# Build output
+frontend/dist/
+
+# Git
+.git/
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+
+# Docs
+CLAUDE.md
+README.md
