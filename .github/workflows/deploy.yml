@@ -100,6 +100,10 @@ jobs:
           scp -r backend/ root@192.144.154.17:/opt/blog/backend/
           scp -r frontend/dist/ root@192.144.154.17:/opt/blog/frontend/dist/
 
+      - name: 验证上传文件
+        run: |
+          ssh root@192.144.154.17 "ls -la /opt/blog/frontend/dist/ | head -5 && grep -o 'August' /opt/blog/frontend/dist/index.html"
+
       - name: 配置 BT-Panel Nginx（首次）
         continue-on-error: true
         run: |
@@ -136,6 +140,8 @@ jobs:
             set -e
             cd /opt/blog
             docker compose up -d --build
+            # 强制重建前端容器以确保加载新静态文件
+            docker compose up -d --force-recreate --no-deps frontend
             sleep 5
             curl -sf http://localhost/api/health && echo " | Backend OK" || echo " | Backend NOT READY"
             curl -sf -o /dev/null -w "HTTP %{http_code} | Frontend" http://localhost/ || echo " | Frontend NOT READY"
