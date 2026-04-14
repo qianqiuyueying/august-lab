@@ -98,7 +98,8 @@ jobs:
           ssh root@192.144.154.17 "mkdir -p /opt/blog"
           scp Dockerfile docker-compose.yml nginx.conf root@192.144.154.17:/opt/blog/
           scp -r backend/ root@192.144.154.17:/opt/blog/backend/
-          scp -r frontend/dist/ root@192.144.154.17:/opt/blog/frontend/dist/
+          # 注意：用 frontend/dist/* 而非 frontend/dist/，避免 scp -r 创建嵌套目录
+          scp -r frontend/dist/* root@192.144.154.17:/opt/blog/frontend/dist/
 
       - name: 验证上传文件
         run: |
