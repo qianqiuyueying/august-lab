@@ -14,6 +14,7 @@ export interface Article {
   title: string;
   content: string;
   summary: string;
+  cover_image?: string | null;
   status: string;
   tags: Tag[];
   created_at: string | null;
@@ -25,6 +26,7 @@ export interface ArticleListItem {
   slug: string;
   title: string;
   summary: string;
+  cover_image?: string | null;
   status: string;
   tags: Tag[];
   created_at: string | null;
@@ -63,6 +65,7 @@ export interface Product {
   slug: string;
   title: string;
   description: string;
+  cover_image?: string | null;
   status: string;
   created_at: string | null;
   updated_at: string | null;

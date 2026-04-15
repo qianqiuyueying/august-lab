@@ -7,7 +7,9 @@ export default function Layout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background dark:bg-background-dark">
+    <div className="min-h-screen flex flex-col bg-background dark:bg-background-dark relative">
+      {/* Subtle dot pattern background */}
+      <div className="fixed inset-0 bg-dot-pattern pointer-events-none opacity-60" />
       <ScrollProgress />
       <Header />
       <main className="flex-1 w-full relative overflow-hidden">
@@ -18,7 +20,7 @@ export default function Layout() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-            className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8"
+            className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10"
           >
             <Outlet />
           </motion.div>

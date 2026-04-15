@@ -7,6 +7,7 @@ class ArticleCreate(BaseModel):
     title: str
     content: str
     summary: Optional[str] = ""
+    cover_image: Optional[str] = None
     status: str = "draft"
     tags: List[str] = []
 
@@ -15,6 +16,7 @@ class ArticleUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     summary: Optional[str] = None
+    cover_image: Optional[str] = None
     status: Optional[str] = None
     tags: Optional[List[str]] = None
 
@@ -32,6 +34,7 @@ class ArticleOut(BaseModel):
     title: str
     content: str
     summary: str
+    cover_image: Optional[str] = None
     status: str
     tags: List[TagOut] = []
     created_at: Optional[datetime] = None
@@ -45,6 +48,7 @@ class ArticleListItem(BaseModel):
     slug: str
     title: str
     summary: str
+    cover_image: Optional[str] = None
     status: str
     tags: List[TagOut] = []
     created_at: Optional[datetime] = None
@@ -62,3 +66,4 @@ class ArticleListResponse(BaseModel):
 class ArticleUpload(BaseModel):
     title: str
     content: str
+    cover_image: Optional[str] = None

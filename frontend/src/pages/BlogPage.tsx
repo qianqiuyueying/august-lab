@@ -91,9 +91,12 @@ export default function BlogPage() {
             animate="visible"
             className="space-y-6"
           >
-            {data?.items.map((article) => (
+            {data?.items.map((article, index) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <ArticleCard article={article} />
+                <ArticleCard
+                  article={article}
+                  variant={page === 1 && index === 0 ? 'featured' : 'default'}
+                />
               </motion.div>
             ))}
 
