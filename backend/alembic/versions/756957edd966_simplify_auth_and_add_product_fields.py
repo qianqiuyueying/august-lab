@@ -29,6 +29,15 @@ def upgrade() -> None:
         batch_op.add_column(sa.Column('description', sa.String(500), server_default=''))
         batch_op.add_column(sa.Column('content_type', sa.String(20), server_default='markdown'))
 
+    # 3. 创建默认的 about 页面（如果不存在）
+    conn = op.get_bind()
+    result = conn.execute(sa.text("SELECT COUNT(*) FROM pages WHERE slug = 'about'"))
+    if result.scalar() == 0:
+        op.execute(
+            "INSERT INTO pages (slug, title, content, description, content_type, status) "
+            "VALUES ('about', 'About Me', '欢迎来到 August''s Lab！这里是August的个人空间，用于分享技术心得、项目经验和对世界的思考。', '关于本站和站主', 'markdown', 'published')"
+        )
+
 
 def downgrade() -> None:
     """Downgrade schema."""
