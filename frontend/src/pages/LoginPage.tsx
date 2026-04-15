@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { login } from '../api/auth';
@@ -88,13 +88,6 @@ export default function LoginPage() {
             {loading ? '登录中...' : '登录'}
           </motion.button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          还没有账号？{' '}
-          <Link to="/register" className="text-accent hover:text-accent-hover font-medium">
-            注册
-          </Link>
-        </p>
       </motion.div>
     </div>
   );

@@ -1,5 +1,8 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.routers import articles, tags, comments, auth, pages
 
@@ -22,6 +25,11 @@ app.include_router(articles.router, prefix="/api/articles", tags=["articles"])
 app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
 app.include_router(comments.router, prefix="/api", tags=["comments"])
 app.include_router(pages.router, prefix="/api/pages", tags=["pages"])
+
+# 挂载产品静态文件目录
+products_dir = "/app/products"
+if os.path.isdir(products_dir):
+    app.mount("/products", StaticFiles(directory=products_dir, html=True), name="products")
 
 
 @app.get("/api/health")

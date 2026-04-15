@@ -27,11 +27,13 @@ _sec.verify_password = _test_verify_password
 # 现在导入 app（路由将使用 patch 后的函数）
 from app.main import app
 
+# --- 测试用管理员凭据（环境变量覆盖） ---
+from app.config import settings
+settings.ADMIN_USERNAME = "testuser"
+settings.ADMIN_PASSWORD = "testpass123"
+
 # --- 修复 Pydantic 前向引用 ---
-# ArticleOut 通过 TYPE_CHECKING 引用了 UserOut，需要在测试中显式 rebuild
 from app.schemas.article import ArticleOut, ArticleListItem
-from app.schemas.tag import TagOut
-from app.schemas.user import UserOut
 ArticleOut.model_rebuild()
 ArticleListItem.model_rebuild()
 
@@ -68,29 +70,9 @@ async def client():
 
 
 @pytest.fixture
-async def test_user():
-    """创建一个测试用户，返回 (user_id, username, password)。"""
-    from app.models.user import User
-    from app.database import async_session
-    from sqlalchemy import select
-    import app.utils.security as _sec
-
-    username = "testuser"
-    password = "testpass123"
-
-    async with async_session() as session:
-        user = User(username=username, hashed_password=_sec.hash_password(password))
-        session.add(user)
-        await session.commit()
-        await session.refresh(user)
-        return user.id, user.username, password
-
-
-@pytest.fixture
-async def auth_token(test_user):
-    """返回测试用户的认证 token。"""
-    _, username, _ = test_user
-    token = create_access_token({"sub": username})
+async def auth_token():
+    """返回管理员的认证 token。"""
+    token = create_access_token({"sub": settings.ADMIN_USERNAME})
     return token
 
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getPages, createPage, deletePage } from '../api/pages';
+import { getPages, createPage, deletePage, uploadProductZip } from '../api/pages';
 import type { Page } from '../types';
 import ArticleEditor from '../components/articles/ArticleEditor';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,9 +11,12 @@ export default function PageManagePage() {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
+  const [description, setDescription] = useState('');
+  const [contentType, setContentType] = useState('markdown');
   const [status, setStatus] = useState('draft');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadingId, setUploadingId] = useState<number | null>(null);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -41,10 +44,12 @@ export default function PageManagePage() {
     setLoading(true);
     setError('');
     try {
-      await createPage({ slug, title, content, status });
+      await createPage({ slug, title, content, description, content_type: contentType, status });
       setTitle('');
       setSlug('');
       setContent('');
+      setDescription('');
+      setContentType('markdown');
       setStatus('draft');
       await loadPages();
     } catch (err) {
@@ -61,6 +66,22 @@ export default function PageManagePage() {
       await loadPages();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleUpload = async (pageId: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingId(pageId);
+    setError('');
+    try {
+      await uploadProductZip(pageId, file);
+      await loadPages();
+    } catch (err) {
+      setError((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || '上传失败');
+    } finally {
+      setUploadingId(null);
+      e.target.value = '';
     }
   };
 
@@ -108,6 +129,29 @@ export default function PageManagePage() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">描述</label>
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="产品简短描述（仅产品页需要）"
+                className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">内容类型</label>
+              <select
+                value={contentType}
+                onChange={(e) => setContentType(e.target.value)}
+                className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+              >
+                <option value="markdown">Markdown</option>
+                <option value="html">HTML（产品 ZIP）</option>
+              </select>
+            </div>
+          </div>
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">状态</label>
             <select
@@ -119,7 +163,7 @@ export default function PageManagePage() {
               <option value="published">发布</option>
             </select>
           </div>
-          <ArticleEditor initialContent={content} onChange={setContent} />
+          {contentType === 'markdown' && <ArticleEditor initialContent={content} onChange={setContent} />}
           <motion.button
             type="submit"
             disabled={loading}
@@ -139,20 +183,39 @@ export default function PageManagePage() {
           <div className="space-y-3">
             {pages.map((p) => (
               <div key={p.id} className="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-3">
-                <div>
+                <div className="flex-1">
                   <span className="font-medium text-zinc-900 dark:text-white">{p.title}</span>
                   <span className="ml-2 text-sm text-zinc-500">/{p.slug}</span>
                   <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${p.status === 'published' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'}`}>
                     {p.status === 'published' ? '已发布' : '草稿'}
                   </span>
+                  <span className={`ml-2 text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400`}>
+                    {p.content_type || 'markdown'}
+                  </span>
+                  {p.description && (
+                    <div className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">{p.description}</div>
+                  )}
                 </div>
-                <motion.button
-                  onClick={() => handleDelete(p.id)}
-                  whileTap={{ scale: 0.95 }}
-                  className="text-red-600 hover:text-red-500 text-sm font-medium"
-                >
-                  删除
-                </motion.button>
+                <div className="flex items-center gap-2 ml-4">
+                  <label className="text-sm font-medium text-accent hover:text-accent-hover cursor-pointer disabled:opacity-50"
+                    title="上传 ZIP 包（HTML 产品）">
+                    {uploadingId === p.id ? '上传中...' : '上传 ZIP'}
+                    <input
+                      type="file"
+                      accept=".zip"
+                      disabled={uploadingId === p.id}
+                      onChange={(e) => handleUpload(p.id, e)}
+                      className="hidden"
+                    />
+                  </label>
+                  <motion.button
+                    onClick={() => handleDelete(p.id)}
+                    whileTap={{ scale: 0.95 }}
+                    className="text-red-600 hover:text-red-500 text-sm font-medium"
+                  >
+                    删除
+                  </motion.button>
+                </div>
               </div>
             ))}
           </div>

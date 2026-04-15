@@ -9,6 +9,8 @@ class Page(Base):
     slug = Column(String(255), unique=True, index=True, nullable=False)
     title = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
+    description = Column(String(500), default="")
+    content_type = Column(String(20), default="markdown")  # markdown | html
     status = Column(String(20), default="draft")  # draft | published
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

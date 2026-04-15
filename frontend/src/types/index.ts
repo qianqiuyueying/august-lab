@@ -15,7 +15,6 @@ export interface Article {
   content: string;
   summary: string;
   status: string;
-  author?: User;
   tags: Tag[];
   created_at: string | null;
   updated_at: string | null;
@@ -52,6 +51,8 @@ export interface Page {
   slug: string;
   title: string;
   content: string;
+  description: string;
+  content_type: string;  // "markdown" | "html"
   status: string;
   created_at: string | null;
   updated_at: string | null;

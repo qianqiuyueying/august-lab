@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - blog-data:/app/data
+      - products-data:/app/products
     environment:
       - BLOG_SECRET_KEY=${BLOG_SECRET_KEY:-your-secret-key-change-in-production}
     networks:
@@ -28,6 +29,7 @@ services:
 
 volumes:
   blog-data:
+  products-data:
 
 networks:
   blog-net:

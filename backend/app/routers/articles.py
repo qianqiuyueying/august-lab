@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
-from app.models.user import User
 from app.models.article import Article
 from app.models.tag import Tag
 from app.models.article_tag import article_tag
@@ -78,7 +77,7 @@ async def get_article(slug: str, db: AsyncSession = Depends(get_db)):
     query = (
         select(Article)
         .where(Article.slug == slug)
-        .options(selectinload(Article.tags), selectinload(Article.author))
+        .options(selectinload(Article.tags))
     )
     result = await db.execute(query)
     article = result.scalar_one_or_none()
@@ -91,7 +90,7 @@ async def get_article(slug: str, db: AsyncSession = Depends(get_db)):
 async def create_article(
     data: ArticleCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
 ):
     base_slug = slugify(data.title)
     slug = base_slug
@@ -109,7 +108,6 @@ async def create_article(
         content=data.content,
         summary=data.summary or data.content[:200],
         status=data.status,
-        author_id=current_user.id,
     )
 
     if data.tags:
@@ -127,7 +125,7 @@ async def create_article(
     result = await db.execute(
         select(Article)
         .where(Article.id == article.id)
-        .options(selectinload(Article.tags), selectinload(Article.author))
+        .options(selectinload(Article.tags))
     )
     article = result.scalar_one()
     return article
@@ -138,12 +136,12 @@ async def update_article(
     article_id: int,
     data: ArticleUpdate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
 ):
     result = await db.execute(
         select(Article)
         .where(Article.id == article_id)
-        .options(selectinload(Article.tags), selectinload(Article.author))
+        .options(selectinload(Article.tags))
     )
     article = result.scalar_one_or_none()
     if not article:
@@ -170,7 +168,7 @@ async def update_article(
     result = await db.execute(
         select(Article)
         .where(Article.id == article.id)
-        .options(selectinload(Article.tags), selectinload(Article.author))
+        .options(selectinload(Article.tags))
     )
     article = result.scalar_one()
     return article
@@ -180,7 +178,7 @@ async def update_article(
 async def delete_article(
     article_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
 ):
     result = await db.execute(select(Article).where(Article.id == article_id))
     article = result.scalar_one_or_none()

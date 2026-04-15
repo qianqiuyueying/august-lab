@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -13,10 +13,8 @@ class Article(Base):
     content = Column(Text, nullable=False)
     summary = Column(String(500), default="")
     status = Column(String(20), default="draft")  # draft | published
-    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
-    author = relationship("User", back_populates="articles")
     tags = relationship("Tag", secondary="article_tags", back_populates="articles")
     comments = relationship("Comment", back_populates="article", cascade="all, delete-orphan")

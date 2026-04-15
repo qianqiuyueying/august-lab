@@ -144,16 +144,7 @@ export default function Header() {
                     退出
                   </motion.button>
                 </div>
-              ) : (
-                <div className="hidden md:flex items-center gap-2">
-                  <Link
-                    to="/login"
-                    className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-                  >
-                    登录
-                  </Link>
-                </div>
-              )}
+              ) : null}
 
               {/* Mobile menu button */}
               <motion.button
@@ -216,15 +207,7 @@ export default function Header() {
                       退出
                     </button>
                   </>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="block px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-                  >
-                    登录
-                  </Link>
-                )}
+                ) : null}
               </nav>
             </motion.div>
           )}

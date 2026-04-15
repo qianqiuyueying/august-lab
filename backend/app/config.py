@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
     DEBUG: bool = True
 
+    # 管理员认证（硬编码）
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str = "admin"
+
     model_config = {"env_prefix": "BLOG_", "extra": "ignore"}
 
 

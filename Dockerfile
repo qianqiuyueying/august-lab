@@ -12,7 +12,7 @@ COPY backend/app/ ./app/
 COPY backend/alembic/ ./alembic/
 COPY backend/alembic.ini .
 
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data /app/products
 
 ENV PYTHONUNBUFFERED=1
 ENV BLOG_DATABASE_URL=sqlite+aiosqlite:///./data/blog.db

@@ -29,10 +29,16 @@ export default function StaticPage() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-4xl mx-auto"
     >
-      <article className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm">
-        <h1 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white">{page.title}</h1>
-        <ArticleContent content={page.content} />
-      </article>
+      {page.content_type === 'html' ? (
+        <div className="rounded-xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
+          <div dangerouslySetInnerHTML={{ __html: page.content }} />
+        </div>
+      ) : (
+        <article className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm">
+          <h1 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white">{page.title}</h1>
+          <ArticleContent content={page.content} />
+        </article>
+      )}
     </motion.div>
   );
 }

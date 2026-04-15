@@ -1,9 +1,6 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel
-
-if TYPE_CHECKING:
-    from app.schemas.user import UserOut
 
 
 class ArticleCreate(BaseModel):
@@ -22,6 +19,13 @@ class ArticleUpdate(BaseModel):
     tags: Optional[List[str]] = None
 
 
+class TagOut(BaseModel):
+    id: int
+    name: str
+
+    model_config = {"from_attributes": True}
+
+
 class ArticleOut(BaseModel):
     id: int
     slug: str
@@ -29,8 +33,7 @@ class ArticleOut(BaseModel):
     content: str
     summary: str
     status: str
-    author: Optional["UserOut"] = None
-    tags: List["TagOut"] = []
+    tags: List[TagOut] = []
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -43,7 +46,7 @@ class ArticleListItem(BaseModel):
     title: str
     summary: str
     status: str
-    tags: List["TagOut"] = []
+    tags: List[TagOut] = []
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
@@ -54,10 +57,3 @@ class ArticleListResponse(BaseModel):
     total: int
     page: int
     page_size: int
-
-
-class TagOut(BaseModel):
-    id: int
-    name: str
-
-    model_config = {"from_attributes": True}

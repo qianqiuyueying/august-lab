@@ -36,9 +36,10 @@ export default function ProductsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const extractSummary = (content: string) => {
+  const getSummary = (page: Page) => {
+    if (page.description) return page.description;
     // eslint-disable-next-line no-useless-escape
-    const plain = content.replace(/[#*`_~>!()\[\]]/g, '').trim();
+    const plain = page.content.replace(/[#*`_~>!()\[\]]/g, '').trim();
     return plain.length > 150 ? plain.slice(0, 150) + '...' : plain;
   };
 
@@ -114,7 +115,7 @@ export default function ProductsPage() {
                       {page.title}
                     </h3>
                     <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed line-clamp-3">
-                      {extractSummary(page.content)}
+                      {getSummary(page)}
                     </p>
                   </div>
                   <div className="mt-4 flex items-center text-accent text-sm font-medium">
