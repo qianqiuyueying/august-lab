@@ -2,22 +2,26 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getArticles } from '../../api/articles';
+import { getProducts } from '../../api/products';
 import { getPages } from '../../api/pages';
 
 export default function AdminDashboard() {
   const [articleCount, setArticleCount] = useState(0);
+  const [productCount, setProductCount] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       getArticles(1, 1).then((d: { total: number }) => { setArticleCount(d.total); }).catch(() => {}),
+      getProducts().then((d: { length: number }) => { setProductCount(d.length); }).catch(() => {}),
       getPages().then((d: { length: number }) => { setPageCount(d.length); }).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
   const stats = [
     { label: '文章', value: articleCount, to: '/admin/articles', color: 'from-indigo-500 to-blue-600' },
+    { label: '产品', value: productCount, to: '/admin/products', color: 'from-purple-500 to-pink-600' },
     { label: '页面', value: pageCount, to: '/admin/pages', color: 'from-emerald-500 to-teal-600' },
   ];
 
@@ -29,14 +33,14 @@ export default function AdminDashboard() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[1, 2].map((i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse h-32 bg-zinc-200 dark:bg-zinc-800 rounded-xl" />
           ))}
         </div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >

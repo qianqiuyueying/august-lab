@@ -10,6 +10,7 @@ import ArticlePage from './pages/ArticlePage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminArticles from './pages/admin/AdminArticles';
+import AdminProducts from './pages/admin/AdminProducts';
 import AdminPages from './pages/admin/AdminPages';
 import AdminSettings from './pages/admin/AdminSettings';
 
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="articles" element={<AdminArticles />} />
+            <Route path="products" element={<AdminProducts />} />
             <Route path="pages" element={<AdminPages />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

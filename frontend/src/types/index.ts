@@ -57,3 +57,13 @@ export interface Page {
   created_at: string | null;
   updated_at: string | null;
 }
+
+export interface Product {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  status: string;
+  created_at: string | null;
+  updated_at: string | null;
+}

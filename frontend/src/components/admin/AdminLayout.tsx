@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const navItems = [
   { to: '/admin', label: '仪表盘', icon: '📊' },
   { to: '/admin/articles', label: '文章管理', icon: '📝' },
+  { to: '/admin/products', label: '产品管理', icon: '📦' },
   { to: '/admin/pages', label: '页面管理', icon: '📄' },
   { to: '/admin/settings', label: '站点设置', icon: '⚙️' },
 ];
