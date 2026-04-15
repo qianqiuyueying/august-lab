@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../hooks/useTheme';
 
 const navLinks = [
@@ -45,7 +44,6 @@ function CloseIcon() {
 }
 
 export default function Header() {
-  const { isAuthenticated, logout } = useAuth();
   const { theme, toggle } = useTheme();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -121,25 +119,6 @@ export default function Header() {
                 </AnimatePresence>
               </motion.button>
 
-              {/* Auth buttons */}
-              {isAuthenticated ? (
-                <div className="hidden md:flex items-center gap-2">
-                  <Link
-                    to="/admin"
-                    className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-                  >
-                    管理
-                  </Link>
-                  <motion.button
-                    onClick={logout}
-                    className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-500 transition-colors"
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    退出
-                  </motion.button>
-                </div>
-              ) : null}
-
               {/* Mobile menu button */}
               <motion.button
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -178,23 +157,6 @@ export default function Header() {
                     {link.label}
                   </Link>
                 ))}
-                {isAuthenticated ? (
-                  <>
-                    <Link
-                      to="/admin"
-                      onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-                    >
-                      管理后台
-                    </Link>
-                    <button
-                      onClick={() => { logout(); setMobileOpen(false); }}
-                      className="block w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
-                    >
-                      退出
-                    </button>
-                  </>
-                ) : null}
               </nav>
             </motion.div>
           )}

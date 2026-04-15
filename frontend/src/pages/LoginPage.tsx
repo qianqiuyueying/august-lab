@@ -19,7 +19,7 @@ export default function LoginPage() {
     try {
       const result = await login(username, password);
       authLogin(result.access_token);
-      navigate('/');
+      navigate('/admin');
     } catch (err) {
       setError((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || '登录失败');
     } finally {
