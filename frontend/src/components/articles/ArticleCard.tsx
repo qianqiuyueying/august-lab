@@ -9,26 +9,8 @@ interface ArticleCardProps {
   variant?: 'default' | 'featured';
 }
 
-// 渐变占位符配色方案
-const gradients = [
-  'from-indigo-400 to-purple-500',
-  'from-emerald-400 to-teal-500',
-  'from-amber-400 to-orange-500',
-  'from-rose-400 to-pink-500',
-  'from-cyan-400 to-blue-500',
-];
-
-function getGradientClass(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return gradients[Math.abs(hash) % gradients.length];
-}
-
 export default function ArticleCard({ article, variant = 'default' }: ArticleCardProps) {
   const isFeatured = variant === 'featured';
-  const gradientClass = getGradientClass(article.slug);
   const readingTime = estimateReadingTime(article.summary);
 
   return (
@@ -38,7 +20,7 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
         isFeatured ? 'grid grid-cols-1 md:grid-cols-2' : ''
       }`}
     >
-      {/* Cover image or gradient placeholder */}
+      {/* Cover image or default fallback */}
       <div className={`${isFeatured ? '' : 'aspect-video'} overflow-hidden`}>
         {article.cover_image ? (
           <img
@@ -47,7 +29,11 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className={`aspect-video w-full bg-gradient-to-br ${gradientClass} group-hover:scale-105 transition-transform duration-500`} />
+          <img
+            src="/assets/cover-blog.png"
+            alt=""
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
         )}
       </div>
 

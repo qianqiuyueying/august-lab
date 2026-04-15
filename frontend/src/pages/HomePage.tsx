@@ -82,11 +82,19 @@ export default function HomePage() {
     <div className="space-y-20">
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8">
-        {/* Animated background blobs */}
+      {/* Hero background image with overlay */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-indigo-200/40 dark:bg-indigo-900/20 blur-3xl animate-float-slow" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-purple-200/40 dark:bg-purple-900/20 blur-3xl animate-float-medium" />
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full bg-pink-200/30 dark:bg-pink-900/10 blur-3xl animate-float-slow" style={{ animationDelay: '5s' }} />
+          <img
+            src="/assets/hero-bg.png"
+            alt=""
+            className="w-full h-full object-cover opacity-60 dark:opacity-40"
+          />
+          {/* Animated gradient blobs overlay */}
+          <div className="absolute inset-0">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-indigo-200/40 dark:bg-indigo-900/20 blur-3xl animate-float-slow" />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-purple-200/40 dark:bg-purple-900/20 blur-3xl animate-float-medium" />
+            <div className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full bg-pink-200/30 dark:bg-pink-900/10 blur-3xl animate-float-slow" style={{ animationDelay: '5s' }} />
+          </div>
         </div>
 
         {/* Content */}

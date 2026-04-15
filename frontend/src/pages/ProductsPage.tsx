@@ -5,23 +5,6 @@ import { getProducts } from '../api/products';
 import type { Product } from '../types';
 import { Skeleton } from '../components/ui/Skeleton';
 
-const gradients = [
-  'from-violet-400 to-purple-500',
-  'from-sky-400 to-blue-500',
-  'from-lime-400 to-emerald-500',
-  'from-orange-400 to-rose-500',
-  'from-fuchsia-400 to-pink-500',
-  'from-teal-400 to-cyan-500',
-];
-
-function getGradientClass(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return gradients[Math.abs(hash) % gradients.length];
-}
-
 function getStatusBadge(status: string) {
   if (status === 'published') {
     return (
@@ -128,65 +111,66 @@ export default function ProductsPage() {
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {products.map((product) => {
-            const gradientClass = getGradientClass(product.slug);
-            return (
-              <motion.div key={product.id} variants={cardVariants}>
-                <Link to={`/products/${product.slug}/`}>
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    className="bg-white dark:bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group"
-                  >
-                    {/* Cover image area */}
-                    <div className="aspect-[4/3] overflow-hidden relative">
-                      {product.cover_image ? (
-                        <img
-                          src={product.cover_image}
-                          alt={product.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className={`w-full h-full bg-gradient-to-br ${gradientClass} group-hover:scale-105 transition-transform duration-500`} />
-                      )}
-                      {/* Status badge overlay */}
-                      <div className="absolute top-3 right-3">
-                        {getStatusBadge(product.status)}
-                      </div>
+          {products.map((product) => (
+            <motion.div key={product.id} variants={cardVariants}>
+              <Link to={`/products/${product.slug}/`}>
+                <motion.div
+                  whileHover={{ y: -6 }}
+                  className="bg-white dark:bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group"
+                >
+                  {/* Cover image area */}
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    {product.cover_image ? (
+                      <img
+                        src={product.cover_image}
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <img
+                        src="/assets/cover-product.png"
+                        alt=""
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    {/* Status badge overlay */}
+                    <div className="absolute top-3 right-3">
+                      {getStatusBadge(product.status)}
                     </div>
+                  </div>
 
-                    {/* Content */}
-                    <div className="p-5 flex-1 flex flex-col">
-                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-1.5">
-                        {product.title}
-                      </h3>
-                      {product.description && (
-                        <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed line-clamp-2 flex-1">
-                          {product.description}
-                        </p>
-                      )}
-                      <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center text-accent text-sm font-medium">
-                        查看详情
-                        <motion.svg
-                          className="w-4 h-4 ml-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </motion.svg>
-                      </div>
+                  {/* Content */}
+                  <div className="p-5 flex-1 flex flex-col">
+                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-1.5">
+                      {product.title}
+                    </h3>
+                    {product.description && (
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed line-clamp-2 flex-1">
+                        {product.description}
+                      </p>
+                    )}
+                    <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center text-accent text-sm font-medium">
+                      查看详情
+                      <motion.svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </motion.svg>
                     </div>
+                  </div>
 
-                    {/* Bottom gradient accent line */}
-                    <div className={`h-1 bg-gradient-to-r ${gradientClass}`} />
-                  </motion.div>
-                </Link>
-              </motion.div>
-            );
-          })}
+                  {/* Bottom accent line */}
+                  <div className="h-1 bg-gradient-to-r from-indigo-500 to-purple-500" />
+                </motion.div>
+              </Link>
+            </motion.div>
+          ))}
         </motion.div>
       )}
     </div>
