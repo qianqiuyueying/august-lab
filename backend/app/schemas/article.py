@@ -57,3 +57,8 @@ class ArticleListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class ArticleUpload(BaseModel):
+    title: str
+    content: str

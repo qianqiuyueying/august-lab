@@ -27,3 +27,12 @@ export const updateArticle = async (id: number, article: Partial<{ title: string
 export const deleteArticle = async (id: number) => {
   await client.delete(`/articles/${id}`);
 };
+
+export const uploadMd = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await client.post<{ title: string; content: string }>('/articles/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return data;
+};

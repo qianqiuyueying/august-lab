@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getPage } from '../api/pages';
+import { getSetting } from '../api/settings';
 import type { Page } from '../types';
+import { getPage } from '../api/pages';
 import ArticleContent from '../components/articles/ArticleContent';
 import AnimatedPage from '../components/layout/AnimatedPage';
 
@@ -16,13 +17,15 @@ const sectionVariants = {
 
 export default function AboutPage() {
   const [page, setPage] = useState<Page | null>(null);
+  const [bio, setBio] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPage('about')
-      .then(setPage)
-      .catch(() => setPage(null))
-      .finally(() => setLoading(false));
+    // Try settings first, fallback to page, fallback to built-in
+    Promise.all([
+      getSetting('about_bio').then((d) => setBio(d.value)).catch(() => {}),
+      getPage('about').then(setPage).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -37,7 +40,44 @@ export default function AboutPage() {
     );
   }
 
-  // If there's backend-managed content, render it
+  // Use the bio from settings if available
+  if (bio) {
+    return (
+      <AnimatedPage className="max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-12"
+        >
+          <div className="text-center">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+              A
+            </div>
+            <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-3">About Me</h1>
+          </div>
+          <div className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-8 shadow-sm prose prose-zinc dark:prose-invert max-w-none">
+            <div dangerouslySetInnerHTML={{ __html: bio }} />
+          </div>
+          <div className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-8 shadow-sm">
+            <h2 className="text-xl font-semibold text-zinc-900 dark:text-white mb-4">技术栈</h2>
+            <div className="flex flex-wrap gap-2">
+              {['Python', 'FastAPI', 'React', 'TypeScript', 'Tailwind CSS', 'SQLite', 'Docker', 'Nginx'].map((tech) => (
+                <motion.span
+                  key={tech}
+                  whileHover={{ scale: 1.08 }}
+                  className="px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm font-medium cursor-default"
+                >
+                  {tech}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatedPage>
+    );
+  }
+
+  // Fallback to page content from API
   if (page) {
     return (
       <AnimatedPage className="max-w-3xl mx-auto">
@@ -55,7 +95,6 @@ export default function AboutPage() {
   return (
     <AnimatedPage className="max-w-3xl mx-auto">
       <div className="space-y-12">
-        {/* Hero section */}
         <motion.div
           variants={sectionVariants}
           initial="hidden"
@@ -89,7 +128,6 @@ export default function AboutPage() {
           </motion.p>
         </motion.div>
 
-        {/* Bio */}
         <motion.div
           variants={sectionVariants}
           initial="hidden"
@@ -108,7 +146,6 @@ export default function AboutPage() {
           </div>
         </motion.div>
 
-        {/* Tech stack */}
         <motion.div
           variants={sectionVariants}
           initial="hidden"
@@ -137,7 +174,6 @@ export default function AboutPage() {
           </div>
         </motion.div>
 
-        {/* Contact */}
         <motion.div
           variants={sectionVariants}
           initial="hidden"

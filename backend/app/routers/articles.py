@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile, File
 from sqlalchemy import select, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -14,6 +14,7 @@ from app.schemas.article import (
     ArticleOut,
     ArticleListItem,
     ArticleListResponse,
+    ArticleUpload,
 )
 from app.schemas.tag import TagOut
 from app.utils.slug import slugify
@@ -186,3 +187,36 @@ async def delete_article(
         raise HTTPException(status_code=404, detail="Article not found")
     await db.delete(article)
     await db.commit()
+
+
+@router.post("/upload", response_model=ArticleUpload)
+async def upload_md(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user),
+):
+    """上传 Markdown 文件，解析标题和内容后返回供前端编辑。"""
+    if not file.filename.endswith(".md"):
+        raise HTTPException(status_code=400, detail="Only .md files are allowed")
+
+    content = await file.read()
+    text = content.decode("utf-8")
+
+    # 提取标题（从第一个 # 标题行）
+    title = file.filename[:-3]  # 默认用文件名
+    lines = text.split("\n")
+    content_start = 0
+    for i, line in enumerate(lines):
+        if line.startswith("# ") and not line.startswith("##"):
+            title = line[2:].strip()
+            content_start = i + 1
+            break
+        elif line.startswith("---") and i == 0:
+            # 跳过 frontmatter
+            for j, line2 in enumerate(lines[i+1:], i+1):
+                if line2.startswith("---"):
+                    content_start = j + 1
+                    break
+            break
+
+    content_text = "\n".join(lines[content_start:]).strip()
+    return ArticleUpload(title=title, content=content_text)

@@ -125,13 +125,7 @@ export default function Header() {
               {isAuthenticated ? (
                 <div className="hidden md:flex items-center gap-2">
                   <Link
-                    to="/articles/new"
-                    className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-                  >
-                    写文章
-                  </Link>
-                  <Link
-                    to="/pages/manage"
+                    to="/admin"
                     className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
                   >
                     管理
@@ -187,18 +181,11 @@ export default function Header() {
                 {isAuthenticated ? (
                   <>
                     <Link
-                      to="/articles/new"
+                      to="/admin"
                       onClick={() => setMobileOpen(false)}
                       className="block px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                     >
-                      写文章
-                    </Link>
-                    <Link
-                      to="/pages/manage"
-                      onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-                    >
-                      页面管理
+                      管理后台
                     </Link>
                     <button
                       onClick={() => { logout(); setMobileOpen(false); }}
