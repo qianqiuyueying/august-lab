@@ -99,25 +99,13 @@ export default function Header() {
             {/* Right side */}
             <div className="flex items-center gap-2">
               {/* Theme toggle */}
-              <motion.button
+              <button
                 onClick={toggle}
                 className="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label="切换暗色模式"
+                aria-label="切换亮暗模式"
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={theme}
-                    initial={{ opacity: 0, rotate: -90 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: 90 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-                  </motion.div>
-                </AnimatePresence>
-              </motion.button>
+                {theme === 'light' ? <MoonIcon /> : <SunIcon />}
+              </button>
 
               {/* Mobile menu button */}
               <motion.button
