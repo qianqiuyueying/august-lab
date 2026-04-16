@@ -21,7 +21,7 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
       }`}
     >
       {/* Cover image or default fallback */}
-      <div className={`${isFeatured ? '' : 'aspect-video'} overflow-hidden`}>
+      <div className={`${isFeatured ? '' : 'aspect-video'} overflow-hidden bg-gradient-to-br from-indigo-400 to-purple-500`}>
         {article.cover_image ? (
           <img
             src={article.cover_image}
@@ -30,7 +30,7 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
           />
         ) : (
           <img
-            src="/images/cover-blog.png"
+            src="/images/cover-blog.webp"
             alt=""
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />

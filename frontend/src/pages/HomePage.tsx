@@ -83,9 +83,9 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8">
       {/* Hero background image with overlay */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900">
           <img
-            src="/images/hero-bg.png"
+            src="/images/hero-bg.webp"
             alt=""
             className="w-full h-full object-cover opacity-60 dark:opacity-40"
           />

@@ -119,7 +119,7 @@ export default function ProductsPage() {
                   className="bg-white dark:bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group"
                 >
                   {/* Cover image area */}
-                  <div className="aspect-[4/3] overflow-hidden relative">
+                  <div className="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-violet-400 to-purple-500">
                     {product.cover_image ? (
                       <img
                         src={product.cover_image}
@@ -128,7 +128,7 @@ export default function ProductsPage() {
                       />
                     ) : (
                       <img
-                        src="/images/cover-product.png"
+                        src="/images/cover-product.webp"
                         alt=""
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
