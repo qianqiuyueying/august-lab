@@ -30,7 +30,7 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
           />
         ) : (
           <img
-            src="/assets/cover-blog.png"
+            src="/images/cover-blog.png"
             alt=""
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />

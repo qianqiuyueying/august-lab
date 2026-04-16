@@ -85,7 +85,7 @@ export default function HomePage() {
       {/* Hero background image with overlay */}
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src="/assets/hero-bg.png"
+            src="/images/hero-bg.png"
             alt=""
             className="w-full h-full object-cover opacity-60 dark:opacity-40"
           />

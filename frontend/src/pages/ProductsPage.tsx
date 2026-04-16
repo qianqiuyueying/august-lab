@@ -128,7 +128,7 @@ export default function ProductsPage() {
                       />
                     ) : (
                       <img
-                        src="/assets/cover-product.png"
+                        src="/images/cover-product.png"
                         alt=""
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
