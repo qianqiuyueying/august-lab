@@ -1,9 +1,16 @@
 import asyncio
 import hashlib
+import os
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+# --- 在导入 app 前设置测试用环境变量 ---
+# config.py 现在要求 BLOG_ADMIN_USERNAME/PASSWORD 环境变量
+os.environ["BLOG_ADMIN_USERNAME"] = "testuser"
+os.environ["BLOG_ADMIN_PASSWORD"] = "testpass123"
+
 from app.database import Base, async_session, get_db, engine
+from app.config import settings
 from app.utils.security import create_access_token
 
 # --- 在导入 app 前 patch bcrypt 依赖 ---
@@ -26,11 +33,6 @@ _sec.verify_password = _test_verify_password
 
 # 现在导入 app（路由将使用 patch 后的函数）
 from app.main import app
-
-# --- 测试用管理员凭据（环境变量覆盖） ---
-from app.config import settings
-settings.ADMIN_USERNAME = "testuser"
-settings.ADMIN_PASSWORD = "testpass123"
 
 # --- 修复 Pydantic 前向引用 ---
 from app.schemas.article import ArticleOut, ArticleListItem
