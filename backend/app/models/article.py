@@ -18,4 +18,3 @@ class Article(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     tags = relationship("Tag", secondary="article_tags", back_populates="articles")
-    comments = relationship("Comment", back_populates="article", cascade="all, delete-orphan")

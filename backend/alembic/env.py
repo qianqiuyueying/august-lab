@@ -13,7 +13,7 @@ from alembic import context
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.database import Base
-from app.models import user, article, tag, comment, page, site_config, product  # noqa: F401
+from app.models import user, article, tag, page, site_config, product  # noqa: F401
 from app.config import settings
 
 # this is the Alembic Config object, which provides

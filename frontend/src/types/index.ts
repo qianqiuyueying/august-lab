@@ -39,15 +39,6 @@ export interface ArticleListResponse {
   page_size: number;
 }
 
-export interface Comment {
-  id: number;
-  article_id: number;
-  author_name: string;
-  author_email: string;
-  content: string;
-  created_at: string | null;
-}
-
 export interface Page {
   id: number;
   slug: string;

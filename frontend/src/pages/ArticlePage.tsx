@@ -1,22 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useArticle } from '../hooks/useArticles';
-import { useComments } from '../hooks/useComments';
 import ArticleContent from '../components/articles/ArticleContent';
-import CommentForm from '../components/comments/CommentForm';
-import CommentList from '../components/comments/CommentList';
 import { formatDate } from '../utils/formatDate';
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
-};
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: article, loading, error } = useArticle(slug!);
-  const { data: comments, loading: commentsLoading, addComment } = useComments(article?.id || 0);
 
   if (loading) return <div className="text-zinc-500 text-center py-12">加载中...</div>;
   if (error) return <div className="text-red-600 text-center py-12">{error}</div>;
@@ -82,22 +73,6 @@ export default function ArticlePage() {
 
         <ArticleContent content={article.content} />
       </motion.article>
-
-      <motion.section
-        variants={itemVariants}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.3 }}
-        className="mt-8 bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm"
-      >
-        <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">
-          评论 ({comments.length})
-        </h2>
-        <CommentForm onSubmit={(comment) => addComment(comment)} />
-        <div className="mt-6">
-          <CommentList comments={comments} loading={commentsLoading} />
-        </div>
-      </motion.section>
     </div>
   );
 }
