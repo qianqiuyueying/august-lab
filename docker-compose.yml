@@ -10,6 +10,8 @@ services:
       - products-data:/app/products
     environment:
       - BLOG_SECRET_KEY=${BLOG_SECRET_KEY:-your-secret-key-change-in-production}
+      - BLOG_ADMIN_USERNAME=${BLOG_ADMIN_USERNAME:-august}
+      - BLOG_ADMIN_PASSWORD=${BLOG_ADMIN_PASSWORD:-2313ynkhmymtm}
     networks:
       - blog-net
 
