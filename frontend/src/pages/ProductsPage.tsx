@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getProducts } from '../api/products';
 import type { Product } from '../types';
@@ -113,7 +112,7 @@ export default function ProductsPage() {
         >
           {products.map((product) => (
             <motion.div key={product.id} variants={cardVariants}>
-              <Link to={`/products/${product.slug}/`}>
+              <a href={`/products/${product.slug}/`}>
                 <motion.div
                   whileHover={{ y: -6 }}
                   className="bg-white dark:bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col group"
@@ -168,7 +167,7 @@ export default function ProductsPage() {
                   {/* Bottom accent line */}
                   <div className="h-1 bg-gradient-to-r from-indigo-500 to-purple-500" />
                 </motion.div>
-              </Link>
+              </a>
             </motion.div>
           ))}
         </motion.div>
