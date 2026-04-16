@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>大鱼吃小鱼</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; }
+canvas { display: block; }
+#ui {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+  pointer-events: none; z-index: 10;
+  font-family: 'Segoe UI', sans-serif; color: #fff;
+}
+#ui > div { pointer-events: auto; }
+#score { font-size: 20px; font-weight: bold; text-shadow: 0 0 10px rgba(0,200,255,0.5); }
+#level { font-size: 14px; color: #88ccff; }
+#restartBtn {
+  padding: 8px 20px; border: 2px solid #4fc3f7; border-radius: 20px;
+  background: rgba(79,195,247,0.15); color: #4fc3f7; font-size: 14px;
+  cursor: pointer; transition: all 0.3s;
+}
+#restartBtn:hover { background: rgba(79,195,247,0.3); }
+#overlay {
+  position: fixed; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: rgba(10,22,40,0.9); z-index: 20;
+  font-family: 'Segoe UI', sans-serif; color: #fff;
+  transition: opacity 0.5s;
+}
+#overlay.hidden { opacity: 0; pointer-events: none; }
+#overlay h1 { font-size: 48px; margin-bottom: 10px;
+  background: linear-gradient(135deg, #4fc3f7, #ab47bc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+#overlay p { font-size: 16px; color: #88ccff; margin-bottom: 30px; }
+#startBtn {
+  padding: 14px 48px; border: none; border-radius: 30px;
+  background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+  color: #fff; font-size: 18px; font-weight: bold;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(79,195,247,0.4);
+}
+#startBtn:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(79,195,247,0.6); }
+#deathScore { font-size: 28px; color: #ff7043; margin: 10px 0; }
+#deathLevel { font-size: 16px; color: #88ccff; margin-bottom: 20px; }
+#instructions {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  font-family: 'Segoe UI', sans-serif; color: rgba(255,255,255,0.4);
+  font-size: 13px; z-index: 10; pointer-events: none;
+  transition: opacity 2s;
+}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="ui">
+  <div>
+    <div id="score">分数: 0</div>
+    <div id="level">等级: 1</div>
+  </div>
+  <button id="restartBtn" style="display:none" onclick="restartGame()">重新开始</button>
+</div>
+<div id="overlay">
+  <h1>🐟 大鱼吃小鱼</h1>
+  <p>移动鼠标控制你的鱼，吃掉比你小的鱼，躲避比你大的鱼！</p>
+  <button id="startBtn" onclick="startGame()">开始游戏</button>
+  <div id="deathInfo" style="display:none; text-align:center; margin-top:10px;">
+    <div id="deathScore"></div>
+    <div id="deathLevel"></div>
+  </div>
+</div>
+<div id="instructions">鼠标移动控制方向 · 吃比你小的鱼 · 躲避大鱼</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// --- Game State ---
+let player, fishes, bubbles, particles, score, level, gameRunning, gameTime;
+let mouseX = W / 2, mouseY = H / 2;
+let lastTime = 0;
+let spawnTimer = 0;
+let difficulty = 1;
+
+const FISH_COLORS = [
+  '#ff6b6b','#ffa726','#ffee58','#66bb6a','#26c6da',
+  '#42a5f5','#ab47bc','#ef5350','#29b6f6','#9ccc65',
+  '#ff7043','#ec407a','#7e57c2','#26a69a','#ffca28'
+];
+
+function randomColor() {
+  return FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)];
+}
+
+function createFish(x, y, size, isPlayer) {
+  const speed = isPlayer ? 0 : (0.3 + Math.random() * 1.5) * (1 + difficulty * 0.1);
+  const dir = isPlayer ? 0 : (Math.random() < 0.5 ? 1 : -1);
+  return {
+    x: x || (dir > 0 ? -size * 2 : W + size * 2),
+    y: y || (50 + Math.random() * (H - 100)),
+    size: size || (8 + Math.random() * 30),
+    speed: speed,
+    dir: dir,
+    color: isPlayer ? '#4fc3f7' : randomColor(),
+    tailPhase: Math.random() * Math.PI * 2,
+    tailSpeed: 3 + Math.random() * 2,
+    isPlayer: isPlayer,
+    wobble: 0,
+    wobbleSpeed: 1 + Math.random() * 2,
+    alive: true
+  };
+}
+
+function createBubble() {
+  return {
+    x: Math.random() * W,
+    y: H + 10,
+    r: 2 + Math.random() * 6,
+    speed: 0.5 + Math.random() * 1.5,
+    alpha: 0.1 + Math.random() * 0.3
+  };
+}
+
+function createParticle(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1 + Math.random() * 3;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: 1 + Math.random() * 3,
+      color: color,
+      life: 1,
+      decay: 0.02 + Math.random() * 0.03
+    });
+  }
+}
+
+function init() {
+  player = createFish(W / 2, H / 2, 20, true);
+  player.dir = 1;
+  fishes = [];
+  bubbles = [];
+  particles = [];
+  score = 0;
+  level = 1;
+  gameTime = 0;
+  difficulty = 1;
+  spawnTimer = 0;
+  for (let i = 0; i < 20; i++) bubbles.push(createBubble());
+  spawnInitialFishes();
+}
+
+function spawnInitialFishes() {
+  for (let i = 0; i < 15; i++) {
+    const size = 8 + Math.random() * 35;
+    const f = createFish(
+      Math.random() * W,
+      60 + Math.random() * (H - 120),
+      size,
+      false
+    );
+    fishes.push(f);
+  }
+}
+
+function spawnFish() {
+  const sizeRange = Math.max(5, player.size * 0.3);
+  const maxSize = player.size * 2.5 + 15;
+  const size = sizeRange + Math.random() * (maxSize - sizeRange);
+  fishes.push(createFish(undefined, undefined, size, false));
+}
+
+// --- Drawing ---
+function drawFish(fish) {
+  ctx.save();
+  ctx.translate(fish.x, fish.y);
+  ctx.scale(fish.dir, 1);
+
+  const s = fish.size;
+  const tailWag = Math.sin(fish.tailPhase) * 0.4;
+  const bodyWobble = Math.sin(fish.wobble) * 2;
+
+  // Glow for player
+  if (fish.isPlayer) {
+    ctx.shadowColor = '#4fc3f7';
+    ctx.shadowBlur = 15;
+  }
+
+  // Tail
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.6, 0);
+  ctx.lineTo(-s * 1.2, -s * 0.5 + Math.sin(tailWag) * s * 0.2);
+  ctx.lineTo(-s * 1.2, s * 0.5 + Math.sin(tailWag) * s * 0.2);
+  ctx.closePath();
+  ctx.fillStyle = fish.color;
+  ctx.globalAlpha = 0.8;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(0, bodyWobble, s * 0.7, s * 0.4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = fish.color;
+  ctx.fill();
+
+  // Body highlight
+  ctx.beginPath();
+  ctx.ellipse(s * 0.1, bodyWobble - s * 0.1, s * 0.4, s * 0.15, -0.2, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.fill();
+
+  // Eye
+  ctx.beginPath();
+  ctx.arc(s * 0.3, bodyWobble - s * 0.08, s * 0.12, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(s * 0.33, bodyWobble - s * 0.08, s * 0.06, 0, Math.PI * 2);
+  ctx.fillStyle = '#222';
+  ctx.fill();
+
+  // Mouth
+  if (fish.isPlayer) {
+    ctx.beginPath();
+    ctx.arc(s * 0.6, bodyWobble + s * 0.05, s * 0.08, 0, Math.PI);
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Dorsal fin
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.1, bodyWobble - s * 0.35);
+  ctx.quadraticCurveTo(s * 0.1, bodyWobble - s * 0.6, s * 0.3, bodyWobble - s * 0.35);
+  ctx.fillStyle = fish.color;
+  ctx.globalAlpha = 0.6;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawBackground() {
+  // Deep ocean gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#0a1628');
+  grad.addColorStop(0.3, '#0d2137');
+  grad.addColorStop(0.7, '#0a2a4a');
+  grad.addColorStop(1, '#061224');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Light rays from top
+  ctx.save();
+  ctx.globalAlpha = 0.03;
+  for (let i = 0; i < 5; i++) {
+    const x = W * 0.15 + i * W * 0.18;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x - 40 + Math.sin(gameTime * 0.3 + i) * 20, H);
+    ctx.lineTo(x + 60 + Math.sin(gameTime * 0.3 + i) * 20, H);
+    ctx.closePath();
+    ctx.fillStyle = '#4fc3f7';
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Bubbles
+  bubbles.forEach(b => {
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(150,220,255,${b.alpha})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.life;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+}
+
+// --- Update ---
+function update(dt) {
+  if (!gameRunning) return;
+
+  gameTime += dt;
+  difficulty = 1 + gameTime / 30;
+
+  // Player movement
+  const dx = mouseX - player.x;
+  const dy = mouseY - player.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > 2) {
+    const moveSpeed = Math.min(dist * 0.08, 6);
+    player.x += (dx / dist) * moveSpeed;
+    player.y += (dy / dist) * moveSpeed;
+    player.dir = dx > 0 ? 1 : -1;
+  }
+  player.tailPhase += player.tailSpeed * dt;
+  player.wobble += player.wobbleSpeed * dt;
+
+  // Clamp player
+  player.x = Math.max(player.size, Math.min(W - player.size, player.x));
+  player.y = Math.max(player.size + 40, Math.min(H - player.size, player.y));
+
+  // Spawn fish
+  spawnTimer += dt;
+  const spawnInterval = Math.max(0.5, 2 - difficulty * 0.15);
+  if (spawnTimer > spawnInterval) {
+    spawnTimer = 0;
+    if (fishes.length < 25 + difficulty * 2) spawnFish();
+  }
+
+  // Update fish
+  fishes.forEach(f => {
+    f.x += f.speed * f.dir * 60 * dt;
+    f.tailPhase += f.tailSpeed * dt;
+    f.wobble += f.wobbleSpeed * dt;
+
+    // Remove off-screen
+    if ((f.dir > 0 && f.x > W + f.size * 3) || (f.dir < 0 && f.x < -f.size * 3)) {
+      f.alive = false;
+    }
+  });
+  fishes = fishes.filter(f => f.alive);
+
+  // Collision: player eats fish or gets eaten
+  fishes.forEach(f => {
+    const dx = f.x - player.x;
+    const dy = f.y - player.y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    const threshold = player.size * 0.5 + f.size * 0.5;
+
+    if (d < threshold) {
+      if (player.size >= f.size * 1.05) {
+        // Eat fish
+        const growth = f.size * 0.05;
+        player.size += growth;
+        score += Math.floor(f.size * 10);
+        createParticle(f.x, f.y, f.color, 12);
+        f.alive = false;
+
+        // Level up
+        const newLevel = Math.floor(player.size / 10) + 1;
+        if (newLevel > level) {
+          level = newLevel;
+          createParticle(player.x, player.y, '#4fc3f7', 20);
+        }
+      } else if (f.size > player.size * 1.05) {
+        // Player eaten
+        createParticle(player.x, player.y, '#4fc3f7', 30);
+        gameOver();
+      }
+    }
+  });
+
+  // Update bubbles
+  bubbles.forEach(b => {
+    b.y -= b.speed * 60 * dt;
+    b.x += Math.sin(gameTime + b.y * 0.01) * 0.3;
+    if (b.y < -10) { b.y = H + 10; b.x = Math.random() * W; }
+  });
+
+  // Update particles
+  particles.forEach(p => {
+    p.x += p.vx * 60 * dt;
+    p.y += p.vy * 60 * dt;
+    p.life -= p.decay;
+  });
+  particles = particles.filter(p => p.life > 0);
+
+  // Update UI
+  document.getElementById('score').textContent = `分数: ${score}`;
+  document.getElementById('level').textContent = `等级: ${level}`;
+}
+
+function draw() {
+  drawBackground();
+
+  // Draw fish sorted by size (smaller on top)
+  const sorted = [...fishes].filter(f => f.alive);
+  sorted.sort((a, b) => a.size - b.size);
+  sorted.forEach(f => drawFish(f));
+
+  if (gameRunning) drawFish(player);
+
+  drawParticles();
+}
+
+function gameLoop(timestamp) {
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+  lastTime = timestamp;
+  update(dt);
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+function startGame() {
+  document.getElementById('overlay').classList.add('hidden');
+  document.getElementById('restartBtn').style.display = 'block';
+  document.getElementById('deathInfo').style.display = 'none';
+  document.getElementById('instructions').style.opacity = '0.6';
+  setTimeout(() => { document.getElementById('instructions').style.opacity = '0'; }, 5000);
+  init();
+  gameRunning = true;
+}
+
+function gameOver() {
+  gameRunning = false;
+  player.alive = false;
+  document.getElementById('overlay').classList.remove('hidden');
+  document.getElementById('overlay').querySelector('h1').textContent = '💀 被吃掉了！';
+  document.getElementById('overlay').querySelector('p').textContent = '你的鱼被更大的鱼吃掉了...';
+  document.getElementById('deathInfo').style.display = 'block';
+  document.getElementById('deathScore').textContent = `最终分数: ${score}`;
+  document.getElementById('deathLevel').textContent = `达到等级: ${level}`;
+}
+
+function restartGame() {
+  startGame();
+}
+
+// --- Input ---
+canvas.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  mouseX = e.touches[0].clientX;
+  mouseY = e.touches[0].clientY;
+}, { passive: false });
+canvas.addEventListener('touchstart', e => {
+  mouseX = e.touches[0].clientX;
+  mouseY = e.touches[0].clientY;
+});
+
+// --- Init ---
+init();
+gameRunning = false;
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
