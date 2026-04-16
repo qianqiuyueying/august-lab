@@ -6,6 +6,11 @@ export const getProducts = async () => {
   return data;
 };
 
+export const getProduct = async (slug: string) => {
+  const { data } = await client.get<Product>(`/products/${slug}`);
+  return data;
+};
+
 export const createProduct = async (product: { slug: string; title: string; description?: string; status: string }) => {
   const { data } = await client.post<Product>('/products', product);
   return data;

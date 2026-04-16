@@ -17,6 +17,18 @@ router = APIRouter()
 PRODUCTS_DIR = "/app/products"
 
 
+@router.get("/{slug}", response_model=ProductOut)
+async def get_product(slug: str, db: AsyncSession = Depends(get_db)):
+    """公开接口：按 slug 获取单个已发布产品。"""
+    result = await db.execute(
+        select(Product).where(Product.slug == slug, Product.status == "published")
+    )
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+
 @router.get("", response_model=list[ProductOut])
 async def list_products(db: AsyncSession = Depends(get_db)):
     """公开接口：仅返回已发布的产品。"""
