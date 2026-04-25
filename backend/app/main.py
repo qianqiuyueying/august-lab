@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.routers import articles, tags, auth, pages, settings, products
+from app.routers import articles, tags, auth, pages, settings, products, dashboard
 
 app = FastAPI(
     title="Blog API",
@@ -26,6 +26,7 @@ app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
 app.include_router(pages.router, prefix="/api/pages", tags=["pages"])
 app.include_router(settings.router, prefix="/api/settings", tags=["settings"])
 app.include_router(products.router, prefix="/api/products", tags=["products"])
+app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"])
 
 # 挂载产品静态文件目录
 products_dir = "/app/products"
