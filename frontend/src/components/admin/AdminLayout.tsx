@@ -78,7 +78,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950">
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -200, opacity: 0 }}
