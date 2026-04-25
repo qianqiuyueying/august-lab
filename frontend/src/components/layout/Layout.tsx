@@ -6,9 +6,9 @@ import BrandMark from '../ui/BrandMark';
 
 const footerLinks = [
   { to: '/', label: '首页' },
-  { to: '/blog', label: '实验笔记' },
-  { to: '/products', label: '作品记录' },
-  { to: '/about', label: '关于 August' },
+  { to: '/blog', label: '笔记' },
+  { to: '/products', label: '作品' },
+  { to: '/about', label: '关于' },
 ];
 
 export default function Layout() {
@@ -38,12 +38,9 @@ export default function Layout() {
       </main>
 
       <footer className="relative z-10 border-t border-border bg-paper/72 backdrop-blur-xl dark:border-border-dark dark:bg-surface-dark/72">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.5fr_1fr_1fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
           <div>
             <BrandMark />
-            <p className="mt-5 max-w-md text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">
-              这里记录技术探索、产品实验和长期思考。页面尽量安静，把注意力留给文章本身，也留给那些正在打磨的小作品。
-            </p>
           </div>
 
           <div>
@@ -53,15 +50,6 @@ export default function Layout() {
                 <Link key={link.to} to={link.to} className="text-sm font-semibold text-text-secondary transition-colors hover:text-accent dark:text-text-secondary-dark dark:hover:text-text-primary-dark">
                   {link.label}
                 </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="section-label mb-4">Stack</h2>
-            <div className="flex flex-wrap gap-2">
-              {['FastAPI', 'React', 'TypeScript', 'Tailwind', 'SQLite'].map((item) => (
-                <span key={item} className="lab-chip">{item}</span>
               ))}
             </div>
           </div>

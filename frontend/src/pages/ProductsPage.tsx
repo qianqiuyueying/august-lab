@@ -41,8 +41,7 @@ export default function ProductsPage() {
     <div className="space-y-10">
       <PageIntro
         eyebrow="Products"
-        title="小作品与产品记录"
-        description="这里收集正在打磨或已经上线的项目。相比展示结果，我更想保留每个作品背后的问题、取舍和演进过程。"
+        title="作品"
       />
 
       {error && (
@@ -62,7 +61,7 @@ export default function ProductsPage() {
           ))}
         </div>
       ) : products.length === 0 ? (
-        <EmptyState title="作品还在整理中" description="发布后的项目会在这里归档。" />
+        <EmptyState title="暂无作品" />
       ) : (
         <motion.div
           variants={gridVariants}
@@ -96,7 +95,7 @@ export default function ProductsPage() {
                       </p>
                     )}
                     <div className="mt-5 border-t border-border pt-4 text-sm font-bold text-accent dark:border-border-dark">
-                      查看作品记录
+                      查看
                     </div>
                   </div>
                 </article>

@@ -36,17 +36,12 @@ export default function BlogPage() {
 
   const totalPages = data ? Math.ceil(data.total / data.page_size) : 0;
   const title = tag ? `#${tag}` : search ? `搜索：${search}` : '实验笔记目录';
-  const description = tag
-    ? '同一个主题下的文章会自然聚在一起，方便回看某条技术线索。'
-    : search
-      ? '这些文章匹配了你的搜索关键词。'
-      : '把系统设计、前端体验、后端实现和产品打磨整理成一条清晰的阅读路径。';
 
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
       <div className="min-w-0">
         <div className="mb-8">
-          <PageIntro eyebrow="Notebook" title={title} description={description}>
+          <PageIntro eyebrow="Notebook" title={title}>
             {data && !tag && !search && (
               <span className="lab-chip">{data.total} 篇公开笔记</span>
             )}
@@ -55,11 +50,6 @@ export default function BlogPage() {
 
         <div className="mb-8 flex flex-col gap-4 border-y border-border py-5 dark:border-border-dark sm:flex-row sm:items-center sm:justify-between">
           <SearchBar />
-          {(tag || search) && (
-            <p className="text-sm text-text-muted dark:text-text-muted-dark">
-              当前筛选会同步到 URL，方便直接分享。
-            </p>
-          )}
         </div>
 
         {error && (
@@ -87,7 +77,7 @@ export default function BlogPage() {
             ))}
           </motion.div>
         ) : (
-          <EmptyState title="没有找到文章" description="换一个关键词或标签试试。" />
+          <EmptyState title="没有找到文章" />
         )}
 
         {data && data.total > data.page_size && (
@@ -125,9 +115,6 @@ export default function BlogPage() {
           <div>
             <p className="section-label mb-3">Topics</p>
             <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">主题标签</h2>
-            <p className="mt-3 text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">
-              用标签把零散笔记连成可回看的知识路径。
-            </p>
           </div>
           <TagList tags={tags} loading={tagsLoading} />
         </div>

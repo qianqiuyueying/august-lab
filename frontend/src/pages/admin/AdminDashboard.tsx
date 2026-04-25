@@ -29,7 +29,6 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">仪表盘</h1>
-        <p className="text-zinc-500 dark:text-zinc-400 mt-1">欢迎回来，admin</p>
       </div>
 
       {loading ? (

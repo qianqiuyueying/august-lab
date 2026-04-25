@@ -21,9 +21,9 @@ export default function ProductPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <EmptyState title="作品加载中" description="正在读取作品记录。" />;
+  if (loading) return <EmptyState title="作品加载中" />;
   if (error) return <EmptyState title="作品读取失败" description={error} />;
-  if (!product) return <EmptyState title="作品不存在" description="这个作品可能已经下线或移动。" />;
+  if (!product) return <EmptyState title="作品不存在" />;
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -53,7 +53,7 @@ export default function ProductPage() {
           </div>
         </div>
 
-        <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1fr_15rem]">
+        <div className="p-6 sm:p-10">
           <div>
             <p className="section-label mb-3">Product note</p>
             <h1 className="text-4xl font-extrabold leading-[1.08] text-text-primary dark:text-text-primary-dark sm:text-5xl">
@@ -63,10 +63,6 @@ export default function ProductPage() {
               {product.description}
             </p>
           </div>
-          <aside className="border-t border-border pt-6 text-sm leading-7 text-text-secondary dark:border-border-dark dark:text-text-secondary-dark lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-            <p className="font-extrabold text-text-primary dark:text-text-primary-dark">记录重点</p>
-            <p className="mt-2">每个作品都会尽量保留目标、状态和迭代痕迹，方便之后复盘。</p>
-          </aside>
         </div>
       </motion.article>
     </div>

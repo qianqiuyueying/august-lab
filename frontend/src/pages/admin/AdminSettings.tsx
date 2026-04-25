@@ -55,9 +55,6 @@ export default function AdminSettings() {
           className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 shadow-sm"
         >
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">关于我简介</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-            此内容将显示在网站的「关于我」页面中，支持 HTML 标签
-          </p>
           <textarea
             value={aboutBio}
             onChange={(e) => setAboutBio(e.target.value)}

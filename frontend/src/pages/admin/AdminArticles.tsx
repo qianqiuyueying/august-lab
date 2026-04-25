@@ -131,10 +131,7 @@ export default function AdminArticles() {
             手动创建
           </motion.button>
         </div>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 mb-4">
-          上传 .md 文件后自动解析标题和内容，可在编辑器中微调后发布
-        </p>
-        <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-accent hover:bg-accent/5 transition-colors">
+        <label className="mt-4 flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-accent hover:bg-accent/5 transition-colors">
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
             点击选择或拖拽 .md 文件
           </span>

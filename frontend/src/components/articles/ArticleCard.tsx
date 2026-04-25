@@ -54,7 +54,7 @@ export default function ArticleCard({ article, variant = 'default' }: ArticleCar
                 </span>
               ))}
             </div>
-            <span className="text-sm font-bold text-accent">阅读全文</span>
+            <span className="text-sm font-bold text-accent">阅读</span>
           </div>
         </div>
       </motion.article>

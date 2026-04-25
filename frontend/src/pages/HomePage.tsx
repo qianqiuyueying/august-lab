@@ -25,12 +25,6 @@ const heroItemVariants = {
   },
 };
 
-const notes = [
-  { label: '实验笔记', value: '拆解技术决策、架构取舍和踩坑记录' },
-  { label: '产品记录', value: '把小工具从想法打磨到可用' },
-  { label: '长期思考', value: '关注工程、写作和创造之间的连接' },
-];
-
 const gridVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -64,7 +58,7 @@ export default function HomePage() {
     <div className="space-y-24">
       <section className="relative -mx-4 overflow-hidden rounded-lg border border-border bg-paper/74 px-4 py-16 shadow-sm dark:border-border-dark dark:bg-surface-dark/76 sm:-mx-6 sm:px-8 sm:py-20 lg:-mx-8">
         <div className="hero-glow" />
-        <div className="relative z-10 grid items-end gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="relative z-10 max-w-4xl">
           <motion.div variants={heroVariants} initial="hidden" animate="visible">
             <motion.p variants={heroItemVariants} className="section-label mb-4">
               Personal technical notebook
@@ -75,12 +69,6 @@ export default function HomePage() {
             >
               写下实验、系统和那些慢慢成形的想法。
             </motion.h1>
-            <motion.p
-              variants={heroItemVariants}
-              className="mt-7 max-w-2xl text-lg leading-9 text-text-secondary dark:text-text-secondary-dark"
-            >
-              August&apos;s Lab 是一个个人技术实验室：这里记录全栈开发、产品打磨、设计细节，以及把工具做得更可靠的过程。
-            </motion.p>
             <motion.div variants={heroItemVariants} className="mt-9 flex flex-wrap gap-3">
               <Link to="/blog" className="lab-button">
                 阅读笔记
@@ -91,28 +79,6 @@ export default function HomePage() {
               </Link>
             </motion.div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="paper-panel-strong p-5"
-          >
-            <div className="border-b border-border pb-4 dark:border-border-dark">
-              <p className="section-label">Current log</p>
-              <h2 className="mt-3 text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">
-                从能用，到愿意长期使用
-              </h2>
-            </div>
-            <div className="mt-5 space-y-4">
-              {notes.map((note) => (
-                <div key={note.label} className="rounded-lg border border-border bg-paper-soft p-4 dark:border-border-dark dark:bg-background-dark/50">
-                  <p className="text-sm font-extrabold text-text-primary dark:text-text-primary-dark">{note.label}</p>
-                  <p className="mt-1 text-sm leading-6 text-text-secondary dark:text-text-secondary-dark">{note.value}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -120,7 +86,7 @@ export default function HomePage() {
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="section-label mb-3">Latest notes</p>
-            <h2 className="text-3xl font-extrabold text-text-primary dark:text-text-primary-dark">最近写下的技术笔记</h2>
+            <h2 className="text-3xl font-extrabold text-text-primary dark:text-text-primary-dark">最新笔记</h2>
           </div>
           <Link to="/blog" className="lab-button-secondary w-fit">
             查看全部文章
@@ -148,7 +114,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          <EmptyState title="还没有公开文章" description="等第一篇实验笔记发布后，它会出现在这里。" />
+          <EmptyState title="暂无文章" />
         )}
       </section>
 
@@ -156,7 +122,7 @@ export default function HomePage() {
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="section-label mb-3">Small products</p>
-            <h2 className="text-3xl font-extrabold text-text-primary dark:text-text-primary-dark">正在打磨的小作品</h2>
+            <h2 className="text-3xl font-extrabold text-text-primary dark:text-text-primary-dark">作品</h2>
           </div>
           <Link to="/products" className="lab-button-secondary w-fit">
             查看作品集
@@ -202,7 +168,7 @@ export default function HomePage() {
                         </p>
                       )}
                       <div className="mt-5 border-t border-border pt-4 text-sm font-bold text-accent dark:border-border-dark">
-                        查看记录
+                        查看
                       </div>
                     </div>
                   </article>
@@ -211,7 +177,7 @@ export default function HomePage() {
             ))}
           </motion.div>
         ) : (
-          <EmptyState title="作品还在整理中" description="后续发布的小工具和项目会在这里归档。" />
+          <EmptyState title="暂无作品" />
         )}
       </section>
     </div>

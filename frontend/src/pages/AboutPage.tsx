@@ -20,12 +20,6 @@ const sectionVariants = {
 
 const techStack = ['Python', 'FastAPI', 'React', 'TypeScript', 'Tailwind', 'SQLite', 'Docker', 'Nginx'];
 
-const timeline = [
-  { year: '现在', event: '持续打磨个人博客，把写作、工程和产品实验放在同一个系统里。' },
-  { year: '长期', event: '关注全栈开发、工具体验、设计细节和可维护系统。' },
-  { year: '下一步', event: '把更多项目的构建过程整理成可复盘的实验记录。' },
-];
-
 export default function AboutPage() {
   const [page, setPage] = useState<Page | null>(null);
   const [bio, setBio] = useState('');
@@ -54,7 +48,6 @@ export default function AboutPage() {
         <PageIntro
           eyebrow="About"
           title="关于 August's Lab"
-          description="这里是一个把技术探索、产品实验和长期写作放在一起的个人空间。"
         />
         <section className="paper-panel-strong p-6 sm:p-8">
           <div className="markdown-body" dangerouslySetInnerHTML={{ __html: bio }} />
@@ -87,8 +80,7 @@ export default function AboutPage() {
         </motion.div>
         <PageIntro
           eyebrow="About"
-          title="我是 August，这里是我的技术实验笔记。"
-          description="我用这个站点记录开发过程里的判断、问题和小成果。比起把项目包装成完成品，我更关心每一次从混乱到清晰的过程。"
+          title="August's Lab"
         />
       </section>
 
@@ -99,7 +91,7 @@ export default function AboutPage() {
 
 function ProfileSections() {
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-6">
       <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel p-6">
         <p className="section-label mb-4">Stack</p>
         <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">常用技术栈</h2>
@@ -110,27 +102,6 @@ function ProfileSections() {
             </span>
           ))}
         </div>
-      </motion.section>
-
-      <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel p-6">
-        <p className="section-label mb-4">Timeline</p>
-        <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">正在发生的事</h2>
-        <div className="mt-6 space-y-5">
-          {timeline.map((item) => (
-            <div key={item.year} className="border-l-2 border-accent pl-4">
-              <p className="text-sm font-extrabold text-text-primary dark:text-text-primary-dark">{item.year}</p>
-              <p className="mt-1 text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">{item.event}</p>
-            </div>
-          ))}
-        </div>
-      </motion.section>
-
-      <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel p-6 lg:col-span-2">
-        <p className="section-label mb-4">Contact</p>
-        <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">联系与反馈</h2>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">
-          如果某篇文章或某个作品对你有帮助，可以通过评论或项目页面里的联系方式交流。我也会把反馈继续写回这些笔记里。
-        </p>
       </motion.section>
     </div>
   );

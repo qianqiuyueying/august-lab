@@ -11,9 +11,9 @@ export default function ArticlePage() {
   const navigate = useNavigate();
   const { data: article, loading, error } = useArticle(slug!);
 
-  if (loading) return <EmptyState title="文章加载中" description="正在整理这篇笔记的内容。" />;
+  if (loading) return <EmptyState title="文章加载中" />;
   if (error) return <EmptyState title="文章读取失败" description={error} />;
-  if (!article) return <EmptyState title="文章不存在" description="这篇文章可能已经下线或移动。" />;
+  if (!article) return <EmptyState title="文章不存在" />;
 
   const readingTime = estimateReadingTime(article.content || article.summary);
   const cover = article.cover_image || '/images/fallback-article.svg';
@@ -64,15 +64,8 @@ export default function ArticlePage() {
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
-        className="mt-12 grid gap-10 lg:grid-cols-[10rem_1fr]"
+        className="mt-12"
       >
-        <aside className="hidden lg:block">
-          <div className="sticky top-24 border-l-2 border-accent pl-4 text-sm leading-7 text-text-muted dark:text-text-muted-dark">
-            <p className="font-extrabold text-text-primary dark:text-text-primary-dark">Lab note</p>
-            <p className="mt-2">保留上下文、取舍和实现细节，方便以后回看。</p>
-          </div>
-        </aside>
-
         <div className="paper-panel-strong px-5 py-7 sm:px-9 sm:py-10">
           <ArticleContent content={article.content} />
         </div>
