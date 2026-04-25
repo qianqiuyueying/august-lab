@@ -49,6 +49,7 @@ export default function AboutPage() {
           eyebrow="About"
           title="关于 August's Lab"
         />
+        <AboutVisual />
         <section className="paper-panel-strong p-6 sm:p-8">
           <div className="markdown-body" dangerouslySetInnerHTML={{ __html: bio }} />
         </section>
@@ -63,6 +64,9 @@ export default function AboutPage() {
         <article className="paper-panel-strong p-6 sm:p-9">
           <PageIntro eyebrow="About" title={page.title} />
           <div className="mt-8">
+            <AboutVisual />
+          </div>
+          <div className="mt-8">
             <ArticleContent content={page.content} />
           </div>
         </article>
@@ -74,8 +78,16 @@ export default function AboutPage() {
     <AnimatedPage className="mx-auto max-w-5xl space-y-12">
       <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <motion.div variants={sectionVariants} initial="hidden" animate="visible">
-          <div className="paper-panel-strong inline-flex p-4">
-            <BrandMark compact className="h-20 w-20" />
+          <div className="relative overflow-hidden rounded-lg border border-border bg-paper shadow-md dark:border-border-dark dark:bg-surface-dark">
+            <img
+              src="/images/brand/about-workbench.png"
+              alt=""
+              aria-hidden="true"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <div className="absolute left-4 top-4 rounded-lg border border-border bg-paper/86 p-3 shadow-sm backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/82">
+              <BrandMark compact className="h-14 w-14" />
+            </div>
           </div>
         </motion.div>
         <PageIntro
@@ -86,6 +98,19 @@ export default function AboutPage() {
 
       <ProfileSections />
     </AnimatedPage>
+  );
+}
+
+function AboutVisual() {
+  return (
+    <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
+      <img
+        src="/images/brand/about-workbench.png"
+        alt=""
+        aria-hidden="true"
+        className="aspect-[16/9] w-full object-cover"
+      />
+    </div>
   );
 }
 

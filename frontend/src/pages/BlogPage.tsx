@@ -112,6 +112,14 @@ export default function BlogPage() {
 
       <aside className="lg:pt-8">
         <div className="sticky top-24 space-y-6">
+          <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
+            <img
+              src="/images/brand/blog-field-notes.png"
+              alt=""
+              aria-hidden="true"
+              className="aspect-square w-full object-cover"
+            />
+          </div>
           <div>
             <p className="section-label mb-3">Topics</p>
             <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">主题标签</h2>

@@ -16,7 +16,7 @@ export default function ArticlePage() {
   if (!article) return <EmptyState title="文章不存在" />;
 
   const readingTime = estimateReadingTime(article.content || article.summary);
-  const cover = article.cover_image || '/images/fallback-article.svg';
+  const cover = article.cover_image || '/images/brand/fallback-article.png';
 
   return (
     <article className="mx-auto max-w-5xl">

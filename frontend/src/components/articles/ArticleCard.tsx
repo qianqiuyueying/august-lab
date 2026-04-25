@@ -12,7 +12,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article, variant = 'default' }: ArticleCardProps) {
   const isFeatured = variant === 'featured';
   const readingTime = estimateReadingTime(`${article.title} ${article.summary}`);
-  const cover = article.cover_image || '/images/fallback-article.svg';
+  const cover = article.cover_image || '/images/brand/fallback-article.png';
 
   return (
     <Link to={`/articles/${article.slug}`} className="group block rounded-lg focus-ring">

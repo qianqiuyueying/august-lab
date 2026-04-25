@@ -39,10 +39,20 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-10">
-      <PageIntro
-        eyebrow="Products"
-        title="作品"
-      />
+      <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <PageIntro
+          eyebrow="Products"
+          title="作品"
+        />
+        <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
+          <img
+            src="/images/brand/products-bench.png"
+            alt=""
+            aria-hidden="true"
+            className="aspect-[16/9] w-full object-cover"
+          />
+        </div>
+      </section>
 
       {error && (
         <motion.div
@@ -75,7 +85,7 @@ export default function ProductsPage() {
                 <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
                   <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
                     <img
-                      src={product.cover_image || '/images/fallback-product.svg'}
+                      src={product.cover_image || '/images/brand/fallback-product.png'}
                       alt={product.cover_image ? product.title : ''}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       aria-hidden={!product.cover_image}

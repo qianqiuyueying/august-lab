@@ -56,9 +56,9 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24">
-      <section className="relative -mx-4 overflow-hidden rounded-lg border border-border bg-paper/74 px-4 py-16 shadow-sm dark:border-border-dark dark:bg-surface-dark/76 sm:-mx-6 sm:px-8 sm:py-20 lg:-mx-8">
+      <section className="relative -mx-4 overflow-hidden rounded-lg border border-border bg-paper/74 px-4 py-10 shadow-sm dark:border-border-dark dark:bg-surface-dark/76 sm:-mx-6 sm:px-8 sm:py-14 lg:-mx-8 lg:px-10">
         <div className="hero-glow" />
-        <div className="relative z-10 max-w-4xl">
+        <div className="relative z-10 grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <motion.div variants={heroVariants} initial="hidden" animate="visible">
             <motion.p variants={heroItemVariants} className="section-label mb-4">
               Personal technical notebook
@@ -78,6 +78,21 @@ export default function HomePage() {
                 查看作品
               </Link>
             </motion.div>
+          </motion.div>
+
+          <motion.div
+            variants={heroItemVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative min-h-[18rem] overflow-hidden rounded-lg border border-border bg-paper-soft shadow-md dark:border-border-dark dark:bg-background-dark sm:min-h-[24rem] lg:min-h-[30rem]"
+          >
+            <img
+              src="/images/brand/lab-hero.png"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-paper/78 via-transparent to-transparent dark:from-background-dark/72" />
           </motion.div>
         </div>
       </section>
@@ -149,7 +164,7 @@ export default function HomePage() {
                   <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
                     <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
                       <img
-                        src={product.cover_image || '/images/fallback-product.svg'}
+                        src={product.cover_image || '/images/brand/fallback-product.png'}
                         alt={product.cover_image ? product.title : ''}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         aria-hidden={!product.cover_image}

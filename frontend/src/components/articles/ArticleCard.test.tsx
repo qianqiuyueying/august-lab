@@ -57,4 +57,9 @@ describe('ArticleCard', () => {
     renderWithRouter(<ArticleCard article={articleWithoutTags} />);
     expect(screen.getByText('Test Article')).toBeInTheDocument();
   });
+
+  it('uses the brand article fallback when no cover image is set', () => {
+    const { container } = renderWithRouter(<ArticleCard article={mockArticle} />);
+    expect(container.querySelector('img')).toHaveAttribute('src', '/images/brand/fallback-article.png');
+  });
 });
