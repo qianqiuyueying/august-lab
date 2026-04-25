@@ -28,7 +28,7 @@ export default function ProductPage() {
   if (!product) return <EmptyState title="作品不存在" />;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 top-[72px] overflow-hidden bg-background dark:bg-background-dark">
+    <div className="h-[calc(100vh-72px)] overflow-hidden bg-background dark:bg-background-dark">
       <div className="relative h-full">
         {product.runtime_url ? (
           <iframe

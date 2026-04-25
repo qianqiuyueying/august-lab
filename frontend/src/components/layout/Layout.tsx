@@ -13,6 +13,7 @@ const footerLinks = [
 
 export default function Layout() {
   const location = useLocation();
+  const isProductRuntimePage = /^\/products\/[^/]+$/.test(location.pathname);
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
@@ -21,7 +22,7 @@ export default function Layout() {
       <Header />
 
       <main className="relative z-10 w-full flex-1">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] hero-glow" />
+        {!isProductRuntimePage && <div className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] hero-glow" />}
         <AnimatePresence mode="popLayout">
           <motion.div
             key={location.pathname}
@@ -29,7 +30,11 @@ export default function Layout() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8"
+            className={
+              isProductRuntimePage
+                ? 'relative z-10'
+                : 'relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8'
+            }
             style={{ originX: 0.5, originY: 0 }}
           >
             <Outlet />
@@ -37,7 +42,7 @@ export default function Layout() {
         </AnimatePresence>
       </main>
 
-      <footer className="relative z-10 border-t border-border bg-paper/72 backdrop-blur-xl dark:border-border-dark dark:bg-surface-dark/72">
+      {!isProductRuntimePage && <footer className="relative z-10 border-t border-border bg-paper/72 backdrop-blur-xl dark:border-border-dark dark:bg-surface-dark/72">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
           <div>
             <BrandMark />
@@ -68,7 +73,7 @@ export default function Layout() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }
