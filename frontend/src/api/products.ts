@@ -1,8 +1,16 @@
 import client from './client';
-import type { Product } from '../types';
+import type { Product, ProductListResponse } from '../types';
 
 export const getProducts = async () => {
   const { data } = await client.get<Product[]>('/products');
+  return data;
+};
+
+export const getAdminProducts = async (page = 1, pageSize = 10, status = 'all', search?: string) => {
+  const params: Record<string, string | number> = { page, page_size: pageSize };
+  if (status && status !== 'all') params.status = status;
+  if (search) params.search = search;
+  const { data } = await client.get<ProductListResponse>('/admin/products', { params });
   return data;
 };
 

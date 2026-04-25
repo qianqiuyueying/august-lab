@@ -61,3 +61,10 @@ export interface Product {
   created_at: string | null;
   updated_at: string | null;
 }
+
+export interface ProductListResponse {
+  items: Product[];
+  total: number;
+  page: number;
+  page_size: number;
+}

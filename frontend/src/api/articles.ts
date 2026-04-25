@@ -9,6 +9,14 @@ export const getArticles = async (page = 1, pageSize = 10, tag?: string, search?
   return data;
 };
 
+export const getAdminArticles = async (page = 1, pageSize = 10, status = 'all', search?: string) => {
+  const params: Record<string, string | number> = { page, page_size: pageSize };
+  if (status && status !== 'all') params.status = status;
+  if (search) params.search = search;
+  const { data } = await client.get<ArticleListResponse>('/admin/articles', { params });
+  return data;
+};
+
 export const getArticle = async (slug: string) => {
   const { data } = await client.get<Article>(`/articles/${slug}`);
   return data;

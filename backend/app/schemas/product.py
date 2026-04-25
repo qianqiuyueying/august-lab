@@ -29,3 +29,10 @@ class ProductOut(BaseModel):
     updated_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+
+class ProductListResponse(BaseModel):
+    items: list[ProductOut]
+    total: int
+    page: int
+    page_size: int
