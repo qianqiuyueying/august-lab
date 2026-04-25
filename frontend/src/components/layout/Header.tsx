@@ -65,9 +65,9 @@ export default function Header() {
           <div className="flex justify-between items-center h-14">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                <rect x="2" y="2" width="20" height="20" rx="5" className="fill-zinc-900 dark:fill-white" />
-                <path d="M7 17V7h2l3 8 3-8h2v10h-1.5V9l-2.5 8h-1L8.5 9v8H7z" className="fill-white dark:fill-zinc-900" />
+              <svg className="w-6 h-6" viewBox="0 0 32 32" fill="none">
+                <rect x="2" y="2" width="28" height="28" rx="7" className="fill-slate-800 dark:fill-white" />
+                <path d="M9 23V9h2.5l3.5 10 3.5-10H21v14h-2V13l-3.2 9h-1.6L11 13v10H9z" className="fill-slate-200 dark:fill-slate-800" />
               </svg>
               <motion.span
                 className="text-[15px] font-bold tracking-tight text-zinc-900 dark:text-white"
