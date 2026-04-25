@@ -84,15 +84,30 @@ export default function HomePage() {
             variants={heroItemVariants}
             initial="hidden"
             animate="visible"
-            className="relative min-h-[18rem] overflow-hidden rounded-lg border border-border bg-paper-soft shadow-md dark:border-border-dark dark:bg-background-dark sm:min-h-[24rem] lg:min-h-[30rem]"
+            className="rounded-lg border border-border bg-paper/82 p-5 shadow-md backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/82 sm:p-7"
           >
-            <img
-              src="/images/brand/lab-hero.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-paper/78 via-transparent to-transparent dark:from-background-dark/72" />
+            <p className="section-label mb-4">Current log</p>
+            <h2 className="text-2xl font-extrabold leading-snug text-text-primary dark:text-text-primary-dark">
+              从能用，到愿意长期使用
+            </h2>
+            <p className="mt-4 border-b border-border pb-5 text-sm leading-7 text-text-secondary dark:border-border-dark dark:text-text-secondary-dark">
+              更清爽的界面，把注意力留给内容、结构和可复用的经验。
+            </p>
+            <div className="mt-5 grid gap-3">
+              {[
+                ['实验笔记', '拆解技术决策、架构取舍和踩坑记录'],
+                ['产品记录', '把小工具从想法打磨到可用'],
+                ['长期思考', '关注工程、写作和创造之间的连接'],
+              ].map(([title, description]) => (
+                <div
+                  key={title}
+                  className="rounded-lg border border-border bg-paper-soft px-4 py-3 dark:border-border-dark dark:bg-background-dark"
+                >
+                  <h3 className="text-sm font-extrabold text-text-primary dark:text-text-primary-dark">{title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-text-muted dark:text-text-muted-dark">{description}</p>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
@@ -164,7 +179,7 @@ export default function HomePage() {
                   <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
                     <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
                       <img
-                        src={product.cover_image || '/images/brand/fallback-product.png'}
+                        src={product.cover_image || '/images/brand/fallback-product.webp'}
                         alt={product.cover_image ? product.title : ''}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         aria-hidden={!product.cover_image}

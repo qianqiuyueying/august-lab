@@ -114,7 +114,7 @@ export default function BlogPage() {
         <div className="sticky top-24 space-y-6">
           <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
             <img
-              src="/images/brand/blog-field-notes.png"
+              src="/images/brand/blog-field-notes.webp"
               alt=""
               aria-hidden="true"
               className="aspect-square w-full object-cover"

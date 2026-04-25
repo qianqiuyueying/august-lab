@@ -80,7 +80,7 @@ export default function AboutPage() {
         <motion.div variants={sectionVariants} initial="hidden" animate="visible">
           <div className="relative overflow-hidden rounded-lg border border-border bg-paper shadow-md dark:border-border-dark dark:bg-surface-dark">
             <img
-              src="/images/brand/about-workbench.png"
+              src="/images/brand/about-workbench.webp"
               alt=""
               aria-hidden="true"
               className="aspect-[4/3] w-full object-cover"
@@ -105,7 +105,7 @@ function AboutVisual() {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
       <img
-        src="/images/brand/about-workbench.png"
+        src="/images/brand/about-workbench.webp"
         alt=""
         aria-hidden="true"
         className="aspect-[16/9] w-full object-cover"

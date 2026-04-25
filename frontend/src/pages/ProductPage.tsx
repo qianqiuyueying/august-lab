@@ -43,7 +43,7 @@ export default function ProductPage() {
       >
         <div className="relative">
           <img
-            src={product.cover_image || '/images/brand/fallback-product.png'}
+            src={product.cover_image || '/images/brand/fallback-product.webp'}
             alt={product.cover_image ? product.title : ''}
             className="aspect-[16/8] w-full object-cover"
             aria-hidden={!product.cover_image}

@@ -46,7 +46,7 @@ export default function ProductsPage() {
         />
         <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
           <img
-            src="/images/brand/products-bench.png"
+            src="/images/brand/products-bench.webp"
             alt=""
             aria-hidden="true"
             className="aspect-[16/9] w-full object-cover"
@@ -85,7 +85,7 @@ export default function ProductsPage() {
                 <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
                   <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
                     <img
-                      src={product.cover_image || '/images/brand/fallback-product.png'}
+                      src={product.cover_image || '/images/brand/fallback-product.webp'}
                       alt={product.cover_image ? product.title : ''}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       aria-hidden={!product.cover_image}
