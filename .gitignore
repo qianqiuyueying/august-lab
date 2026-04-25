@@ -14,6 +14,7 @@ docker-data/
 .vscode/
 .idea/
 .superpowers/
+.playwright-mcp/
 *.swp
 *.swo
 
