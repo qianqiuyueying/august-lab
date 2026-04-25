@@ -12,10 +12,12 @@ COPY backend/app/ ./app/
 COPY backend/alembic/ ./alembic/
 COPY backend/alembic.ini .
 
-RUN mkdir -p /app/data /app/products
+RUN mkdir -p /app/data /app/products /app/uploads
 
 ENV PYTHONUNBUFFERED=1
 ENV BLOG_DATABASE_URL=sqlite+aiosqlite:///./data/blog.db
+ENV BLOG_UPLOADS_DIR=/app/uploads
+ENV BLOG_PRODUCTS_DIR=/app/products
 
 EXPOSE 8000
 

@@ -73,16 +73,18 @@ export default function AdminProducts() {
   }, [search, statusFilter]);
 
   useEffect(() => {
-    loadProducts();
+    void loadProducts();
   }, [loadProducts]);
 
   const stats = useMemo<AdminStat[]>(() => {
     const published = statsSource.filter((product) => product.status === 'published').length;
     const draft = statsSource.filter((product) => product.status === 'draft').length;
+    const runnable = statsSource.filter((product) => product.runtime_url).length;
     return [
       { label: '全部产品', value: statsSource.length, tone: 'blue' },
       { label: '已发布', value: published, tone: 'green' },
       { label: '草稿', value: draft, tone: 'amber' },
+      { label: '可运行', value: runnable, tone: 'zinc' },
     ];
   }, [statsSource]);
 
@@ -174,7 +176,7 @@ export default function AdminProducts() {
     <div className="space-y-5">
       <AdminPageHeader
         title="产品管理"
-        description="维护产品页面、草稿、发布状态和 ZIP 静态包。后台列表会显示草稿和已发布产品。"
+        description="维护产品页面、草稿、发布状态和 ZIP 静态包。上传成功后，产品前台页会直接运行静态作品。"
         actionLabel="创建产品"
         onAction={openCreateDrawer}
       />
@@ -190,9 +192,10 @@ export default function AdminProducts() {
       />
 
       <AdminPanel>
-        <div className="hidden grid-cols-[minmax(0,1.35fr)_120px_140px_220px] gap-4 border-b border-border bg-zinc-50 px-5 py-3 text-xs font-bold text-text-muted dark:border-border-dark dark:bg-zinc-900/70 md:grid">
+        <div className="hidden grid-cols-[minmax(0,1.25fr)_120px_120px_140px_240px] gap-4 border-b border-border bg-zinc-50 px-5 py-3 text-xs font-bold text-text-muted dark:border-border-dark dark:bg-zinc-900/70 lg:grid">
           <span>产品</span>
           <span>状态</span>
+          <span>运行文件</span>
           <span>更新时间</span>
           <span className="text-right">操作</span>
         </div>
@@ -206,7 +209,7 @@ export default function AdminProducts() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="grid gap-4 px-5 py-4 transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-900/40 md:grid-cols-[minmax(0,1.35fr)_120px_140px_220px] md:items-center"
+                className="grid gap-4 px-5 py-4 transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-900/40 lg:grid-cols-[minmax(0,1.25fr)_120px_120px_140px_240px] lg:items-center"
               >
                 <div className="min-w-0">
                   <div className="truncate text-sm font-bold text-zinc-950 dark:text-white">{product.title}</div>
@@ -218,12 +221,28 @@ export default function AdminProducts() {
                 <div>
                   <AdminStatusBadge status={product.status} />
                 </div>
+                <div>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${
+                      product.runtime_url
+                        ? 'bg-success-subtle text-success dark:bg-success-subtle-dark dark:text-green-300'
+                        : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
+                    }`}
+                  >
+                    {product.runtime_url ? '已上传' : '未上传'}
+                  </span>
+                </div>
                 <div className="text-xs text-text-muted dark:text-text-muted-dark">{formatDate(product.updated_at || product.created_at) || '无记录'}</div>
-                <div className="flex flex-wrap justify-start gap-2 md:justify-end">
+                <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
                   {product.status === 'published' && (
                     <Link to={`/products/${product.slug}`} className="text-sm font-bold text-accent hover:text-accent-hover">
                       预览
                     </Link>
+                  )}
+                  {product.runtime_url && (
+                    <a href={product.runtime_url} target="_blank" rel="noreferrer" className="text-sm font-bold text-accent hover:text-accent-hover">
+                      运行页
+                    </a>
                   )}
                   <button
                     type="button"
@@ -239,21 +258,13 @@ export default function AdminProducts() {
                     }}
                     type="file"
                     accept=".zip"
-                    onChange={(event) => handleUpload(product.id, event)}
+                    onChange={(event) => void handleUpload(product.id, event)}
                     className="hidden"
                   />
-                  <button
-                    type="button"
-                    onClick={() => openEditDrawer(product)}
-                    className="text-sm font-bold text-accent hover:text-accent-hover"
-                  >
+                  <button type="button" onClick={() => openEditDrawer(product)} className="text-sm font-bold text-accent hover:text-accent-hover">
                     编辑
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setDeleteTarget(product)}
-                    className="text-sm font-bold text-danger hover:text-red-700"
-                  >
+                  <button type="button" onClick={() => setDeleteTarget(product)} className="text-sm font-bold text-danger hover:text-red-700">
                     删除
                   </button>
                 </div>
@@ -266,7 +277,7 @@ export default function AdminProducts() {
       <AdminDrawer
         open={drawerOpen}
         title={drawerMode === 'edit' ? '编辑产品' : '创建产品'}
-        description={drawerMode === 'edit' ? '修改产品标题、描述和发布状态。Slug 创建后保持不变。' : '创建产品记录后，可以在列表中上传 ZIP 静态包。'}
+        description={drawerMode === 'edit' ? '修改产品标题、描述和发布状态。slug 创建后保持不变。' : '创建产品记录后，可以在列表中上传 ZIP 静态包。'}
         onClose={() => {
           if (!saving) setDrawerOpen(false);
         }}

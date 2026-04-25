@@ -1,20 +1,21 @@
 import os
-import zipfile
-import tempfile
 import shutil
+import tempfile
+import zipfile
 
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
-from app.models.product import Product
 from app.dependencies import get_current_user
-from app.schemas.product import ProductCreate, ProductUpdate, ProductOut
+from app.models.product import Product
+from app.schemas.product import ProductCreate, ProductOut, ProductUpdate
 
 router = APIRouter()
 
-PRODUCTS_DIR = "/app/products"
+PRODUCTS_DIR = settings.PRODUCTS_DIR
 
 
 @router.get("/{slug}", response_model=ProductOut)
@@ -31,7 +32,7 @@ async def get_product(slug: str, db: AsyncSession = Depends(get_db)):
 
 @router.get("", response_model=list[ProductOut])
 async def list_products(db: AsyncSession = Depends(get_db)):
-    """公开接口：仅返回已发布的产品。"""
+    """公开接口：仅返回已发布产品。"""
     result = await db.execute(
         select(Product)
         .where(Product.status == "published")
@@ -49,10 +50,13 @@ async def create_product(
     result = await db.execute(select(Product).where(Product.slug == data.slug))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Product slug already exists")
+
     product = Product(
         slug=data.slug,
         title=data.title,
         description=data.description,
+        cover_image=data.cover_image,
+        runtime_url=data.runtime_url,
         status=data.status,
     )
     db.add(product)
@@ -72,8 +76,10 @@ async def update_product(
     product = result.scalar_one_or_none()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
+
     await db.commit()
     await db.refresh(product)
     return product
@@ -89,9 +95,11 @@ async def delete_product(
     product = result.scalar_one_or_none()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+
     product_dir = os.path.join(PRODUCTS_DIR, product.slug)
     if os.path.exists(product_dir):
         shutil.rmtree(product_dir)
+
     await db.delete(product)
     await db.commit()
 
@@ -109,10 +117,12 @@ async def upload_product_zip(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
-    if not file.filename.endswith(".zip"):
+    if not file.filename or not file.filename.endswith(".zip"):
         raise HTTPException(status_code=400, detail="Only ZIP files are allowed")
 
     product_dir = os.path.join(PRODUCTS_DIR, product.slug)
+    if os.path.exists(product_dir):
+        shutil.rmtree(product_dir)
     os.makedirs(product_dir, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -121,18 +131,25 @@ async def upload_product_zip(
             f.write(await file.read())
 
         with zipfile.ZipFile(zip_path, "r") as zf:
+            root = os.path.realpath(tmpdir)
             for member in zf.namelist():
                 member_path = os.path.realpath(os.path.join(tmpdir, member))
-                if not member_path.startswith(os.path.realpath(tmpdir)):
+                if os.path.commonpath([root, member_path]) != root:
                     raise HTTPException(status_code=400, detail="Invalid ZIP: path traversal detected")
             zf.extractall(tmpdir)
 
         extracted_root = tmpdir
-        for item in os.listdir(tmpdir):
-            item_path = os.path.join(tmpdir, item)
-            if os.path.isdir(item_path) and os.path.exists(os.path.join(item_path, "index.html")):
-                extracted_root = item_path
-                break
+        if not os.path.exists(os.path.join(extracted_root, "index.html")):
+            wrapped_roots = [
+                os.path.join(tmpdir, item)
+                for item in os.listdir(tmpdir)
+                if os.path.isdir(os.path.join(tmpdir, item))
+                and os.path.exists(os.path.join(tmpdir, item, "index.html"))
+            ]
+            if wrapped_roots:
+                extracted_root = wrapped_roots[0]
+            else:
+                raise HTTPException(status_code=400, detail="ZIP must contain an index.html file")
 
         for item in os.listdir(extracted_root):
             src = os.path.join(extracted_root, item)
@@ -142,4 +159,8 @@ async def upload_product_zip(
             else:
                 shutil.copy2(src, dst)
 
-    return {"message": "Product uploaded successfully", "url": f"/products/{product.slug}/"}
+    product.runtime_url = f"/product-runtime/{product.slug}/"
+    await db.commit()
+    await db.refresh(product)
+
+    return {"message": "Product uploaded successfully", "url": product.runtime_url}

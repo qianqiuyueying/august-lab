@@ -8,6 +8,7 @@ services:
     volumes:
       - blog-data:/app/data
       - products-data:/app/products
+      - uploads-data:/app/uploads
     environment:
       - BLOG_SECRET_KEY=${BLOG_SECRET_KEY:-your-secret-key-change-in-production}
       - BLOG_ADMIN_USERNAME=${BLOG_ADMIN_USERNAME:-august}
@@ -32,6 +33,7 @@ services:
 volumes:
   blog-data:
   products-data:
+  uploads-data:
 
 networks:
   blog-net:

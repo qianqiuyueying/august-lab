@@ -22,6 +22,7 @@ interface AdminToolbarProps {
   status: string;
   onSearchChange: (value: string) => void;
   onStatusChange: (value: string) => void;
+  children?: ReactNode;
 }
 
 interface AdminDrawerProps {
@@ -66,11 +67,7 @@ export function AdminPageHeader({
       </div>
       <div className="flex flex-wrap gap-2">
         {secondaryActionLabel && onSecondaryAction && (
-          <button
-            type="button"
-            onClick={onSecondaryAction}
-            className="lab-button-secondary min-h-10 px-3 text-sm"
-          >
+          <button type="button" onClick={onSecondaryAction} className="lab-button-secondary min-h-10 px-3 text-sm">
             {secondaryActionLabel}
           </button>
         )}
@@ -84,7 +81,7 @@ export function AdminPageHeader({
 
 export function AdminStats({ stats }: { stats: AdminStat[] }) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {stats.map((stat) => (
         <div key={stat.label} className="paper-panel p-4">
           <div className={`mb-3 inline-flex rounded-md px-2 py-1 text-xs font-bold ${statToneClass[stat.tone ?? 'zinc']}`}>
@@ -97,7 +94,14 @@ export function AdminStats({ stats }: { stats: AdminStat[] }) {
   );
 }
 
-export function AdminToolbar({ search, searchPlaceholder, status, onSearchChange, onStatusChange }: AdminToolbarProps) {
+export function AdminToolbar({
+  search,
+  searchPlaceholder,
+  status,
+  onSearchChange,
+  onStatusChange,
+  children,
+}: AdminToolbarProps) {
   return (
     <div className="paper-panel flex flex-col gap-3 p-3 md:flex-row">
       <label className="flex-1">
@@ -121,6 +125,7 @@ export function AdminToolbar({ search, searchPlaceholder, status, onSearchChange
           <option value="draft">草稿</option>
         </select>
       </label>
+      {children}
     </div>
   );
 }
@@ -236,12 +241,7 @@ export function ConfirmDialog({
             <h2 className="text-lg font-bold text-zinc-950 dark:text-white">{title}</h2>
             <p className="mt-2 text-sm leading-6 text-text-muted dark:text-text-muted-dark">{description}</p>
             <div className="mt-5 flex justify-end gap-2">
-              <button
-                type="button"
-                disabled={loading}
-                onClick={onCancel}
-                className="lab-button-secondary min-h-10 px-3 text-sm disabled:opacity-50"
-              >
+              <button type="button" disabled={loading} onClick={onCancel} className="lab-button-secondary min-h-10 px-3 text-sm disabled:opacity-50">
                 取消
               </button>
               <button

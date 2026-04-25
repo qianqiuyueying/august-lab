@@ -8,8 +8,10 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
     DEBUG: bool = True
+    UPLOADS_DIR: str = "uploads"
+    PRODUCTS_DIR: str = "products"
 
-    # 管理员认证 — 通过环境变量 BLOG_ADMIN_USERNAME / BLOG_ADMIN_PASSWORD 设置
+    # 管理员认证，通过环境变量 BLOG_ADMIN_USERNAME / BLOG_ADMIN_PASSWORD 设置。
     ADMIN_USERNAME: str = Field(...)
     ADMIN_PASSWORD: str = Field(...)
 

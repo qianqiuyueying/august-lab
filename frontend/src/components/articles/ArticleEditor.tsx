@@ -6,28 +6,36 @@ import rehypeHighlight from 'rehype-highlight';
 interface ArticleEditorProps {
   initialContent?: string;
   onChange: (content: string) => void;
+  onRequestImage?: () => void;
 }
 
-export default function ArticleEditor({ initialContent = '', onChange }: ArticleEditorProps) {
+export default function ArticleEditor({ initialContent = '', onChange, onRequestImage }: ArticleEditorProps) {
   const [preview, setPreview] = useState(false);
-
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(event.target.value);
-  };
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300">
           内容 (Markdown)
         </label>
-        <button
-          type="button"
-          onClick={() => setPreview(!preview)}
-          className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-        >
-          {preview ? '编辑' : '预览'}
-        </button>
+        <div className="flex gap-2">
+          {onRequestImage && (
+            <button
+              type="button"
+              onClick={onRequestImage}
+              className="text-sm font-bold text-accent transition-colors hover:text-accent-hover"
+            >
+              插入图片
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setPreview(!preview)}
+            className="text-sm font-bold text-accent transition-colors hover:text-accent-hover"
+          >
+            {preview ? '编辑' : '预览'}
+          </button>
+        </div>
       </div>
       {preview ? (
         <div className="markdown-body min-h-[300px] rounded-lg border border-border bg-paper p-4 dark:border-border-dark dark:bg-surface-dark">
@@ -38,10 +46,10 @@ export default function ArticleEditor({ initialContent = '', onChange }: Article
       ) : (
         <textarea
           value={initialContent}
-          onChange={handleChange}
+          onChange={(event) => onChange(event.target.value)}
           rows={16}
           className="w-full rounded-lg border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 transition-all focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          placeholder="在此输入 Markdown 内容..."
+          placeholder="在此输入 Markdown 内容，图片可使用标准语法：![说明](/uploads/images/example.webp)"
         />
       )}
     </div>

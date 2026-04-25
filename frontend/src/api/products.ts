@@ -19,12 +19,12 @@ export const getProduct = async (slug: string) => {
   return data;
 };
 
-export const createProduct = async (product: { slug: string; title: string; description?: string; status: string }) => {
+export const createProduct = async (product: { slug: string; title: string; description?: string; cover_image?: string | null; status: string }) => {
   const { data } = await client.post<Product>('/products', product);
   return data;
 };
 
-export const updateProduct = async (id: number, product: Partial<{ title: string; description: string; status: string }>) => {
+export const updateProduct = async (id: number, product: Partial<{ title: string; description: string; cover_image: string | null; status: string }>) => {
   const { data } = await client.put<Product>(`/products/${id}`, product);
   return data;
 };

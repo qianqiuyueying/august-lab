@@ -8,7 +8,9 @@ from sqlalchemy.orm import selectinload
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.article import Article
+from app.models.article_tag import article_tag
 from app.models.product import Product
+from app.models.tag import Tag
 from app.schemas.article import ArticleListItem, ArticleListResponse
 from app.schemas.product import ProductListResponse
 from app.schemas.tag import TagOut
@@ -21,6 +23,7 @@ PageQuery = Annotated[int, Query(ge=1)]
 PageSizeQuery = Annotated[int, Query(ge=1, le=50)]
 StatusQuery = Annotated[str | None, Query(pattern="^(all|draft|published)$")]
 SearchQuery = Annotated[str | None, Query()]
+TagQuery = Annotated[str | None, Query()]
 
 
 @router.get("/articles", response_model=ArticleListResponse)
@@ -31,8 +34,12 @@ async def list_admin_articles(
     page_size: PageSizeQuery = 10,
     status: StatusQuery = None,
     search: SearchQuery = None,
+    tag: TagQuery = None,
 ):
     query = select(Article)
+
+    if tag:
+        query = query.join(article_tag).join(Tag).where(Tag.name == tag)
 
     if status and status != "all":
         query = query.where(Article.status == status)

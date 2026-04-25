@@ -57,6 +57,7 @@ export interface Product {
   title: string;
   description: string;
   cover_image?: string | null;
+  runtime_url?: string | null;
   status: string;
   created_at: string | null;
   updated_at: string | null;
@@ -64,6 +65,24 @@ export interface Product {
 
 export interface ProductListResponse {
   items: Product[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface Asset {
+  id: number;
+  filename: string;
+  original_name: string;
+  url: string;
+  mime_type: string;
+  size: number;
+  kind: 'image';
+  created_at: string | null;
+}
+
+export interface AssetListResponse {
+  items: Asset[];
   total: number;
   page: number;
   page_size: number;

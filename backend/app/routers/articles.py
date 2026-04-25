@@ -1,19 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile, File
-from sqlalchemy import select, func, or_
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
-from app.models.article import Article
-from app.models.tag import Tag
-from app.models.article_tag import article_tag
 from app.dependencies import get_current_user
+from app.models.article import Article
+from app.models.article_tag import article_tag
+from app.models.tag import Tag
 from app.schemas.article import (
     ArticleCreate,
-    ArticleUpdate,
-    ArticleOut,
     ArticleListItem,
     ArticleListResponse,
+    ArticleOut,
+    ArticleUpdate,
     ArticleUpload,
 )
 from app.schemas.tag import TagOut
@@ -43,44 +43,40 @@ async def list_articles(
             )
         )
 
-    count_query = select(func.count()).select_from(query.subquery())
-    total_result = await db.execute(count_query)
-    total = total_result.scalar()
+    total = (await db.execute(select(func.count()).select_from(query.subquery()))).scalar()
 
-    query = (
-        query
-        .options(selectinload(Article.tags))
+    result = await db.execute(
+        query.options(selectinload(Article.tags))
         .order_by(Article.created_at.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     )
-    result = await db.execute(query)
     articles = result.scalars().all()
 
     items = [
         ArticleListItem(
-            id=a.id,
-            slug=a.slug,
-            title=a.title,
-            summary=a.summary,
-            status=a.status,
-            tags=[TagOut(id=t.id, name=t.name) for t in a.tags],
-            created_at=a.created_at,
+            id=article.id,
+            slug=article.slug,
+            title=article.title,
+            summary=article.summary,
+            cover_image=article.cover_image,
+            status=article.status,
+            tags=[TagOut(id=tag.id, name=tag.name) for tag in article.tags],
+            created_at=article.created_at,
         )
-        for a in articles
+        for article in articles
     ]
 
-    return ArticleListResponse(items=items, total=total, page=page, page_size=page_size)
+    return ArticleListResponse(items=items, total=total or 0, page=page, page_size=page_size)
 
 
 @router.get("/{slug}", response_model=ArticleOut)
 async def get_article(slug: str, db: AsyncSession = Depends(get_db)):
-    query = (
+    result = await db.execute(
         select(Article)
         .where(Article.slug == slug)
         .options(selectinload(Article.tags))
     )
-    result = await db.execute(query)
     article = result.scalar_one_or_none()
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
@@ -108,6 +104,7 @@ async def create_article(
         title=data.title,
         content=data.content,
         summary=data.summary or data.content[:200],
+        cover_image=data.cover_image,
         status=data.status,
     )
 
@@ -128,8 +125,7 @@ async def create_article(
         .where(Article.id == article.id)
         .options(selectinload(Article.tags))
     )
-    article = result.scalar_one()
-    return article
+    return result.scalar_one()
 
 
 @router.put("/{article_id}", response_model=ArticleOut)
@@ -157,8 +153,8 @@ async def update_article(
     if tags_data is not None:
         article.tags.clear()
         for tag_name in tags_data:
-            tag_result = await db.execute(select(Tag).where(Tag.name == tag_name))
-            tag = tag_result.scalar_one_or_none()
+            result = await db.execute(select(Tag).where(Tag.name == tag_name))
+            tag = result.scalar_one_or_none()
             if not tag:
                 tag = Tag(name=tag_name)
                 db.add(tag)
@@ -171,8 +167,7 @@ async def update_article(
         .where(Article.id == article.id)
         .options(selectinload(Article.tags))
     )
-    article = result.scalar_one()
-    return article
+    return result.scalar_one()
 
 
 @router.delete("/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -185,6 +180,7 @@ async def delete_article(
     article = result.scalar_one_or_none()
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
+
     await db.delete(article)
     await db.commit()
 
@@ -194,15 +190,14 @@ async def upload_md(
     file: UploadFile = File(...),
     current_user: dict = Depends(get_current_user),
 ):
-    """上传 Markdown 文件，解析标题和内容后返回供前端编辑。"""
-    if not file.filename.endswith(".md"):
+    """上传 Markdown 文件，解析标题和内容后返回给前端编辑。"""
+    if not file.filename or not file.filename.endswith(".md"):
         raise HTTPException(status_code=400, detail="Only .md files are allowed")
 
     content = await file.read()
     text = content.decode("utf-8")
 
-    # 提取标题（从第一个 # 标题行）
-    title = file.filename[:-3]  # 默认用文件名
+    title = file.filename[:-3]
     lines = text.split("\n")
     content_start = 0
     for i, line in enumerate(lines):
@@ -210,9 +205,8 @@ async def upload_md(
             title = line[2:].strip()
             content_start = i + 1
             break
-        elif line.startswith("---") and i == 0:
-            # 跳过 frontmatter
-            for j, line2 in enumerate(lines[i+1:], i+1):
+        if line.startswith("---") and i == 0:
+            for j, line2 in enumerate(lines[i + 1 :], i + 1):
                 if line2.startswith("---"):
                     content_start = j + 1
                     break
