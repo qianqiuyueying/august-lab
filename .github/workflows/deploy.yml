@@ -95,11 +95,32 @@ jobs:
 
       - name: 上传文件到服务器
         run: |
-          ssh root@192.144.154.17 "mkdir -p /opt/blog"
-          scp Dockerfile docker-compose.yml nginx.conf root@192.144.154.17:/opt/blog/
-          # 排除 .venv，Docker build 会重新 pip install，无需传输
-          rsync -avz --exclude '.venv/' --delete backend/ root@192.144.154.17:/opt/blog/backend/
-          scp -r frontend/dist/* root@192.144.154.17:/opt/blog/frontend/dist/
+          set -euo pipefail
+          SERVER="root@192.144.154.17"
+          SSH_OPTS="-o ServerAliveInterval=30 -o ServerAliveCountMax=4"
+          RSYNC_SSH="ssh ${SSH_OPTS}"
+
+          echo "::group::Prepare remote directories"
+          timeout 60s ssh ${SSH_OPTS} "${SERVER}" "mkdir -p /opt/blog/backend /opt/blog/frontend/dist"
+          echo "::endgroup::"
+
+          echo "::group::Upload deploy config"
+          timeout 60s rsync -az --info=progress2 -e "${RSYNC_SSH}" \
+            Dockerfile docker-compose.yml nginx.conf "${SERVER}:/opt/blog/"
+          echo "::endgroup::"
+
+          echo "::group::Upload backend"
+          timeout 180s rsync -az --delete --info=progress2 -e "${RSYNC_SSH}" \
+            --exclude '.venv/' \
+            --exclude '__pycache__/' \
+            --exclude '.pytest_cache/' \
+            backend/ "${SERVER}:/opt/blog/backend/"
+          echo "::endgroup::"
+
+          echo "::group::Upload frontend dist"
+          timeout 180s rsync -az --delete --info=progress2 -e "${RSYNC_SSH}" \
+            frontend/dist/ "${SERVER}:/opt/blog/frontend/dist/"
+          echo "::endgroup::"
 
       - name: 验证上传文件
         run: |
