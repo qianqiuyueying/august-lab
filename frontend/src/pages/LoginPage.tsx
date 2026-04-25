@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { login } from '../api/auth';
@@ -28,66 +28,75 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto py-8">
+    <div className="min-h-[60vh] flex items-center justify-center">
       <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-        className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm"
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md"
       >
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="text-2xl font-bold mb-6 text-center text-zinc-900 dark:text-white"
-        >
-          登录
-        </motion.h1>
+        {/* Brand header */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-4">
+            <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="20" height="20" rx="5" className="fill-zinc-900 dark:fill-white" />
+              <path d="M7 17V7h2l3 8 3-8h2v10h-1.5V9l-2.5 8h-1L8.5 9v8H7z" className="fill-white dark:fill-zinc-900" />
+            </svg>
+            <span className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">August&apos;s Lab</span>
+          </Link>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">登录</h1>
+          <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1">输入凭据以管理后台</p>
+        </div>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mb-4 text-sm"
-          >
-            {error}
-          </motion.div>
-        )}
+        {/* Card */}
+        <div className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 p-3 rounded-lg mb-5 text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              用户名
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              密码
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
-            />
-          </div>
-          <motion.button
-            type="submit"
-            disabled={loading}
-            whileTap={{ scale: loading ? 1 : 0.98 }}
-            className="w-full bg-accent text-white py-2.5 rounded-lg hover:bg-accent-hover disabled:opacity-50 font-medium transition-colors"
-          >
-            {loading ? '登录中...' : '登录'}
-          </motion.button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1.5">
+                用户名
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="w-full border border-zinc-200 dark:border-zinc-800 rounded-lg px-3.5 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent-start/30 focus:border-accent-start transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+                placeholder="输入用户名"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1.5">
+                密码
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full border border-zinc-200 dark:border-zinc-800 rounded-lg px-3.5 py-2.5 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent-start/30 focus:border-accent-start transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+                placeholder="输入密码"
+              />
+            </div>
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileTap={{ scale: loading ? 1 : 0.98 }}
+              className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-2.5 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-100 disabled:opacity-50 font-medium text-sm transition-colors"
+            >
+              {loading ? '登录中...' : '登录'}
+            </motion.button>
+          </form>
+        </div>
       </motion.div>
     </div>
   );

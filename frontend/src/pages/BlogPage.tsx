@@ -12,13 +12,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
 export default function BlogPage() {
@@ -38,27 +38,20 @@ export default function BlogPage() {
       <div className="lg:col-span-3">
         {/* Page header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.35 }}
           className="mb-8"
         >
-          <motion.h1
-            className="text-4xl font-bold text-zinc-900 dark:text-white mb-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">
             博客
-          </motion.h1>
-          <motion.p
-            className="text-zinc-500 dark:text-zinc-400"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-1">
             {tag ? `标签: ${tag}` : search ? `搜索: ${search}` : '技术文章与思考'}
-          </motion.p>
+          </h1>
+          {data && !tag && !search && (
+            <p className="text-sm text-zinc-400 dark:text-zinc-500">{data.total} 篇文章</p>
+          )}
         </motion.div>
 
         {/* Search */}
@@ -71,7 +64,7 @@ export default function BlogPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-red-600 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-6"
+            className="text-red-600 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-6 text-sm"
           >
             {error}
           </motion.div>
@@ -89,7 +82,7 @@ export default function BlogPage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-6"
+            className="space-y-5"
           >
             {data?.items.map((article, index) => (
               <motion.div key={article.id} variants={itemVariants}>
@@ -104,7 +97,7 @@ export default function BlogPage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-zinc-500 dark:text-zinc-400 text-center py-12"
+                className="text-zinc-400 dark:text-zinc-500 text-center py-16 text-sm"
               >
                 暂无文章
               </motion.div>
@@ -115,27 +108,27 @@ export default function BlogPage() {
         {/* Pagination */}
         {data && data.total > data.page_size && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex justify-center items-center gap-3 mt-8"
+            transition={{ delay: 0.2 }}
+            className="flex justify-center items-center gap-3 mt-10"
           >
             <motion.button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              whileTap={{ scale: page === 1 ? 1 : 0.95 }}
-              className="px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              whileTap={{ scale: page === 1 ? 1 : 0.96 }}
+              className="px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               上一页
             </motion.button>
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">
-              第 {data.page} 页 / 共 {totalPages} 页
+            <span className="text-sm text-zinc-400 dark:text-zinc-500 tabular-nums">
+              {data.page} / {totalPages}
             </span>
             <motion.button
               onClick={() => setPage((p) => p + 1)}
               disabled={page * data.page_size >= data.total}
-              whileTap={{ scale: page * data.page_size >= data.total ? 1 : 0.95 }}
-              className="px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              whileTap={{ scale: page * data.page_size >= data.total ? 1 : 0.96 }}
+              className="px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               下一页
             </motion.button>
@@ -146,12 +139,12 @@ export default function BlogPage() {
       {/* Sidebar */}
       <aside>
         <motion.div
-          initial={{ opacity: 0, x: 16 }}
+          initial={{ opacity: 0, x: 12 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="sticky top-24 bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-5 shadow-sm"
+          transition={{ delay: 0.15 }}
+          className="sticky top-20 bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-5 shadow-sm"
         >
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
             标签
           </h2>
           <TagList tags={tags} loading={tagsLoading} />
