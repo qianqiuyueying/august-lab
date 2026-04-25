@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use class-based dark mode instead of system media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-background: oklch(0.985 0 0);
   --color-background-dark: oklch(0.145 0 0);
