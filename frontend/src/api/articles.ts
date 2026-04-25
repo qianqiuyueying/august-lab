@@ -2,7 +2,7 @@ import client from './client';
 import type { Article, ArticleListResponse } from '../types';
 
 export const getArticles = async (page = 1, pageSize = 10, tag?: string, search?: string) => {
-  const params: Record<string, any> = { page, page_size: pageSize };
+  const params: Record<string, string | number> = { page, page_size: pageSize };
   if (tag) params.tag = tag;
   if (search) params.search = search;
   const { data } = await client.get<ArticleListResponse>('/articles', { params });

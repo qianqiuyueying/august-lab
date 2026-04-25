@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { getProducts, createProduct, deleteProduct, uploadProductZip } from '../../api/products';
 import type { Product } from '../../types';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);

@@ -21,7 +21,7 @@ const mockTags = [
 describe('TagList', () => {
   it('shows loading state', () => {
     renderWithRouter(<TagList tags={[]} loading={true} />);
-    expect(screen.getByText('加载中...')).toBeInTheDocument();
+    expect(screen.getByText('标签加载中...')).toBeInTheDocument();
   });
 
   it('renders all tags when not loading', () => {
@@ -34,7 +34,7 @@ describe('TagList', () => {
   it('renders tags as links with correct href', () => {
     renderWithRouter(<TagList tags={mockTags} loading={false} />);
     const reactLink = screen.getByText('#react');
-    expect(reactLink).toHaveAttribute('href', '/?tag=react');
+    expect(reactLink).toHaveAttribute('href', '/blog?tag=react');
   });
 
   it('renders empty when tags array is empty and not loading', () => {

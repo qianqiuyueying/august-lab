@@ -1,25 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getProducts } from '../api/products';
 import type { Product } from '../types';
 import { Skeleton } from '../components/ui/Skeleton';
-
-function getStatusBadge(status: string) {
-  if (status === 'published') {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm text-emerald-600 dark:text-emerald-400 shadow-sm">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-        已上线
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm text-zinc-500 dark:text-zinc-400 shadow-sm">
-      <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-      开发中
-    </span>
-  );
-}
+import PageIntro from '../components/ui/PageIntro';
+import EmptyState from '../components/ui/EmptyState';
+import StatusBadge from '../components/ui/StatusBadge';
 
 const gridVariants = {
   hidden: { opacity: 0 },
@@ -51,101 +38,69 @@ export default function ProductsPage() {
   }, []);
 
   return (
-    <div>
-      {/* Page header */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="mb-10"
-      >
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">产品</p>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-1">
-          项目与产品展示
-        </h1>
-        <p className="text-sm text-zinc-400 dark:text-zinc-500">探索我们的静态项目和产品</p>
-      </motion.div>
+    <div className="space-y-10">
+      <PageIntro
+        eyebrow="Products"
+        title="小作品与产品记录"
+        description="这里收集正在打磨或已经上线的项目。相比展示结果，我更想保留每个作品背后的问题、取舍和演进过程。"
+      />
 
-      {/* Error */}
       {error && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-red-600 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-6 text-sm"
+          className="rounded-lg border border-danger/20 bg-danger-subtle p-4 text-sm font-semibold text-danger dark:bg-danger-subtle-dark"
         >
           {error}
         </motion.div>
       )}
 
-      {/* Loading */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-64" />
+            <Skeleton key={i} className="h-80" />
           ))}
         </div>
       ) : products.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-zinc-400 dark:text-zinc-500 text-center py-16 text-sm"
-        >
-          暂无产品
-        </motion.div>
+        <EmptyState title="作品还在整理中" description="发布后的项目会在这里归档。" />
       ) : (
         <motion.div
           variants={gridVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
         >
           {products.map((product) => (
             <motion.div key={product.id} variants={cardVariants}>
-              <a href={`/products/${product.slug}/`} className="block h-full">
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col group card-glow"
-                >
-                  {/* Cover image area */}
-                  <div className="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900">
-                    {product.cover_image ? (
-                      <img
-                        src={product.cover_image}
-                        alt={product.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-12 h-12 text-zinc-300 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-                        </svg>
-                      </div>
-                    )}
-                    {/* Status badge overlay */}
-                    <div className="absolute top-3 right-3">
-                      {getStatusBadge(product.status)}
+              <Link to={`/products/${product.slug}`} className="group block h-full rounded-lg focus-ring">
+                <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
+                    <img
+                      src={product.cover_image || '/images/fallback-product.svg'}
+                      alt={product.cover_image ? product.title : ''}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      aria-hidden={!product.cover_image}
+                    />
+                    <div className="absolute right-3 top-3">
+                      <StatusBadge status={product.status} />
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-[15px] font-semibold text-zinc-900 dark:text-white mb-1.5 tracking-tight">
+                  <div className="flex flex-1 flex-col p-5">
+                    <h2 className="text-xl font-extrabold text-text-primary transition-colors group-hover:text-accent dark:text-text-primary-dark">
                       {product.title}
-                    </h3>
+                    </h2>
                     {product.description && (
-                      <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed line-clamp-2 flex-1">
+                      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">
                         {product.description}
                       </p>
                     )}
-                    <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center text-zinc-500 dark:text-zinc-400 text-sm font-medium group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
-                      查看详情
-                      <svg className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
+                    <div className="mt-5 border-t border-border pt-4 text-sm font-bold text-accent dark:border-border-dark">
+                      查看作品记录
                     </div>
                   </div>
-                </motion.div>
-              </a>
+                </article>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

@@ -19,23 +19,23 @@ export default function StaticPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div className="text-zinc-500 text-center py-12">加载中...</div>;
-  if (error) return <div className="text-red-600 text-center py-12">{error}</div>;
-  if (!page) return <div className="text-zinc-500 text-center py-12">页面不存在</div>;
+  if (loading) return <div className="py-12 text-center text-text-muted dark:text-text-muted-dark">加载中...</div>;
+  if (error) return <div className="py-12 text-center text-danger">{error}</div>;
+  if (!page) return <div className="py-12 text-center text-text-muted dark:text-text-muted-dark">页面不存在</div>;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto"
+      className="mx-auto max-w-4xl"
     >
       {page.content_type === 'html' ? (
-        <div className="rounded-xl overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-border shadow-sm dark:border-border-dark">
           <div dangerouslySetInnerHTML={{ __html: page.content }} />
         </div>
       ) : (
-        <article className="bg-white dark:bg-zinc-900/50 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 p-6 sm:p-8 shadow-sm">
-          <h1 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white">{page.title}</h1>
+        <article className="paper-panel-strong p-6 sm:p-9">
+          <h1 className="mb-8 text-4xl font-extrabold text-text-primary dark:text-text-primary-dark">{page.title}</h1>
           <ArticleContent content={page.content} />
         </article>
       )}

@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getProduct } from '../api/products';
 import type { Product } from '../types';
+import EmptyState from '../components/ui/EmptyState';
+import StatusBadge from '../components/ui/StatusBadge';
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,85 +21,52 @@ export default function ProductPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div className="text-zinc-400 dark:text-zinc-500 text-center py-16 text-sm">加载中...</div>;
-  if (error) return <div className="text-red-600 text-center py-16 text-sm">{error}</div>;
-  if (!product) return <div className="text-zinc-400 dark:text-zinc-500 text-center py-16 text-sm">产品不存在</div>;
+  if (loading) return <EmptyState title="作品加载中" description="正在读取作品记录。" />;
+  if (error) return <EmptyState title="作品读取失败" description={error} />;
+  if (!product) return <EmptyState title="作品不存在" description="这个作品可能已经下线或移动。" />;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Back button */}
+    <div className="mx-auto max-w-5xl">
       <motion.button
         onClick={() => navigate(-1)}
-        whileHover={{ x: -4 }}
-        className="mb-8 inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+        whileHover={{ x: -3 }}
+        className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-text-muted transition-colors hover:text-accent dark:text-text-muted-dark"
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        返回
+        <span aria-hidden="true">←</span>
+        返回上一页
       </motion.button>
 
       <motion.article
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm overflow-hidden"
+        className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark"
       >
-        {/* Cover image */}
-        {product.cover_image ? (
-          <div className="w-full aspect-[21/9] overflow-hidden">
-            <img
-              src={product.cover_image}
-              alt={product.title}
-              className="w-full h-full object-cover"
-            />
+        <div className="relative">
+          <img
+            src={product.cover_image || '/images/fallback-product.svg'}
+            alt={product.cover_image ? product.title : ''}
+            className="aspect-[16/8] w-full object-cover"
+            aria-hidden={!product.cover_image}
+          />
+          <div className="absolute right-4 top-4">
+            <StatusBadge status={product.status} />
           </div>
-        ) : (
-          <div className="w-full aspect-[21/9] bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
-            <svg className="w-16 h-16 text-zinc-300 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.75}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-            </svg>
+        </div>
+
+        <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1fr_15rem]">
+          <div>
+            <p className="section-label mb-3">Product note</p>
+            <h1 className="text-4xl font-extrabold leading-[1.08] text-text-primary dark:text-text-primary-dark sm:text-5xl">
+              {product.title}
+            </h1>
+            <p className="mt-6 text-lg leading-9 text-text-secondary dark:text-text-secondary-dark">
+              {product.description}
+            </p>
           </div>
-        )}
-
-        {/* Content */}
-        <div className="p-6 sm:p-10">
-          {/* Status badge */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.05 }}
-            className="mb-4"
-          >
-            {product.status === 'published' ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                已上线
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                开发中
-              </span>
-            )}
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-zinc-900 dark:text-white mb-5 leading-tight tracking-tight"
-          >
-            {product.title}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            className="text-zinc-500 dark:text-zinc-400 leading-relaxed text-base"
-          >
-            {product.description}
-          </motion.p>
+          <aside className="border-t border-border pt-6 text-sm leading-7 text-text-secondary dark:border-border-dark dark:text-text-secondary-dark lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+            <p className="font-extrabold text-text-primary dark:text-text-primary-dark">记录重点</p>
+            <p className="mt-2">每个作品都会尽量保留目标、状态和迭代痕迹，方便之后复盘。</p>
+          </aside>
         </div>
       </motion.article>
     </div>

@@ -1,41 +1,76 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getArticles, getArticle, createArticle, updateArticle, deleteArticle } from '../api/articles';
 import type { Article, ArticleListResponse } from '../types';
 
+interface ArticlesState {
+  key: string;
+  data: ArticleListResponse | null;
+  error: string | null;
+}
+
+interface ArticleState {
+  key: string;
+  data: Article | null;
+  error: string | null;
+}
+
 export function useArticles(page = 1, pageSize = 10, tag?: string, search?: string) {
-  const [data, setData] = useState<ArticleListResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const requestKey = useMemo(() => [page, pageSize, tag ?? '', search ?? ''].join('\u0001'), [page, pageSize, tag, search]);
+  const [state, setState] = useState<ArticlesState>({ key: '', data: null, error: null });
 
   useEffect(() => {
-    setLoading(true);
-    getArticles(page, pageSize, tag, search)
-      .then(setData)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [page, pageSize, tag, search]);
+    let cancelled = false;
 
-  return { data, loading, error, refetch: () => getArticles(page, pageSize, tag, search).then(setData) };
+    getArticles(page, pageSize, tag, search)
+      .then((data) => {
+        if (!cancelled) setState({ key: requestKey, data, error: null });
+      })
+      .catch((e) => {
+        if (!cancelled) setState({ key: requestKey, data: null, error: e.message });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [page, pageSize, tag, search, requestKey]);
+
+  const refetch = () =>
+    getArticles(page, pageSize, tag, search).then((data) => {
+      setState({ key: requestKey, data, error: null });
+      return data;
+    });
+
+  return { data: state.data, loading: state.key !== requestKey, error: state.key === requestKey ? state.error : null, refetch };
 }
 
 export function useArticle(slug: string) {
-  const [data, setData] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(!!slug);
-  const [error, setError] = useState<string | null>(null);
+  const requestKey = slug || '__missing__';
+  const [state, setState] = useState<ArticleState>({ key: '', data: null, error: null });
 
   useEffect(() => {
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    getArticle(slug)
-      .then(setData)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [slug]);
+    if (!slug) return;
 
-  return { data, loading, error, refetch: () => getArticle(slug).then(setData) };
+    let cancelled = false;
+    getArticle(slug)
+      .then((data) => {
+        if (!cancelled) setState({ key: requestKey, data, error: null });
+      })
+      .catch((e) => {
+        if (!cancelled) setState({ key: requestKey, data: null, error: e.message });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, requestKey]);
+
+  const refetch = () =>
+    getArticle(slug).then((data) => {
+      setState({ key: requestKey, data, error: null });
+      return data;
+    });
+
+  return { data: state.data, loading: !!slug && state.key !== requestKey, error: state.key === requestKey ? state.error : null, refetch };
 }
 
 export function useArticleMutations() {

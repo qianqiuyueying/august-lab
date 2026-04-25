@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { getPages, createPage, deletePage } from '../../api/pages';
 import type { Page } from '../../types';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
 
 export default function AdminPages() {
   const [pages, setPages] = useState<Page[]>([]);

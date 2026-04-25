@@ -1,44 +1,32 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from '../../hooks/useTheme';
+import BrandMark from '../ui/BrandMark';
 
 const navLinks = [
   { to: '/', label: '首页' },
-  { to: '/blog', label: '博客' },
-  { to: '/products', label: '产品' },
+  { to: '/blog', label: '笔记' },
+  { to: '/products', label: '作品' },
   { to: '/about', label: '关于' },
 ];
 
-function SunIcon() {
-  return (
-    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <circle cx="12" cy="12" r="5" />
-      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-    </svg>
-  );
-}
+function Icon({ name }: { name: 'sun' | 'moon' | 'menu' | 'close' }) {
+  const paths = {
+    sun: (
+      <>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+      </>
+    ),
+    moon: <path d="M20 14.4A7.5 7.5 0 019.6 4a8.5 8.5 0 1010.4 10.4Z" />,
+    menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+    close: <path d="M6 6l12 12M18 6L6 18" />,
+  };
 
-function MoonIcon() {
   return (
-    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-    </svg>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[name]}
     </svg>
   );
 }
@@ -50,111 +38,97 @@ export default function Header() {
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
   return (
-    <>
-      <motion.header
-        className="sticky top-0 z-50 backdrop-blur-xl bg-surface/80 dark:bg-surface-dark/80 border-b border-border/60 dark:border-border-dark/60"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5">
-              <svg className="w-6 h-6" viewBox="0 0 32 32" fill="none">
-                <rect x="2" y="2" width="28" height="28" rx="7" className="fill-slate-800 dark:fill-white" />
-                <path d="M9 23V9h2.5l3.5 10 3.5-10H21v14h-2V13l-3.2 9h-1.6L11 13v10H9z" className="fill-slate-200 dark:fill-slate-800" />
-              </svg>
-              <motion.span
-                className="text-[15px] font-bold tracking-tight text-zinc-900 dark:text-white"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                August&apos;s Lab
-              </motion.span>
-            </Link>
+    <motion.header
+      className="sticky top-0 z-40 border-b border-border/80 bg-background/86 backdrop-blur-xl dark:border-border-dark/80 dark:bg-background-dark/86"
+      initial={{ y: -72 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link to="/" className="focus-ring rounded-lg">
+            <BrandMark />
+          </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
-              <div className="relative flex items-center">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className="relative px-3.5 py-1.5 text-[14px] font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-                  >
-                    {link.label}
-                    {isActive(link.to) && (
-                      <motion.div
-                        layoutId="nav-underline"
-                        className="absolute bottom-0 left-1 right-1 h-0.5 bg-gradient-to-r from-accent-start via-accent-mid to-accent-end rounded-full"
-                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </nav>
-
-            {/* Right side */}
-            <div className="flex items-center gap-1">
-              {/* Theme toggle */}
-              <motion.button
-                onClick={toggle}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 rounded-lg text-zinc-400 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                aria-label="切换亮暗模式"
+          <nav className="hidden items-center gap-1 md:flex" aria-label="主导航">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`relative rounded-lg px-3.5 py-2 text-sm font-bold transition-colors ${
+                  isActive(link.to)
+                    ? 'text-text-primary dark:text-text-primary-dark'
+                    : 'text-text-muted hover:text-text-primary dark:text-text-muted-dark dark:hover:text-text-primary-dark'
+                }`}
               >
-                {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-              </motion.button>
+                {link.label}
+                {isActive(link.to) && (
+                  <motion.span
+                    layoutId="nav-marker"
+                    className="absolute inset-x-3 bottom-1 h-0.5 rounded-full bg-accent"
+                    transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                  />
+                )}
+              </Link>
+            ))}
+          </nav>
 
-              {/* Mobile menu button */}
-              <motion.button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                whileTap={{ scale: 0.9 }}
-                className="md:hidden p-2 rounded-lg text-zinc-400 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                aria-label="菜单"
-              >
-                {mobileOpen ? <CloseIcon /> : <MenuIcon />}
-              </motion.button>
-            </div>
+          <div className="flex items-center gap-2">
+            <motion.button
+              type="button"
+              onClick={toggle}
+              whileTap={{ scale: 0.94 }}
+              className="focus-ring rounded-lg border border-border bg-paper/72 p-2 text-text-muted transition-colors hover:text-text-primary dark:border-border-dark dark:bg-surface-dark/72 dark:text-text-muted-dark dark:hover:text-text-primary-dark"
+              aria-label="切换明暗模式"
+            >
+              {theme === 'light' ? <Icon name="moon" /> : <Icon name="sun" />}
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={() => setMobileOpen((open) => !open)}
+              whileTap={{ scale: 0.94 }}
+              className="focus-ring rounded-lg border border-border bg-paper/72 p-2 text-text-muted transition-colors hover:text-text-primary dark:border-border-dark dark:bg-surface-dark/72 dark:text-text-muted-dark dark:hover:text-text-primary-dark md:hidden"
+              aria-label="打开菜单"
+            >
+              {mobileOpen ? <Icon name="close" /> : <Icon name="menu" />}
+            </motion.button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden overflow-hidden border-t border-border/60 dark:border-border-dark/60"
-            >
-              <nav className="px-4 pb-4 pt-3 space-y-0.5">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    onClick={() => setMobileOpen(false)}
-                    className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      isActive(link.to)
-                        ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-                        : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
-    </>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden border-t border-border/80 dark:border-border-dark/80 md:hidden"
+            aria-label="移动端导航"
+          >
+            <div className="mx-auto max-w-7xl space-y-1 px-4 py-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`block rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
+                    isActive(link.to)
+                      ? 'bg-accent-subtle text-accent-hover dark:bg-accent-subtle-dark dark:text-text-primary-dark'
+                      : 'text-text-muted hover:bg-paper dark:text-text-muted-dark dark:hover:bg-surface-dark'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }

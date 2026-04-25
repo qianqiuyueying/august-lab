@@ -39,7 +39,7 @@ describe('SearchBar', () => {
     fireEvent.change(input, { target: { value: 'react hooks' } });
     fireEvent.submit(input.closest('form')!);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/?search=react%20hooks');
+    expect(mockNavigate).toHaveBeenCalledWith('/blog?search=react%20hooks');
   });
 
   it('does not navigate when submitting empty query', () => {

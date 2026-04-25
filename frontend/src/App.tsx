@@ -5,6 +5,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import HomePage from './pages/HomePage';
 import BlogPage from './pages/BlogPage';
 import ProductsPage from './pages/ProductsPage';
+import ProductPage from './pages/ProductPage';
 import AboutPage from './pages/AboutPage';
 import ArticlePage from './pages/ArticlePage';
 import LoginPage from './pages/LoginPage';
@@ -25,6 +26,7 @@ export default function App() {
             <Route index element={<HomePage />} />
             <Route path="blog" element={<BlogPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="products/:slug" element={<ProductPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="articles/:slug" element={<ArticlePage />} />
             <Route path="login" element={<LoginPage />} />

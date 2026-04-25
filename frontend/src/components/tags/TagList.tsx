@@ -25,20 +25,20 @@ const itemVariants = {
 };
 
 export default function TagList({ tags, loading }: TagListProps) {
-  if (loading) return <div className="text-zinc-400 dark:text-zinc-500 text-sm">加载中...</div>;
+  if (loading) return <div className="text-sm text-text-muted dark:text-text-muted-dark">标签加载中...</div>;
 
   return (
     <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex flex-wrap gap-1.5"
+      className="flex flex-wrap gap-2"
     >
       {tags.map((tag) => (
         <motion.div key={tag.id} variants={itemVariants}>
           <Link
-            to={`/?tag=${tag.name}`}
-            className="inline-block bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 px-2.5 py-1 rounded-full text-xs font-medium hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+            to={`/blog?tag=${encodeURIComponent(tag.name)}`}
+            className="lab-chip hover:border-accent hover:bg-accent-subtle hover:text-accent-hover dark:hover:border-text-muted-dark dark:hover:bg-accent-subtle-dark"
           >
             #{tag.name}
           </Link>

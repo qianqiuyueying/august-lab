@@ -32,7 +32,7 @@ export default function ArticleEditor({ initialContent = '', onChange }: Article
         </button>
       </div>
       {preview ? (
-        <div className="prose prose-zinc dark:prose-invert max-w-none border border-zinc-300 dark:border-zinc-700 rounded-lg p-4 min-h-[300px] bg-zinc-50 dark:bg-zinc-900">
+        <div className="markdown-body min-h-[300px] rounded-lg border border-border bg-paper p-4 dark:border-border-dark dark:bg-surface-dark">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
             {content}
           </ReactMarkdown>
