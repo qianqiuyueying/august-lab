@@ -71,8 +71,8 @@ async def get_dashboard_stats(db: AsyncSession = Depends(get_db)):
     ]
 
     # 数据库大小
-    db_url = settings.DATABASE_URL.replace("sqlite+aiosqlite:///", "")
-    if db_url and os.path.isfile(db_url):
+    db_path = settings.DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+    if db_path and os.path.isfile(db_path):
         size_bytes = os.path.getsize(db_path)
     else:
         size_bytes = None
