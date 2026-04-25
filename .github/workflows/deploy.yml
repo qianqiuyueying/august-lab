@@ -105,12 +105,12 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Upload deploy config"
-          timeout 60s rsync -az --info=progress2 -e "${RSYNC_SSH}" \
+          timeout 120s rsync -az --timeout=60 --info=progress2 -e "${RSYNC_SSH}" \
             Dockerfile docker-compose.yml nginx.conf "${SERVER}:/opt/blog/"
           echo "::endgroup::"
 
           echo "::group::Upload backend"
-          timeout 180s rsync -az --delete --info=progress2 -e "${RSYNC_SSH}" \
+          timeout 300s rsync -az --delete --timeout=60 --info=progress2 -e "${RSYNC_SSH}" \
             --exclude '.venv/' \
             --exclude '__pycache__/' \
             --exclude '.pytest_cache/' \
@@ -118,7 +118,7 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Upload frontend dist"
-          timeout 180s rsync -az --delete --info=progress2 -e "${RSYNC_SSH}" \
+          timeout 600s rsync -az --delete --timeout=60 --info=progress2 -e "${RSYNC_SSH}" \
             frontend/dist/ "${SERVER}:/opt/blog/frontend/dist/"
           echo "::endgroup::"
 
