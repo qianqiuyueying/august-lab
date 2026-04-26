@@ -10,7 +10,7 @@ from app.models.article import Article
 from app.models.tag import Tag
 from app.models.article_tag import article_tag
 from app.models.product import Product
-from app.models.page import Page
+from app.models.about_page import AboutPage
 from app.models.user import User
 
 router = APIRouter()
@@ -31,7 +31,7 @@ async def get_dashboard_stats(db: AsyncSession = Depends(get_db)):
     product_count = (await db.execute(select(func.count(Product.id)))).scalar()
 
     # 页面统计
-    page_count = (await db.execute(select(func.count(Page.id)))).scalar()
+    page_count = (await db.execute(select(func.count(AboutPage.id)))).scalar()
 
     # 标签统计
     tag_count = (await db.execute(select(func.count(Tag.id)))).scalar()
