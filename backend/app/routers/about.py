@@ -37,10 +37,14 @@ async def update_about(
         defaults = {
             "eyebrow": "About",
             "title": "",
+            "avatar_url": "",
+            "hero_subtitle": "",
             "cover_image": "",
             "content": "",
             "content_type": "markdown",
             "tech_stack": "[]",
+            "info_cards": [],
+            "contacts": [],
         }
         defaults.update(data.model_dump(exclude_unset=True))
         about = AboutPage(**defaults)
