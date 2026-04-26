@@ -43,10 +43,14 @@ export interface AboutPage {
   id: number;
   eyebrow: string;
   title: string;
+  avatar_url: string;
+  hero_subtitle: string;
   cover_image: string;
   content: string;
-  content_type: string;  // "markdown" | "html"
-  tech_stack: string;  // JSON array string
+  content_type: string;
+  tech_stack: string;
+  info_cards: Array<{ label: string; value: string }>;
+  contacts: Array<{ platform: string; url: string; name?: string }>;
   updated_at: string | null;
 }
 
