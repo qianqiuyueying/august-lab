@@ -47,3 +47,39 @@ async def test_update_about_requires_auth(client: AsyncClient):
     """未认证返回 401。"""
     resp = await client.put("/api/about", json={"title": "test"})
     assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_about_section_fields(auth_client: AsyncClient, client: AsyncClient):
+    """新增的 4 个 section 字段能正常创建和获取。"""
+    resp = await auth_client.put("/api/about", json={
+        "title": "测试关于页",
+        "avatar_url": "/images/avatar.jpg",
+        "hero_subtitle": "全栈开发者",
+        "info_cards": [{"label": "职位", "value": "开发者"}, {"label": "位置", "value": "上海"}],
+        "contacts": [{"platform": "github", "url": "https://github.com/test"}],
+    })
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["avatar_url"] == "/images/avatar.jpg"
+    assert data["hero_subtitle"] == "全栈开发者"
+    assert data["info_cards"] == [{"label": "职位", "value": "开发者"}, {"label": "位置", "value": "上海"}]
+    assert data["contacts"] == [{"platform": "github", "url": "https://github.com/test"}]
+
+    # 公开接口验证
+    resp = await client.get("/api/about")
+    assert resp.status_code == 200
+    assert resp.json()["hero_subtitle"] == "全栈开发者"
+    assert len(resp.json()["contacts"]) == 1
+
+
+@pytest.mark.asyncio
+async def test_about_section_fields_default_empty(auth_client: AsyncClient):
+    """未设置时 info_cards 和 contacts 返回空数组。"""
+    resp = await auth_client.put("/api/about", json={"title": "最小测试"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["info_cards"] == []
+    assert data["contacts"] == []
+    assert data["avatar_url"] == ""
+    assert data["hero_subtitle"] == ""
