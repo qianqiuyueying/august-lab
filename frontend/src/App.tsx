@@ -15,8 +15,6 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminPages from './pages/admin/AdminPages';
 import AdminSettings from './pages/admin/AdminSettings';
 
-import StaticPage from './pages/StaticPage';
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -30,7 +28,6 @@ export default function App() {
             <Route path="about" element={<AboutPage />} />
             <Route path="articles/:slug" element={<ArticlePage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path=":slug" element={<StaticPage />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />

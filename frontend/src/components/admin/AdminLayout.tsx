@@ -63,7 +63,7 @@ const navItems = [
   { to: '/admin', label: '仪表盘', icon: DashboardIcon },
   { to: '/admin/articles', label: '文章管理', icon: ArticleIcon },
   { to: '/admin/products', label: '产品管理', icon: PackageIcon },
-  { to: '/admin/pages', label: '页面管理', icon: DocumentIcon },
+  { to: '/admin/pages', label: '关于页', icon: DocumentIcon },
   { to: '/admin/settings', label: '站点设置', icon: GearIcon },
 ];
 
