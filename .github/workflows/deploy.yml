@@ -162,6 +162,8 @@ jobs:
             set -e
             cd /opt/blog
             docker compose up -d --build
+            # 运行数据库迁移
+            docker compose exec -T backend uv run alembic upgrade head
             # 强制重建前端容器以确保加载新静态文件
             docker compose up -d --force-recreate --no-deps frontend
             sleep 5
