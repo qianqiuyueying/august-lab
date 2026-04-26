@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/useAuth';
 
 function DashboardIcon() {
@@ -59,6 +60,22 @@ function LogoutIcon() {
   );
 }
 
+function ChevronLeftIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
 const navItems = [
   { to: '/admin', label: '仪表盘', icon: DashboardIcon },
   { to: '/admin/articles', label: '文章管理', icon: ArticleIcon },
@@ -72,6 +89,44 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem('admin-sidebar-collapsed');
+    return saved === 'true';
+  });
+
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const handleCollapse = useCallback(() => {
+    setCollapsed(true);
+    localStorage.setItem('admin-sidebar-collapsed', 'true');
+  }, []);
+
+  const handleExpand = useCallback(() => {
+    setCollapsed(false);
+    localStorage.setItem('admin-sidebar-collapsed', 'false');
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    if (!collapsed) return;
+    hoverTimerRef.current = setTimeout(() => {
+      handleExpand();
+    }, 100);
+  }, [collapsed, handleExpand]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    if (!collapsed) {
+      handleCollapse();
+    }
+  }, [collapsed, handleCollapse]);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    };
+  }, []);
+
   if (!isAuthenticated) {
     navigate('/login', { state: { from: location.pathname } });
     return null;
@@ -81,14 +136,42 @@ export default function AdminLayout() {
     <div className="flex h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950">
       {/* Sidebar */}
       <motion.aside
-        initial={{ x: -200, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="h-screen w-52 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col"
+        initial={false}
+        animate={{ width: collapsed ? 40 : 208 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        onMouseEnter={collapsed ? handleMouseEnter : undefined}
+        onMouseLeave={collapsed ? handleMouseLeave : undefined}
+        className="h-screen bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden"
       >
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-          <p className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">管理后台</p>
+        {/* 顶部标题行 */}
+        <div className="relative flex items-center h-14 px-2 border-b border-zinc-200 dark:border-zinc-800">
+          <motion.p
+            animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+            transition={{ duration: 0.15 }}
+            className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight whitespace-nowrap overflow-hidden"
+          >
+            管理后台
+          </motion.p>
+          {collapsed ? (
+            <button
+              onClick={handleExpand}
+              className="absolute left-1/2 -translate-x-1/2 p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-colors"
+              title="展开侧边栏"
+            >
+              <ChevronRightIcon />
+            </button>
+          ) : (
+            <button
+              onClick={handleCollapse}
+              className="absolute right-2 p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+              title="收起侧边栏"
+            >
+              <ChevronLeftIcon />
+            </button>
+          )}
         </div>
 
+        {/* 导航区域 */}
         <nav className="flex-1 p-2.5 space-y-0.5">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
@@ -96,7 +179,9 @@ export default function AdminLayout() {
               to={to}
               end={to === '/admin'}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                `flex items-center gap-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  collapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'
+                } ${
                   isActive
                     ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
                     : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white'
@@ -104,25 +189,50 @@ export default function AdminLayout() {
               }
             >
               <Icon />
-              {label}
+              <motion.span
+                animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+                transition={{ duration: 0.15 }}
+                className="whitespace-nowrap overflow-hidden"
+              >
+                {label}
+              </motion.span>
             </NavLink>
           ))}
         </nav>
 
+        {/* 底部操作 */}
         <div className="p-2.5 border-t border-zinc-200 dark:border-zinc-800 space-y-0.5">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className={`flex items-center gap-2.5 w-full rounded-lg text-sm font-medium transition-colors ${
+              collapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'
+            } text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white`}
+            title="返回首页"
           >
             <HomeIcon />
-            返回首页
+            <motion.span
+              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+              transition={{ duration: 0.15 }}
+              className="whitespace-nowrap overflow-hidden"
+            >
+              返回首页
+            </motion.span>
           </button>
           <button
             onClick={logout}
-            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+            className={`flex items-center gap-2.5 w-full rounded-lg text-sm font-medium transition-colors ${
+              collapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'
+            } text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10`}
+            title="退出登录"
           >
             <LogoutIcon />
-            退出登录
+            <motion.span
+              animate={{ opacity: collapsed ? 0 : 1, width: collapsed ? 0 : 'auto' }}
+              transition={{ duration: 0.15 }}
+              className="whitespace-nowrap overflow-hidden"
+            >
+              退出登录
+            </motion.span>
           </button>
         </div>
       </motion.aside>
