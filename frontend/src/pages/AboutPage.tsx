@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getSetting } from '../api/settings';
-import type { Page } from '../types';
-import { getPage } from '../api/pages';
+import { getAbout } from '../api/about';
+import type { AboutPage } from '../types';
 import ArticleContent from '../components/articles/ArticleContent';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import PageIntro from '../components/ui/PageIntro';
@@ -18,18 +17,20 @@ const sectionVariants = {
   },
 };
 
-const techStack = ['Python', 'FastAPI', 'React', 'TypeScript', 'Tailwind', 'SQLite', 'Docker', 'Nginx'];
-
 export default function AboutPage() {
-  const [page, setPage] = useState<Page | null>(null);
-  const [bio, setBio] = useState('');
+  const [about, setAbout] = useState<AboutPage | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([
-      getSetting('about_bio').then((d) => setBio(d.value)).catch(() => {}),
-      getPage('about').then(setPage).catch(() => {}),
-    ]).finally(() => setLoading(false));
+    getAbout()
+      .then(setAbout)
+      .catch((err) => {
+        if (err.response?.status !== 404) {
+          setError(err.response?.data?.detail || '加载失败');
+        }
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -42,79 +43,71 @@ export default function AboutPage() {
     );
   }
 
-  if (bio) {
+  if (error) {
     return (
-      <AnimatedPage className="mx-auto max-w-4xl space-y-10">
-        <PageIntro
-          eyebrow="About"
-          title="关于 August's Lab"
-        />
-        <AboutVisual />
-        <section className="paper-panel-strong p-6 sm:p-8">
-          <div className="markdown-body" dangerouslySetInnerHTML={{ __html: bio }} />
-        </section>
-        <ProfileSections />
+      <AnimatedPage className="mx-auto max-w-4xl py-20 text-center">
+        <p className="text-text-muted dark:text-text-muted-dark">{error}</p>
       </AnimatedPage>
     );
   }
 
-  if (page) {
+  if (!about) {
     return (
-      <AnimatedPage className="mx-auto max-w-4xl">
-        <article className="paper-panel-strong p-6 sm:p-9">
-          <PageIntro eyebrow="About" title={page.title} />
-          <div className="mt-8">
-            <AboutVisual />
-          </div>
-          <div className="mt-8">
-            <ArticleContent content={page.content} />
-          </div>
-        </article>
+      <AnimatedPage className="mx-auto max-w-5xl space-y-12">
+        <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <motion.div variants={sectionVariants} initial="hidden" animate="visible">
+            <div className="relative overflow-hidden rounded-lg border border-border bg-paper shadow-md dark:border-border-dark dark:bg-surface-dark">
+              <img
+                src="/images/brand/about-workbench.webp"
+                alt=""
+                aria-hidden="true"
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <div className="absolute left-4 top-4 rounded-lg border border-border bg-paper/86 p-3 shadow-sm backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/82">
+                <BrandMark compact className="h-14 w-14" />
+              </div>
+            </div>
+          </motion.div>
+          <PageIntro eyebrow="About" title="August's Lab" />
+        </section>
+        <ProfileSections techStack={[]} />
       </AnimatedPage>
     );
   }
 
   return (
-    <AnimatedPage className="mx-auto max-w-5xl space-y-12">
-      <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <motion.div variants={sectionVariants} initial="hidden" animate="visible">
-          <div className="relative overflow-hidden rounded-lg border border-border bg-paper shadow-md dark:border-border-dark dark:bg-surface-dark">
-            <img
-              src="/images/brand/about-workbench.webp"
-              alt=""
-              aria-hidden="true"
-              className="aspect-[4/3] w-full object-cover"
-            />
-            <div className="absolute left-4 top-4 rounded-lg border border-border bg-paper/86 p-3 shadow-sm backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/82">
-              <BrandMark compact className="h-14 w-14" />
-            </div>
-          </div>
-        </motion.div>
-        <PageIntro
-          eyebrow="About"
-          title="August's Lab"
-        />
-      </section>
-
-      <ProfileSections />
+    <AnimatedPage className="mx-auto max-w-4xl space-y-10">
+      <PageIntro eyebrow={about.eyebrow} title={about.title} />
+      {about.cover_image && (
+        <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
+          <img
+            src={about.cover_image}
+            alt=""
+            aria-hidden="true"
+            className="aspect-[16/9] w-full object-cover"
+          />
+        </div>
+      )}
+      {about.content && (
+        <section className="paper-panel-strong p-6 sm:p-8">
+          <ArticleContent content={about.content} />
+        </section>
+      )}
+      <ProfileSections
+        techStack={(() => {
+          try {
+            return JSON.parse(about.tech_stack) as string[];
+          } catch {
+            return [];
+          }
+        })()}
+      />
     </AnimatedPage>
   );
 }
 
-function AboutVisual() {
-  return (
-    <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
-      <img
-        src="/images/brand/about-workbench.webp"
-        alt=""
-        aria-hidden="true"
-        className="aspect-[16/9] w-full object-cover"
-      />
-    </div>
-  );
-}
-
-function ProfileSections() {
+function ProfileSections({ techStack }: { techStack: string[] }) {
+  if (!techStack.length) return null;
   return (
     <div className="grid gap-6">
       <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel p-6">
