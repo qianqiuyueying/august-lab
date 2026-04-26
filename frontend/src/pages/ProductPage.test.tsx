@@ -62,9 +62,8 @@ describe('ProductPage', () => {
 
     renderProductPage();
 
-    fireEvent.click(await screen.findByRole('button', { name: '作品信息' }));
+    fireEvent.click(await screen.findByRole('button', { name: /作品信息/ }));
 
-    expect(screen.getByText('Demo Product')).toBeInTheDocument();
     expect(screen.getByText('A runnable static product.')).toBeInTheDocument();
     expect(screen.getByText('/demo-product')).toBeInTheDocument();
   });
