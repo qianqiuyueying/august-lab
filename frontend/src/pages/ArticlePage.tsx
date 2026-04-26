@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useArticle } from '../hooks/useArticles';
+import { useSeoMeta } from '../hooks/useSeoMeta';
 import ArticleContent from '../components/articles/ArticleContent';
 import { formatDate } from '../utils/formatDate';
 import { estimateReadingTime } from '../utils/readingTime';
@@ -10,6 +11,8 @@ export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: article, loading, error } = useArticle(slug!);
+
+  useSeoMeta(article);
 
   if (loading) return <EmptyState title="文章加载中" />;
   if (error) return <EmptyState title="文章读取失败" description={error} />;
