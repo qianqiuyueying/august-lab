@@ -39,15 +39,14 @@ export interface ArticleListResponse {
   page_size: number;
 }
 
-export interface Page {
+export interface AboutPage {
   id: number;
-  slug: string;
+  eyebrow: string;
   title: string;
+  cover_image: string;
   content: string;
-  description: string;
   content_type: string;  // "markdown" | "html"
-  status: string;
-  created_at: string | null;
+  tech_stack: string;  // JSON array string
   updated_at: string | null;
 }
 
