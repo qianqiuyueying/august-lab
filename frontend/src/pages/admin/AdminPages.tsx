@@ -1,12 +1,10 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { getAbout, updateAbout } from '../../api/about';
-import type { AboutPage } from '../../types';
 import ArticleContent from '../../components/articles/ArticleContent';
 import TagInput from '../../components/admin/TagInput';
 
 export default function AdminPages() {
-  const [_about, setAbout] = useState<AboutPage | null>(null);
   const [eyebrow, setEyebrow] = useState('About');
   const [title, setTitle] = useState('');
   const [coverImage, setCoverImage] = useState('');
@@ -26,7 +24,6 @@ export default function AdminPages() {
   const loadAbout = async () => {
     try {
       const data = await getAbout();
-      setAbout(data);
       setEyebrow(data.eyebrow || 'About');
       setTitle(data.title);
       setCoverImage(data.cover_image);
