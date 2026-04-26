@@ -9,19 +9,19 @@ import StatusBadge from '../components/ui/StatusBadge';
 import { getProducts } from '../api/products';
 import type { Product } from '../types';
 
-const heroVariants = {
+const heroTextVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.12 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
   },
 };
 
 const heroItemVariants = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.58, ease: [0.16, 1, 0.3, 1] as const },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -42,6 +42,12 @@ const itemVariants = {
   },
 };
 
+const heroPills = [
+  { label: '实验笔记', description: '拆解技术决策、架构取舍和踩坑记录' },
+  { label: '产品记录', description: '把小工具从想法打磨到可用' },
+  { label: '长期思考', description: '关注工程、写作和创造之间的连接' },
+];
+
 export default function HomePage() {
   const { data: articles, loading } = useArticles(1, 3);
   const [products, setProducts] = useState<Product[]>([]);
@@ -56,60 +62,52 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24">
-      <section className="relative -mx-4 overflow-hidden rounded-lg border border-border bg-paper/74 px-4 py-10 shadow-sm dark:border-border-dark dark:bg-surface-dark/76 sm:-mx-6 sm:px-8 sm:py-14 lg:-mx-8 lg:px-10">
-        <div className="hero-glow" />
-        <div className="relative z-10 grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-          <motion.div variants={heroVariants} initial="hidden" animate="visible">
-            <motion.p variants={heroItemVariants} className="section-label mb-4">
-              Personal technical notebook
-            </motion.p>
-            <motion.h1
-              variants={heroItemVariants}
-              className="max-w-4xl text-4xl font-extrabold leading-[1.08] text-text-primary dark:text-text-primary-dark sm:text-6xl lg:text-7xl"
-            >
-              写下实验、系统和那些慢慢成形的想法。
-            </motion.h1>
-            <motion.div variants={heroItemVariants} className="mt-9 flex flex-wrap gap-3">
-              <Link to="/blog" className="lab-button">
-                阅读笔记
-                <span aria-hidden="true">→</span>
-              </Link>
-              <Link to="/products" className="lab-button-secondary">
-                查看作品
-              </Link>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            variants={heroItemVariants}
-            initial="hidden"
-            animate="visible"
-            className="rounded-lg border border-border bg-paper/82 p-5 shadow-md backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/82 sm:p-7"
-          >
-            <p className="section-label mb-4">Current log</p>
-            <h2 className="text-2xl font-extrabold leading-snug text-text-primary dark:text-text-primary-dark">
-              从能用，到愿意长期使用
-            </h2>
-            <p className="mt-4 border-b border-border pb-5 text-sm leading-7 text-text-secondary dark:border-border-dark dark:text-text-secondary-dark">
-              更清爽的界面，把注意力留给内容、结构和可复用的经验。
-            </p>
-            <div className="mt-5 grid gap-3">
-              {[
-                ['实验笔记', '拆解技术决策、架构取舍和踩坑记录'],
-                ['产品记录', '把小工具从想法打磨到可用'],
-                ['长期思考', '关注工程、写作和创造之间的连接'],
-              ].map(([title, description]) => (
-                <div
-                  key={title}
-                  className="rounded-lg border border-border bg-paper-soft px-4 py-3 dark:border-border-dark dark:bg-background-dark"
-                >
-                  <h3 className="text-sm font-extrabold text-text-primary dark:text-text-primary-dark">{title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-text-muted dark:text-text-muted-dark">{description}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+      <section className="hero-banner relative -mx-4 flex min-h-[60vh] items-center overflow-hidden rounded-lg sm:-mx-6 lg:-mx-8">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/brand/lab-hero.webp"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
+          <div className="hero-overlay absolute inset-0" />
         </div>
+        <motion.div
+          className="relative z-10 w-full px-6 py-14 sm:px-10 sm:py-20 lg:px-14"
+          variants={heroTextVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.p variants={heroItemVariants} className="hero-label mb-4">
+            Personal technical notebook
+          </motion.p>
+          <motion.h1
+            variants={heroItemVariants}
+            className="max-w-4xl text-4xl font-extrabold leading-[1.08] text-white sm:text-6xl lg:text-7xl"
+          >
+            写下实验、系统和那些慢慢成形的想法。
+          </motion.h1>
+          <motion.div variants={heroItemVariants} className="mt-6 flex flex-wrap gap-3">
+            {heroPills.map((pill) => (
+              <span
+                key={pill.label}
+                className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-bold text-white backdrop-blur-sm"
+                title={pill.description}
+              >
+                {pill.label}
+              </span>
+            ))}
+          </motion.div>
+          <motion.div variants={heroItemVariants} className="mt-9 flex flex-wrap gap-3">
+            <Link to="/blog" className="hero-button">
+              阅读笔记
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link to="/products" className="hero-button-outline">
+              查看作品
+            </Link>
+          </motion.div>
+        </motion.div>
       </section>
 
       <section>

@@ -39,19 +39,11 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <section>
         <PageIntro
           eyebrow="Products"
           title="作品"
         />
-        <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
-          <img
-            src="/images/brand/products-bench.webp"
-            alt=""
-            aria-hidden="true"
-            className="aspect-[16/9] w-full object-cover"
-          />
-        </div>
       </section>
 
       {error && (
