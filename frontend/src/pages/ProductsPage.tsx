@@ -74,7 +74,7 @@ export default function ProductsPage() {
             <motion.div key={product.id} variants={itemVariants}>
               <Link to={`/products/${product.slug}`} className="group block h-full rounded-lg focus-ring">
                 <TiltCard maxRotation={12}>
-                  <GlassPanel className="flex h-full flex-col overflow-hidden p-5 transition-colors group-hover:bg-white/70 dark:group-hover:bg-surface-dark/70">
+                  <GlassPanel className="gradient-border flex h-full flex-col overflow-hidden p-5 transition-colors group-hover:bg-white/70 dark:group-hover:bg-surface-dark/70">
                     <div className="relative mb-4 aspect-[3/2] overflow-hidden rounded-xl bg-paper-soft dark:bg-background-dark">
                       <img
                         src={product.cover_image || '/images/brand/fallback-product.webp'}

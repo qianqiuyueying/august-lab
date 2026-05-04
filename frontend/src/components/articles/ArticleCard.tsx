@@ -18,7 +18,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       <TiltCard maxRotation={6}>
         <motion.div
           whileHover={{ boxShadow: '0 18px 45px rgba(37,99,235,0.11)' }}
-          className="flex overflow-hidden rounded-xl border border-border/80 bg-paper/88 shadow-sm dark:border-border-dark/80 dark:bg-surface-dark/88"
+          className="gradient-border flex overflow-hidden rounded-xl border border-border/80 bg-paper/88 shadow-sm dark:border-border-dark/80 dark:bg-surface-dark/88"
         >
           <div className="relative w-36 shrink-0 overflow-hidden bg-paper-soft dark:bg-background-dark">
             <img
