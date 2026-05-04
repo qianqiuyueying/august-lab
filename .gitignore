@@ -26,3 +26,6 @@ Thumbs.db
 # Env
 .env
 .env.local
+
+# Remotion hero video source
+hero-video/
