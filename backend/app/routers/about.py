@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+import traceback
 
 from app.database import get_db
 from app.dependencies import get_current_user
@@ -13,11 +14,20 @@ router = APIRouter()
 @router.get("", response_model=AboutPageOut)
 async def get_about(db: AsyncSession = Depends(get_db)):
     """公开接口：获取关于页数据。"""
-    result = await db.execute(select(AboutPage).limit(1))
-    about = result.scalar_one_or_none()
-    if not about:
-        raise HTTPException(status_code=404, detail="About page not configured")
-    return about
+    try:
+        result = await db.execute(select(AboutPage).limit(1))
+        about = result.scalar_one_or_none()
+        if not about:
+            raise HTTPException(status_code=404, detail="About page not configured")
+        return about
+    except HTTPException:
+        raise
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal error: {str(e)}"
+        )
 
 
 @router.put("", response_model=AboutPageOut)
