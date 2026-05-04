@@ -40,7 +40,8 @@ export default function BlogPage() {
   const title = tag ? `#${tag}` : search ? `搜索：${search}` : '实验笔记目录';
 
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
+    <div className="mx-auto max-w-7xl">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
       <div className="min-w-0">
         <GlassPanel className="mb-8 p-6" accentLine>
           <PageIntro eyebrow="Notebook" title={title}>
@@ -126,6 +127,7 @@ export default function BlogPage() {
           </GlassPanel>
         </div>
       </aside>
+      </div>
     </div>
   );
 }

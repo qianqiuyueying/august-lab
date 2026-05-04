@@ -34,7 +34,7 @@ export default function ProductsPage() {
   }, []);
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto max-w-7xl space-y-10">
       <section>
         <PageIntro
           eyebrow="Products"

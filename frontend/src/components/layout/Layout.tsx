@@ -33,7 +33,7 @@ export default function Layout() {
             className={
               isProductRuntimePage
                 ? 'relative z-10'
-                : 'relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8'
+                : 'relative z-10 px-4 py-10 sm:px-6 sm:py-14 lg:px-8'
             }
             style={{ originX: 0.5, originY: 0 }}
           >
@@ -43,7 +43,7 @@ export default function Layout() {
       </main>
 
       {!isProductRuntimePage && <footer className="relative z-10 border-t border-border bg-paper/72 backdrop-blur-xl dark:border-border-dark dark:bg-surface-dark/72">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
+        <div className="mx-auto max-w-7xl grid gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
           <div>
             <BrandMark />
             <p className="mt-4 text-sm text-text-muted dark:text-text-muted-dark max-w-sm">
