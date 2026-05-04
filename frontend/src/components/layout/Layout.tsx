@@ -5,10 +5,10 @@ import ScrollProgress from './ScrollProgress';
 import BrandMark from '../ui/BrandMark';
 
 const footerLinks = [
-  { to: '/', label: '首页' },
-  { to: '/blog', label: '笔记' },
-  { to: '/products', label: '作品' },
-  { to: '/about', label: '关于' },
+  { to: '/', label: '首页', number: '01' },
+  { to: '/blog', label: '笔记', number: '02' },
+  { to: '/products', label: '作品', number: '03' },
+  { to: '/about', label: '关于', number: '04' },
 ];
 
 export default function Layout() {
@@ -46,13 +46,23 @@ export default function Layout() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
           <div>
             <BrandMark />
+            <p className="mt-4 text-sm text-text-muted dark:text-text-muted-dark max-w-sm">
+              写下实验、系统和那些慢慢成形的想法。
+            </p>
           </div>
 
           <div>
             <h2 className="section-label mb-4">Navigation</h2>
             <div className="grid gap-2">
               {footerLinks.map((link) => (
-                <Link key={link.to} to={link.to} className="text-sm font-semibold text-text-secondary transition-colors hover:text-accent dark:text-text-secondary-dark dark:hover:text-text-primary-dark">
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-sm font-semibold text-text-secondary transition-colors hover:text-accent dark:text-text-secondary-dark dark:hover:text-text-primary-dark"
+                >
+                  <span className="font-mono text-[10px] mr-1.5 text-text-muted dark:text-text-muted-dark">
+                    {link.number}
+                  </span>
                   {link.label}
                 </Link>
               ))}
@@ -62,7 +72,7 @@ export default function Layout() {
 
         <div className="border-t border-border/70 dark:border-border-dark/70">
           <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-5 text-sm text-text-muted dark:text-text-muted-dark sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-            <p>&copy; {new Date().getFullYear()} August&apos;s Lab. Built as a living notebook.</p>
+            <p>&copy; {new Date().getFullYear()} August&apos;s Lab. Built with curiosity and caffeine.</p>
             <div className="flex gap-4">
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-accent">
                 GitHub
