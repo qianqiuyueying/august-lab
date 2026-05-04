@@ -40,6 +40,9 @@ export default function LoginPage() {
           <Link to="/" className="mb-5 inline-flex rounded-lg focus-ring">
             <BrandMark />
           </Link>
+          <p className="font-mono text-xs text-text-muted/40 dark:text-text-muted-dark/25 mb-4 text-center">
+            EXP-LOGIN
+          </p>
           <h1 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">登录</h1>
           <p className="mt-2 text-sm text-text-muted dark:text-text-muted-dark">输入凭据以管理后台</p>
         </div>
