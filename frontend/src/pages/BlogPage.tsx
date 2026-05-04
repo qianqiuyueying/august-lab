@@ -41,13 +41,13 @@ export default function BlogPage() {
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
       <div className="min-w-0">
-        <div className="mb-8">
+        <GlassPanel className="mb-8 p-6">
           <PageIntro eyebrow="Notebook" title={title}>
             {data && !tag && !search && (
               <span className="lab-chip">{data.total} 篇公开笔记</span>
             )}
           </PageIntro>
-        </div>
+        </GlassPanel>
 
         <div className="mb-8 flex flex-col gap-4 border-y border-border py-5 dark:border-border-dark sm:flex-row sm:items-center sm:justify-between">
           <SearchBar />

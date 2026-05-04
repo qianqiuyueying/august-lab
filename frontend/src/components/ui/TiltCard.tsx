@@ -41,14 +41,16 @@ export default function TiltCard({
   };
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ rotateX: mouseY, rotateY: mouseX, transformStyle: 'preserve-3d' }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <div style={{ perspective: '1000px' }}>
+      <motion.div
+        ref={ref}
+        style={{ rotateX: mouseY, rotateY: mouseX, transformStyle: 'preserve-3d' }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={className}
+      >
+        {children}
+      </motion.div>
+    </div>
   );
 }
