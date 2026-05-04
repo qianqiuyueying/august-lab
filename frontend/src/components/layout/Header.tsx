@@ -5,10 +5,10 @@ import { useTheme } from '../../hooks/useTheme';
 import BrandMark from '../ui/BrandMark';
 
 const navLinks = [
-  { to: '/', label: '首页' },
-  { to: '/blog', label: '笔记' },
-  { to: '/products', label: '作品' },
-  { to: '/about', label: '关于' },
+  { to: '/', label: '首页', number: '01' },
+  { to: '/blog', label: '笔记', number: '02' },
+  { to: '/products', label: '作品', number: '03' },
+  { to: '/about', label: '关于', number: '04' },
 ];
 
 function Icon({ name }: { name: 'sun' | 'moon' | 'menu' | 'close' }) {
@@ -65,6 +65,9 @@ export default function Header() {
                     : 'text-text-muted hover:text-text-primary dark:text-text-muted-dark dark:hover:text-text-primary-dark'
                 }`}
               >
+                <span className="font-mono text-[10px] mr-1.5 text-text-muted dark:text-text-muted-dark">
+                  {link.number}
+                </span>
                 {link.label}
                 {isActive(link.to) && (
                   <motion.span
@@ -122,6 +125,9 @@ export default function Header() {
                       : 'text-text-muted hover:bg-paper dark:text-text-muted-dark dark:hover:bg-surface-dark'
                   }`}
                 >
+                  <span className="font-mono text-[10px] mr-1.5 text-text-muted dark:text-text-muted-dark">
+                    {link.number}
+                  </span>
                   {link.label}
                 </Link>
               ))}
