@@ -11,6 +11,7 @@ import EmptyState from '../components/ui/EmptyState';
 import PageIntro from '../components/ui/PageIntro';
 import GlassPanel from '../components/ui/GlassPanel';
 import SectionNumber from '../components/ui/SectionNumber';
+import TiltCard from '../components/ui/TiltCard';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -75,7 +76,9 @@ export default function BlogPage() {
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             {data.items.map((article) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <ArticleCard article={article} />
+                <TiltCard maxRotation={6}>
+                  <ArticleCard article={article} />
+                </TiltCard>
               </motion.div>
             ))}
           </motion.div>
