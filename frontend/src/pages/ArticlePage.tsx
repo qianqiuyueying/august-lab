@@ -6,6 +6,7 @@ import ArticleContent from '../components/articles/ArticleContent';
 import { formatDate } from '../utils/formatDate';
 import { estimateReadingTime } from '../utils/readingTime';
 import EmptyState from '../components/ui/EmptyState';
+import GlassPanel from '../components/ui/GlassPanel';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -35,7 +36,7 @@ export default function ArticlePage() {
       <motion.header
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end"
+        className="mb-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end"
       >
         <div>
           <div className="mb-5 flex flex-wrap gap-2">
@@ -58,20 +59,19 @@ export default function ArticlePage() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-border bg-paper shadow-sm dark:border-border-dark dark:bg-surface-dark">
+        <GlassPanel className="overflow-hidden">
           <img src={cover} alt={article.cover_image ? article.title : ''} className="aspect-[4/3] w-full object-cover" aria-hidden={!article.cover_image} />
-        </div>
+        </GlassPanel>
       </motion.header>
 
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
-        className="mt-12"
       >
-        <div className="paper-panel-strong px-5 py-7 sm:px-9 sm:py-10">
+        <GlassPanel className="px-5 py-7 sm:px-9 sm:py-10">
           <ArticleContent content={article.content} />
-        </div>
+        </GlassPanel>
       </motion.div>
     </article>
   );

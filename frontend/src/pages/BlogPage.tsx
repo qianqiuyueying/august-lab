@@ -9,6 +9,7 @@ import SearchBar from '../components/search/SearchBar';
 import { Skeleton } from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import PageIntro from '../components/ui/PageIntro';
+import GlassPanel from '../components/ui/GlassPanel';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,7 +28,7 @@ export default function BlogPage() {
   const [searchParams] = useSearchParams();
   const tag = searchParams.get('tag') || undefined;
   const search = searchParams.get('search') || undefined;
-  const filterKey = `${tag ?? ''}\u0001${search ?? ''}`;
+  const filterKey = `${tag ?? ''}${search ?? ''}`;
   const [pageState, setPageState] = useState({ key: filterKey, page: 1 });
   const page = pageState.key === filterKey ? pageState.page : 1;
 
@@ -112,11 +113,13 @@ export default function BlogPage() {
 
       <aside className="lg:pt-8">
         <div className="sticky top-24 space-y-6">
-          <div>
+          <GlassPanel className="p-5">
             <p className="section-label mb-3">Topics</p>
             <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">主题标签</h2>
-          </div>
-          <TagList tags={tags} loading={tagsLoading} />
+            <div className="mt-4">
+              <TagList tags={tags} loading={tagsLoading} />
+            </div>
+          </GlassPanel>
         </div>
       </aside>
     </div>

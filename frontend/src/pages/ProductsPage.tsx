@@ -7,21 +7,14 @@ import { Skeleton } from '../components/ui/Skeleton';
 import PageIntro from '../components/ui/PageIntro';
 import EmptyState from '../components/ui/EmptyState';
 import StatusBadge from '../components/ui/StatusBadge';
+import TiltCard from '../components/ui/TiltCard';
+import GlassPanel from '../components/ui/GlassPanel';
 
 const gridVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: { staggerChildren: 0.08 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -43,6 +36,7 @@ export default function ProductsPage() {
         <PageIntro
           eyebrow="Products"
           title="作品"
+          description="从小工具到完整产品，每个都经过反复打磨"
         />
       </section>
 
@@ -72,22 +66,27 @@ export default function ProductsPage() {
           className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
         >
           {products.map((product) => (
-            <motion.div key={product.id} variants={cardVariants}>
+            <motion.div key={product.id} variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const } },
+            }}>
               <Link to={`/products/${product.slug}`} className="group block h-full rounded-lg focus-ring">
-                <article className="card-glow flex h-full flex-col overflow-hidden rounded-lg border border-border bg-paper/88 shadow-sm dark:border-border-dark dark:bg-surface-dark/88">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
-                    <img
-                      src={product.cover_image || '/images/brand/fallback-product.webp'}
-                      alt={product.cover_image ? product.title : ''}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      aria-hidden={!product.cover_image}
-                    />
-                    <div className="absolute right-3 top-3">
-                      <StatusBadge status={product.status} />
+                <TiltCard maxRotation={12}>
+                  <GlassPanel className="flex h-full flex-col overflow-hidden p-5 transition-colors group-hover:bg-white/70 dark:group-hover:bg-surface-dark/70">
+                    {/* Cover image */}
+                    <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl bg-paper-soft dark:bg-background-dark">
+                      <img
+                        src={product.cover_image || '/images/brand/fallback-product.webp'}
+                        alt={product.cover_image ? product.title : ''}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        aria-hidden={!product.cover_image}
+                      />
+                      <div className="absolute right-3 top-3">
+                        <StatusBadge status={product.status} />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-1 flex-col p-5">
+                    {/* Content */}
                     <h2 className="text-xl font-extrabold text-text-primary transition-colors group-hover:text-accent dark:text-text-primary-dark">
                       {product.title}
                     </h2>
@@ -96,11 +95,17 @@ export default function ProductsPage() {
                         {product.description}
                       </p>
                     )}
-                    <div className="mt-5 border-t border-border pt-4 text-sm font-bold text-accent dark:border-border-dark">
-                      查看
+                    <div className="mt-5 flex items-center gap-2 text-sm font-bold text-accent">
+                      <span>查看</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        →
+                      </motion.span>
                     </div>
-                  </div>
-                </article>
+                  </GlassPanel>
+                </TiltCard>
               </Link>
             </motion.div>
           ))}

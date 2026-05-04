@@ -8,6 +8,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import HeroSection from '../components/about/HeroSection';
 import InfoCards from '../components/about/InfoCards';
 import ContactLinks from '../components/about/ContactLinks';
+import GlassPanel from '../components/ui/GlassPanel';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 18 },
@@ -56,7 +57,7 @@ export default function AboutPage() {
     return (
       <AnimatedPage className="mx-auto max-w-5xl">
         <motion.div variants={sectionVariants} initial="hidden" animate="visible">
-          <p className="text-center text-text-muted dark:text-text-muted-dark py-20">
+          <p className="py-20 text-center text-text-muted dark:text-text-muted-dark">
             关于页尚未配置，请到后台管理进行设置。
           </p>
         </motion.div>
@@ -73,7 +74,7 @@ export default function AboutPage() {
   })();
 
   return (
-    <AnimatedPage className="mx-auto max-w-5xl space-y-12">
+    <AnimatedPage className="mx-auto max-w-5xl space-y-10">
       {/* Hero 区 */}
       <motion.section variants={sectionVariants} initial="hidden" animate="visible">
         <HeroSection
@@ -94,14 +95,16 @@ export default function AboutPage() {
 
       {/* 技术栈 */}
       {techStackList.length > 0 && (
-        <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel p-6">
-          <p className="section-label mb-4">Stack</p>
-          <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">常用技术栈</h2>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {techStackList.map((tech) => (
-              <span key={tech} className="lab-chip">{tech}</span>
-            ))}
-          </div>
+        <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <GlassPanel className="p-6">
+            <p className="section-label mb-4">Stack</p>
+            <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">常用技术栈</h2>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {techStackList.map((tech) => (
+                <span key={tech} className="lab-chip">{tech}</span>
+              ))}
+            </div>
+          </GlassPanel>
         </motion.section>
       )}
 
@@ -114,15 +117,17 @@ export default function AboutPage() {
 
       {/* 旧的 content 字段 — 折叠面板 */}
       {about.content && about.content.trim() !== '' && (
-        <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="paper-panel-strong p-6 sm:p-8">
-          <details className="group">
-            <summary className="cursor-pointer text-lg font-semibold text-text-primary dark:text-text-primary-dark select-none">
-              更多介绍
-            </summary>
-            <div className="mt-4">
-              <ArticleContent content={about.content} />
-            </div>
-          </details>
+        <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <GlassPanel className="p-6 sm:p-8">
+            <details className="group">
+              <summary className="cursor-pointer select-none text-lg font-semibold text-text-primary dark:text-text-primary-dark">
+                更多介绍
+              </summary>
+              <div className="mt-4">
+                <ArticleContent content={about.content} />
+              </div>
+            </details>
+          </GlassPanel>
         </motion.section>
       )}
     </AnimatedPage>
