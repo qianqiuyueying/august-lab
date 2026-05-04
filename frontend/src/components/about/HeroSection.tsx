@@ -2,10 +2,10 @@ import type { CSSProperties } from 'react';
 
 interface HeroSectionProps {
   avatarUrl?: string;
-  eyebrow: string;
-  title: string;
-  heroSubtitle?: string;
-  coverImage?: string;
+  eyebrow?: string | null;
+  title?: string | null;
+  heroSubtitle?: string | null;
+  coverImage?: string | null;
 }
 
 export default function HeroSection({

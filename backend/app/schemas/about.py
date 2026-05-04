@@ -18,16 +18,16 @@ class AboutPageUpdate(BaseModel):
 
 class AboutPageOut(BaseModel):
     id: int
-    eyebrow: str
-    title: str
-    avatar_url: str
-    hero_subtitle: str
-    cover_image: str
-    content: str
-    content_type: str
-    tech_stack: str
-    info_cards: Optional[list] = []
-    contacts: Optional[list] = []
+    eyebrow: Optional[str] = None
+    title: Optional[str] = None
+    avatar_url: Optional[str] = None
+    hero_subtitle: Optional[str] = None
+    cover_image: Optional[str] = None
+    content: Optional[str] = None
+    content_type: Optional[str] = None
+    tech_stack: Optional[str] = None
+    info_cards: Optional[list] = None
+    contacts: Optional[list] = None
     updated_at: Optional[str] = None
 
     @field_validator("info_cards", "contacts", mode="before")
@@ -46,6 +46,17 @@ class AboutPageOut(BaseModel):
             return None
         if isinstance(value, datetime):
             return value.isoformat()
+        return str(value)
+
+    @field_validator(
+        "eyebrow", "title", "avatar_url", "hero_subtitle",
+        "cover_image", "content", "content_type", "tech_stack",
+        mode="before"
+    )
+    @classmethod
+    def empty_to_str(cls, value: Any) -> Optional[str]:
+        if value is None:
+            return None
         return str(value)
 
     model_config = {"from_attributes": True}

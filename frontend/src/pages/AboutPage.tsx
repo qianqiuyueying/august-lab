@@ -67,6 +67,7 @@ export default function AboutPage() {
 
   const techStackList = (() => {
     try {
+      if (!about.tech_stack) return [];
       return JSON.parse(about.tech_stack) as string[];
     } catch {
       return [];
