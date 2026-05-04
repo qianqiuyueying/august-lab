@@ -73,13 +73,9 @@ export default function BlogPage() {
           </div>
         ) : data?.items.length ? (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
-            {data.items.map((article, index) => (
+            {data.items.map((article) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <ArticleCard
-                  article={article}
-                  variant={page === 1 && index === 0 ? 'featured' : 'compact'}
-                  index={(page - 1) * data.page_size + index}
-                />
+                <ArticleCard article={article} />
               </motion.div>
             ))}
           </motion.div>
