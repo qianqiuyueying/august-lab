@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Header from './Header';
 import ScrollProgress from './ScrollProgress';
 import BrandMark from '../ui/BrandMark';
+import ParticleBackground from '../ui/ParticleBackground';
 
 const footerLinks = [
   { to: '/', label: '首页', number: '01' },
@@ -17,6 +18,7 @@ export default function Layout() {
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
+      <ParticleBackground />
       <div className="site-texture" />
       <ScrollProgress />
       <Header />
