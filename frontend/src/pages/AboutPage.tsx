@@ -9,6 +9,7 @@ import HeroSection from '../components/about/HeroSection';
 import InfoCards from '../components/about/InfoCards';
 import ContactLinks from '../components/about/ContactLinks';
 import GlassPanel from '../components/ui/GlassPanel';
+import SectionNumber from '../components/ui/SectionNumber';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 18 },
@@ -76,7 +77,7 @@ export default function AboutPage() {
 
   return (
     <AnimatedPage className="mx-auto max-w-5xl space-y-10">
-      {/* Hero 区 */}
+      {/* Hero */}
       <motion.section variants={sectionVariants} initial="hidden" animate="visible">
         <HeroSection
           avatarUrl={about.avatar_url || undefined}
@@ -87,20 +88,19 @@ export default function AboutPage() {
         />
       </motion.section>
 
-      {/* 信息卡片 */}
+      {/* Info cards */}
       {about.info_cards?.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <InfoCards items={about.info_cards} />
         </motion.section>
       )}
 
-      {/* 技术栈 */}
+      {/* Tech stack */}
       {techStackList.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          <GlassPanel className="p-6">
-            <p className="section-label mb-4">Stack</p>
-            <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">常用技术栈</h2>
-            <div className="mt-5 flex flex-wrap gap-2">
+          <GlassPanel accentLine className="p-6">
+            <SectionNumber number="" label="常用技术栈" />
+            <div className="mt-4 flex flex-wrap gap-2">
               {techStackList.map((tech) => (
                 <span key={tech} className="lab-chip">{tech}</span>
               ))}
@@ -109,14 +109,19 @@ export default function AboutPage() {
         </motion.section>
       )}
 
-      {/* 联系方式 */}
+      {/* Contact links */}
       {about.contacts?.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          <ContactLinks contacts={about.contacts} />
+          <GlassPanel accentLine className="p-6">
+            <SectionNumber number="" label="联系方式" />
+            <div className="mt-4">
+              <ContactLinks contacts={about.contacts} />
+            </div>
+          </GlassPanel>
         </motion.section>
       )}
 
-      {/* 旧的 content 字段 — 折叠面板 */}
+      {/* Content (collapsed) */}
       {about.content && about.content.trim() !== '' && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <GlassPanel className="p-6 sm:p-8">
