@@ -10,6 +10,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import PageIntro from '../components/ui/PageIntro';
 import GlassPanel from '../components/ui/GlassPanel';
+import SectionNumber from '../components/ui/SectionNumber';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -28,7 +29,7 @@ export default function BlogPage() {
   const [searchParams] = useSearchParams();
   const tag = searchParams.get('tag') || undefined;
   const search = searchParams.get('search') || undefined;
-  const filterKey = `${tag ?? ''}${search ?? ''}`;
+  const filterKey = `${tag ?? ''}${search ?? ''}`;
   const [pageState, setPageState] = useState({ key: filterKey, page: 1 });
   const page = pageState.key === filterKey ? pageState.page : 1;
 
@@ -41,7 +42,7 @@ export default function BlogPage() {
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
       <div className="min-w-0">
-        <GlassPanel className="mb-8 p-6">
+        <GlassPanel className="mb-8 p-6" accentLine>
           <PageIntro eyebrow="Notebook" title={title}>
             {data && !tag && !search && (
               <span className="lab-chip">{data.total} 篇公开笔记</span>
@@ -70,10 +71,14 @@ export default function BlogPage() {
             ))}
           </div>
         ) : data?.items.length ? (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-5">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             {data.items.map((article, index) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <ArticleCard article={article} variant={page === 1 && index === 0 ? 'featured' : 'default'} />
+                <ArticleCard
+                  article={article}
+                  variant={page === 1 && index === 0 ? 'featured' : 'compact'}
+                  index={(page - 1) * data.page_size + index}
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -96,7 +101,7 @@ export default function BlogPage() {
             >
               上一页
             </motion.button>
-            <span className="text-sm font-bold text-text-muted dark:text-text-muted-dark">
+            <span className="font-mono text-sm font-bold text-text-muted dark:text-text-muted-dark">
               {data.page} / {totalPages}
             </span>
             <motion.button
@@ -113,9 +118,8 @@ export default function BlogPage() {
 
       <aside className="lg:pt-8">
         <div className="sticky top-24 space-y-6">
-          <GlassPanel className="p-5">
-            <p className="section-label mb-3">Topics</p>
-            <h2 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">主题标签</h2>
+          <GlassPanel className="p-5" accentLine>
+            <SectionNumber number="" label="主题标签" />
             <div className="mt-4">
               <TagList tags={tags} loading={tagsLoading} />
             </div>
