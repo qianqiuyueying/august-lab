@@ -37,7 +37,7 @@ describe('ArticleCard', () => {
     expect(screen.getByText('This is a test summary for the article.')).toBeInTheDocument();
   });
 
-  it('renders all tags as links', () => {
+  it('renders all tags', () => {
     renderWithRouter(<ArticleCard article={mockArticle} />);
     expect(screen.getByText('#react')).toBeInTheDocument();
     expect(screen.getByText('#typescript')).toBeInTheDocument();
