@@ -161,8 +161,7 @@ jobs:
           ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
             cd /opt/blog
-            # 强制无缓存重建后端容器，确保最新代码
-            docker compose up -d --build --no-cache --force-recreate backend
+            docker compose up -d --build --force-recreate backend
             # 运行数据库迁移
             docker compose exec -T backend alembic upgrade head
             # 强制重建前端容器以确保加载新静态文件
