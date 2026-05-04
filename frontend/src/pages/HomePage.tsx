@@ -44,12 +44,12 @@ export default function HomePage() {
   return (
     <>
       {/* Hero — full-width */}
-      <section className="relative min-h-[70vh] overflow-hidden">
+      <section className="relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-clay/5" />
 
         {/* Inner content — centered */}
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center">
             {/* Left: title + CTA */}
             <div className="flex-1 space-y-8">
@@ -167,7 +167,7 @@ export default function HomePage() {
       </section>
 
       {/* Latest articles */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <div className="mb-8">
           <SectionNumber number="002" label="最新笔记" />
         </div>
@@ -212,7 +212,7 @@ export default function HomePage() {
       </section>
 
       {/* Products — showcase */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-8">
           <SectionNumber number="003" label="作品" />
         </div>
