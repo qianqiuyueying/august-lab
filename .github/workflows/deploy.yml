@@ -50,7 +50,7 @@ jobs:
       - name: 安装依赖
         run: |
           cd frontend
-          npm ci
+          npm install --no-audit
 
       - name: 运行测试
         run: |
@@ -80,7 +80,7 @@ jobs:
       - name: 构建前端
         run: |
           cd frontend
-          npm ci
+          npm install --no-audit
           npm run build
 
       - name: 配置 SSH 密钥
