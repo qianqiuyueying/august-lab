@@ -31,6 +31,20 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-clay/5" />
 
+        {/* Ambient floating orbs */}
+        <div
+          className="absolute -top-20 -right-20 h-[400px] w-[400px] rounded-full bg-accent/[0.06] blur-[80px]"
+          style={{ animation: 'orb-float-1 14s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute bottom-20 -left-20 h-[300px] w-[300px] rounded-full bg-clay/[0.05] blur-[80px]"
+          style={{ animation: 'orb-float-2 18s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute top-40 right-10 h-[250px] w-[250px] rounded-full bg-blueprint/[0.04] blur-[80px]"
+          style={{ animation: 'orb-float-3 16s ease-in-out infinite' }}
+        />
+
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-14 pb-6 sm:px-6 sm:pt-20 sm:pb-8 lg:px-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
             {/* Left: title + CTA */}
