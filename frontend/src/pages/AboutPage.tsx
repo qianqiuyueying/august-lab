@@ -91,7 +91,7 @@ export default function AboutPage() {
       {/* Info cards */}
       {about.info_cards?.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          <InfoCards items={about.info_cards} />
+          <InfoCards items={about.info_cards ?? []} />
         </motion.section>
       )}
 
@@ -115,7 +115,7 @@ export default function AboutPage() {
           <GlassPanel accentLine className="p-6">
             <SectionNumber number="" label="联系方式" />
             <div className="mt-4">
-              <ContactLinks contacts={about.contacts} />
+              <ContactLinks contacts={about.contacts ?? []} />
             </div>
           </GlassPanel>
         </motion.section>

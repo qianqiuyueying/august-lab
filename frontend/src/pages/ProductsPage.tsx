@@ -6,8 +6,6 @@ import type { Product } from '../types';
 import { Skeleton } from '../components/ui/Skeleton';
 import PageIntro from '../components/ui/PageIntro';
 import EmptyState from '../components/ui/EmptyState';
-import GlassPanel from '../components/ui/GlassPanel';
-import SectionNumber from '../components/ui/SectionNumber';
 import StatusDot from '../components/ui/StatusDot';
 
 const gridVariants = {
