@@ -26,8 +26,8 @@ class AboutPageOut(BaseModel):
     content: str
     content_type: str
     tech_stack: str
-    info_cards: list
-    contacts: list
+    info_cards: Optional[list] = []
+    contacts: Optional[list] = []
     updated_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
