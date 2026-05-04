@@ -12,23 +12,6 @@ import SectionNumber from '../components/ui/SectionNumber';
 import TickDivider from '../components/ui/TickDivider';
 import StatusDot from '../components/ui/StatusDot';
 
-const gridVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
 export default function HomePage() {
   const { data: articles, loading } = useArticles(1, 5);
   const [products, setProducts] = useState<Product[]>([]);
@@ -49,10 +32,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-clay/5" />
 
         {/* Inner content — centered */}
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-          <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-14 pb-6 sm:px-6 sm:pt-20 sm:pb-8 lg:px-8">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
             {/* Left: title + CTA */}
-            <div className="flex-1 space-y-8">
+            <div className="flex-1 space-y-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -97,20 +80,20 @@ export default function HomePage() {
             </div>
 
             {/* Right: margin notes (glass panels) */}
-            <div className="w-full max-w-sm lg:w-96 lg:max-w-none flex flex-col gap-4">
+            <div className="w-full max-w-sm lg:w-80 lg:max-w-none flex flex-col gap-3">
               {/* Code preview card */}
               <motion.div
-                initial={{ opacity: 0, x: 20, rotate: -1 }}
-                animate={{ opacity: 1, x: 0, rotate: -1 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                <GlassPanel accentLine className="p-4">
-                  <div className="mb-3 flex items-center gap-1.5">
+                <GlassPanel accentLine className="p-3">
+                  <div className="mb-2 flex items-center gap-1.5">
                     <div className="h-2 w-2 rounded-full bg-red-400/70" />
                     <div className="h-2 w-2 rounded-full bg-yellow-400/70" />
                     <div className="h-2 w-2 rounded-full bg-green-400/70" />
                   </div>
-                  <div className="space-y-2 font-mono text-[10px] text-text-muted dark:text-text-muted-dark">
+                  <div className="space-y-1.5 font-mono text-[10px] text-text-muted dark:text-text-muted-dark">
                     <div className="flex gap-2"><div className="w-5 h-2 rounded-full bg-clay/40" /><div className="flex-1 h-2 rounded-full bg-border/60" /></div>
                     <div className="ml-3 flex gap-2"><div className="w-3 h-2 rounded-full bg-accent/40" /><div className="flex-1 h-2 rounded-full bg-border/40" /></div>
                     <div className="ml-3 flex gap-2"><div className="w-7 h-2 rounded-full bg-blueprint/40" /><div className="flex-1 h-2 rounded-full bg-border/40" /></div>
@@ -120,12 +103,12 @@ export default function HomePage() {
 
               {/* Tags card */}
               <motion.div
-                initial={{ opacity: 0, x: 20, rotate: 1 }}
-                animate={{ opacity: 1, x: 0, rotate: 1 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.6 }}
               >
-                <GlassPanel accentLine className="p-4">
-                  <div className="mb-2 text-[9px] font-bold text-text-muted dark:text-text-muted-dark">最近标签</div>
+                <GlassPanel accentLine className="p-3">
+                  <div className="mb-1.5 text-[9px] font-bold text-text-muted dark:text-text-muted-dark">最近标签</div>
                   <div className="flex flex-wrap gap-1.5">
                     <span className="lab-chip text-[10px]">#React</span>
                     <span className="lab-chip text-[10px]">#API</span>
@@ -141,14 +124,14 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.6 }}
               >
-                <GlassPanel accentLine className="p-4">
-                  <div className="mb-2 text-[9px] font-bold text-text-muted dark:text-text-muted-dark">活跃度</div>
-                  <div className="flex items-end gap-1 h-10">
+                <GlassPanel accentLine className="p-3">
+                  <div className="mb-1.5 text-[9px] font-bold text-text-muted dark:text-text-muted-dark">活跃度</div>
+                  <div className="flex items-end gap-1 h-8">
                     {[3, 5, 2, 7, 4, 6, 3].map((h, i) => (
                       <motion.div
                         key={i}
                         className="w-2.5 rounded-sm bg-accent/20"
-                        style={{ height: h * 5 }}
+                        style={{ height: h * 4 }}
                         animate={{ scaleY: [1, 1.4, 0.8, 1.2, 1] }}
                         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
                       />
@@ -159,15 +142,15 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Tick divider */}
-          <div className="mt-16">
+          {/* Tick divider — right at bottom of hero */}
+          <div className="mt-6">
             <TickDivider />
           </div>
         </div>
       </section>
 
       {/* Latest articles */}
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
           <SectionNumber number="002" label="最新笔记" />
         </div>
@@ -212,8 +195,8 @@ export default function HomePage() {
       </section>
 
       {/* Products — showcase */}
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-8">
+      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
           <SectionNumber number="003" label="作品" />
         </div>
 
@@ -224,15 +207,15 @@ export default function HomePage() {
             ))}
           </div>
         ) : products.length ? (
-          <motion.div
-            variants={gridVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] as const }}
+              >
                 <Link to={`/products/${product.slug}`} className="group block h-full rounded-xl focus-ring">
                   <article className="lab-card flex h-full flex-col overflow-hidden transition-colors group-hover:border-accent/30">
                     <div className="relative aspect-[4/3] overflow-hidden bg-paper-soft dark:bg-background-dark">
@@ -247,15 +230,15 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="flex flex-1 flex-col p-5">
-                      <h3 className="text-xl font-extrabold text-text-primary transition-colors group-hover:text-accent dark:text-text-primary-dark">
+                      <h3 className="text-lg font-extrabold text-text-primary transition-colors group-hover:text-accent dark:text-text-primary-dark">
                         {product.title}
                       </h3>
                       {product.description && (
-                        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-7 text-text-secondary dark:text-text-secondary-dark">
+                        <p className="mt-2 line-clamp-2 flex-1 text-sm leading-6 text-text-secondary dark:text-text-secondary-dark">
                           {product.description}
                         </p>
                       )}
-                      <div className="mt-5 border-t border-border pt-4 text-sm font-bold text-accent dark:border-border-dark">
+                      <div className="mt-4 border-t border-border pt-3 text-sm font-bold text-accent dark:border-border-dark">
                         查看 <span aria-hidden="true">→</span>
                       </div>
                     </div>
@@ -263,7 +246,7 @@ export default function HomePage() {
                 </Link>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         ) : (
           <EmptyState title="暂无作品" />
         )}
