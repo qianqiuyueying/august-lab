@@ -164,7 +164,7 @@ export default function HomePage() {
         ) : articles?.items.length ? (
           <div className="space-y-5">
             {/* Featured + second article side by side */}
-            <div className="grid gap-5 md:grid-cols-[65%_1fr]">
+            <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
               <ArticleCard article={articles.items[0]} variant="featured" index={0} />
               {articles.items[1] && (
                 <ArticleCard article={articles.items[1]} variant="default" index={1} />
