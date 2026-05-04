@@ -4,7 +4,7 @@
 
 @theme {
   --color-background: #f6f8fb;
-  --color-background-dark: #0b1220;
+  --color-background-dark: #050a12;
   --color-surface: #ffffff;
   --color-surface-dark: #111827;
   --color-surface-elevated: #ffffff;
@@ -35,6 +35,10 @@
   --color-danger: #dc2626;
   --color-danger-subtle: #fee2e2;
   --color-danger-subtle-dark: #431818;
+  --color-amber: #d97706;
+  --color-amber-hover: #b45309;
+  --color-amber-subtle: #fef3c7;
+  --color-amber-subtle-dark: #451a03;
   --shadow-xs: 0 1px 1px rgba(15, 23, 42, 0.04);
   --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 18px 45px rgba(37, 99, 235, 0.11);
@@ -56,12 +60,11 @@
     margin: 0;
     min-width: 320px;
     background:
-      linear-gradient(90deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(37, 99, 235, 0.028) 1px, transparent 1px),
-      radial-gradient(circle at 18% 0%, rgba(14, 165, 233, 0.14), transparent 34rem),
-      radial-gradient(circle at 92% 14%, rgba(99, 102, 241, 0.1), transparent 30rem),
+      radial-gradient(circle, rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 18% 0%, rgba(14, 165, 233, 0.12), transparent 34rem),
+      radial-gradient(circle at 92% 14%, rgba(99, 102, 241, 0.08), transparent 30rem),
       var(--color-background);
-    background-size: 36px 36px, 36px 36px, auto, auto, auto;
+    background-size: 24px 24px, auto, auto, auto;
     color: var(--color-text-primary);
     font-family: ui-sans-serif, "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
     font-size: 15px;
@@ -72,12 +75,11 @@
 
   .dark body {
     background:
-      linear-gradient(90deg, rgba(96, 165, 250, 0.04) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(96, 165, 250, 0.032) 1px, transparent 1px),
-      radial-gradient(circle at 18% 0%, rgba(37, 99, 235, 0.18), transparent 34rem),
-      radial-gradient(circle at 92% 14%, rgba(99, 102, 241, 0.16), transparent 30rem),
+      radial-gradient(circle, rgba(96, 165, 250, 0.06) 1px, transparent 1px),
+      radial-gradient(circle at 18% 0%, rgba(37, 99, 235, 0.15), transparent 34rem),
+      radial-gradient(circle at 92% 14%, rgba(99, 102, 241, 0.12), transparent 30rem),
       var(--color-background-dark);
-    background-size: 36px 36px, 36px 36px, auto, auto, auto;
+    background-size: 24px 24px, auto, auto, auto;
     color: var(--color-text-primary-dark);
   }
 
@@ -92,12 +94,16 @@
     letter-spacing: 0;
   }
 
-  h1 { font-size: 2.75rem; font-weight: 800; line-height: 1.08; }
-  h2 { font-size: 2rem; font-weight: 760; line-height: 1.15; }
-  h3 { font-size: 1.45rem; font-weight: 740; line-height: 1.25; }
+  h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.08; }
+  h2 { font-size: 2.25rem; font-weight: 760; line-height: 1.15; }
+  h3 { font-size: 1.5rem; font-weight: 740; line-height: 1.25; }
   h4 { font-size: 1.2rem; font-weight: 720; line-height: 1.35; }
   h5 { font-size: 1.05rem; font-weight: 700; line-height: 1.4; }
   h6 { font-size: 1rem; font-weight: 700; line-height: 1.45; }
+
+  @media (min-width: 640px) {
+    h1 { font-size: 4rem; }
+  }
 
   p {
     line-height: 1.82;
@@ -559,5 +565,219 @@
   .dark .markdown-body img,
   .dark .prose img {
     border-color: var(--color-border-dark);
+  }
+
+  /* Section number label — large monospace number */
+  .lab-number {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(100, 116, 139, 0.12);
+    line-height: 1;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  .dark .lab-number {
+    color: rgba(100, 116, 139, 0.08);
+  }
+
+  /* Section header with number prefix */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header .section-number {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.73rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 760;
+    color: inherit;
+  }
+
+  /* Card with top accent line */
+  .lab-card {
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .lab-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent-start), var(--color-accent-mid));
+    z-index: 1;
+  }
+
+  .dark .lab-card {
+    border-color: var(--color-border-dark);
+    background: rgba(17, 24, 39, 0.88);
+  }
+
+  /* Status dot */
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+  }
+
+  .status-dot--active {
+    background: var(--color-success);
+    box-shadow: 0 0 0 3px rgba(15, 159, 110, 0.2);
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  .status-dot--testing {
+    background: var(--color-amber);
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
+  }
+
+  .status-dot--archived {
+    background: var(--color-text-muted);
+  }
+
+  @keyframes status-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(15, 159, 110, 0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(15, 159, 110, 0.1); }
+  }
+
+  /* Tick divider — ruler-style separator */
+  .tick-divider {
+    position: relative;
+    height: 16px;
+    margin: 2rem 0;
+    border: none;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-border) 0,
+      var(--color-border) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+    opacity: 0.5;
+  }
+
+  .dark .tick-divider {
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-border-dark) 0,
+      var(--color-border-dark) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+  }
+
+  .tick-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-border);
+    transform: translateY(-50%);
+  }
+
+  .dark .tick-divider::before {
+    background: var(--color-border-dark);
+  }
+
+  /* Lab note block — monospace aside/note */
+  .lab-note {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem;
+    border-left: 3px solid var(--color-amber);
+    border-radius: 0 8px 8px 0;
+    background: rgba(254, 243, 199, 0.5);
+    padding: 1rem 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .dark .lab-note {
+    background: rgba(69, 26, 3, 0.3);
+    border-color: var(--color-amber);
+    color: var(--color-text-secondary-dark);
+  }
+
+  /* Signature quote block */
+  .signature-block {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .dark .signature-block {
+    border-color: var(--color-border-dark);
+  }
+
+  .signature-block blockquote {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    max-width: 32rem;
+    margin: 0 auto 1.5rem;
+    line-height: 1.4;
+  }
+
+  .dark .signature-block blockquote {
+    color: var(--color-text-primary-dark);
+  }
+
+  .signature-block .signature {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .dark .signature-block .signature {
+    color: var(--color-text-muted-dark);
+  }
+
+  /* Mouse spotlight effect container */
+  .spotlight-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .spotlight {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.06) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: left 0.15s ease-out, top 0.15s ease-out;
+  }
+
+  /* Typewriter text animation */
+  .typewriter-char {
+    display: inline-block;
+    opacity: 0;
+    animation: typewriter-reveal 0.05s ease-out forwards;
+  }
+
+  @keyframes typewriter-reveal {
+    to { opacity: 1; }
   }
 }
