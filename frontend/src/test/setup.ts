@@ -1,6 +1,18 @@
 import '@testing-library/jest-dom';
 import { beforeEach } from 'vitest';
 
+// Mock localStorage（jsdom v29 不默认提供）
+const localStorageMock = {
+  getItem: (_key: string) => null,
+  setItem: (_key: string, _value: string) => {},
+  removeItem: (_key: string) => {},
+  clear: () => {},
+};
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+});
+
 // Mock window.matchMedia（Vitest/jsdom 环境不提供）
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

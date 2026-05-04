@@ -59,14 +59,14 @@ export default function AdminPages() {
     try {
       const data = await getAbout();
       setEyebrow(data.eyebrow || 'About');
-      setTitle(data.title);
+      setTitle(data.title || '');
       setAvatarUrl(data.avatar_url || '');
       setHeroSubtitle(data.hero_subtitle || '');
-      setCoverImage(data.cover_image);
-      setContent(data.content);
+      setCoverImage(data.cover_image || '');
+      setContent(data.content || '');
       setContentType(data.content_type || 'markdown');
       try {
-        setTechStack(JSON.parse(data.tech_stack) as string[]);
+        setTechStack(data.tech_stack ? (JSON.parse(data.tech_stack) as string[]) : []);
       } catch {
         setTechStack([]);
       }

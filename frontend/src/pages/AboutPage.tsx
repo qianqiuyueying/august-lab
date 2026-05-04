@@ -89,7 +89,7 @@ export default function AboutPage() {
       </motion.section>
 
       {/* Info cards */}
-      {about.info_cards?.length > 0 && (
+      {about.info_cards && about.info_cards.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <InfoCards items={about.info_cards ?? []} />
         </motion.section>
@@ -110,7 +110,7 @@ export default function AboutPage() {
       )}
 
       {/* Contact links */}
-      {about.contacts?.length > 0 && (
+      {about.contacts && about.contacts.length > 0 && (
         <motion.section variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <GlassPanel accentLine className="p-6">
             <SectionNumber number="" label="联系方式" />
