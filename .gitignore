@@ -6,6 +6,7 @@ __pycache__/
 # Frontend
 frontend/dist/
 frontend/node_modules/
+fish-feast/dist/
 fish-feast/node_modules/
 
 # Docker
