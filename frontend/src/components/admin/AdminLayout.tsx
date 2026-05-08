@@ -85,8 +85,8 @@ const navItems = [
   {
     to: '/admin/mascot',
     label: '看板娘',
-    icon: ({ className }: { className?: string }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    icon: () => (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="14" r="3" />
         <path d="M12 2a4 4 0 014 4c0 1.1-.7 2.6-1.5 3.5M9 10c-2 0-4 1-4 3s1 3 2 3.5M15 10c2 0 4 1 4 3s-1 3-2 3.5" />
       </svg>
