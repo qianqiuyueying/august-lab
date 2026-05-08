@@ -4,6 +4,7 @@ import Header from './Header';
 import ScrollProgress from './ScrollProgress';
 import BrandMark from '../ui/BrandMark';
 import ParticleBackground from '../ui/ParticleBackground';
+import { MascotPet } from '../mascot';
 
 const footerLinks = [
   { to: '/', label: '首页', number: '01' },
@@ -86,6 +87,7 @@ export default function Layout() {
           </div>
         </div>
       </footer>}
+      <MascotPet />
     </div>
   );
 }
