@@ -78,7 +78,7 @@ export default function ArticlePage() {
         className="mb-8"
       >
         <GlassPanel accentLine className="overflow-hidden">
-          <img src={cover} alt={article.cover_image ? article.title : ''} className="aspect-[16/9] w-full object-cover" aria-hidden={!article.cover_image} />
+          <img src={cover} alt={article.cover_image ? article.title : ''} decoding="async" className="aspect-[16/9] w-full object-cover" aria-hidden={!article.cover_image} />
         </GlassPanel>
       </motion.div>
 

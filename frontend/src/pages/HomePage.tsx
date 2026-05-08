@@ -39,6 +39,7 @@ export default function HomePage() {
           loop
           muted
           playsInline
+          preload="auto"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ zIndex: 0, opacity: 0.35 }}
         >
@@ -245,6 +246,8 @@ export default function HomePage() {
                         <img
                           src={product.cover_image || '/images/brand/fallback-product.webp'}
                           alt={product.cover_image ? product.title : ''}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                           aria-hidden={!product.cover_image}
                         />

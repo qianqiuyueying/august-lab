@@ -24,6 +24,8 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             <img
               src={cover}
               alt={article.cover_image ? article.title : ''}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               aria-hidden={!article.cover_image}
             />

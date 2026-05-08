@@ -31,6 +31,8 @@ export default function HeroSection({
           <img
             src={avatarUrl}
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-24 h-24 sm:w-[120px] sm:h-[120px] rounded-full object-cover border-4 border-white/80 shadow-lg mb-6 dark:border-zinc-700/80"
           />
         )}

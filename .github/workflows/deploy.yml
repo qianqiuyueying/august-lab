@@ -62,6 +62,12 @@ jobs:
           cd frontend
           npm run build
 
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+
   deploy:
     name: 部署到服务器
     needs: [backend-test, frontend-build]
@@ -70,18 +76,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置 Node.js
-        uses: actions/setup-node@v4
+      - name: 下载前端构建产物
+        uses: actions/download-artifact@v4
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: 构建前端
-        run: |
-          cd frontend
-          npm install --no-audit
-          npm run build
+          name: frontend-dist
+          path: frontend/dist/
 
       - name: 配置 SSH 密钥
         uses: webfactory/ssh-agent@v0.9.0

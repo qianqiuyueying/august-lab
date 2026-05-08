@@ -115,6 +115,8 @@ export default function ProductPage() {
                   src={product.cover_image || '/images/brand/fallback-product.webp'}
                   alt={product.cover_image ? product.title : ''}
                   aria-hidden={!product.cover_image}
+                  loading="lazy"
+                  decoding="async"
                   className="h-20 w-28 shrink-0 rounded-lg object-cover"
                 />
                 <div className="min-w-0 flex-1">
