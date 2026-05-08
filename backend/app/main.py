@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings as app_settings
-from app.routers import admin, articles, assets, auth, about, dashboard, products, settings, tags
+from app.routers import admin, articles, assets, auth, about, dashboard, mascot, products, settings, tags
 
 app = FastAPI(
     title="Blog API",
@@ -30,6 +30,7 @@ app.include_router(products.router, prefix="/api/products", tags=["products"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(assets.router, prefix="/api/admin", tags=["admin-assets"])
+app.include_router(mascot.router, prefix="/api/mascot", tags=["mascot"])
 
 products_dir = app_settings.PRODUCTS_DIR
 os.makedirs(products_dir, exist_ok=True)
