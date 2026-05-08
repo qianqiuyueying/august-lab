@@ -3,7 +3,7 @@ import { MascotEngine, type AnimationName } from './mascotEngine';
 
 const CELL_W = 192;
 const CELL_H = 208;
-const DEFAULT_SCALE = 1.5;
+const DEFAULT_SCALE = 1.2;
 const MARGIN = 20;
 const DRAG_THRESHOLD = 5;
 const CLOSE_BUTTON_SIZE = 20;
