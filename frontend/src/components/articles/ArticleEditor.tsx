@@ -48,7 +48,7 @@ export default function ArticleEditor({ initialContent = '', onChange, onRequest
           value={initialContent}
           onChange={(event) => onChange(event.target.value)}
           rows={16}
-          className="w-full rounded-lg border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 transition-all focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="w-full rounded-lg border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 transition-all focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-zinc-700 dark:bg-surface-dark dark:text-zinc-100"
           placeholder="在此输入 Markdown 内容，图片可使用标准语法：![说明](/uploads/images/example.webp)"
         />
       )}

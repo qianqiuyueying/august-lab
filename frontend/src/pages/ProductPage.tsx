@@ -39,7 +39,7 @@ export default function ProductPage() {
         <iframe
           title={product.title}
           src={product.runtime_url}
-          className="h-full w-full border-0 bg-white"
+          className="h-full w-full border-0 bg-white dark:bg-surface-dark"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
         />
       ) : (
@@ -53,7 +53,7 @@ export default function ProductPage() {
 
       {/* Top toolbar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-center p-3">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-border/60 bg-white/80 px-3 py-2 shadow-lg backdrop-blur-md dark:border-border-dark/60 dark:bg-zinc-950/80">
+        <div className="pointer-events-auto flex items-center gap-2 rounded-xl border border-border/60 bg-white/80 px-3 py-2 shadow-lg backdrop-blur-md dark:border-border-dark/60 dark:bg-surface-dark/80">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -96,7 +96,7 @@ export default function ProductPage() {
             exit="hidden"
             variants={panelVariants}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="absolute bottom-0 left-0 right-0 z-20 mx-auto flex max-w-3xl flex-col rounded-t-2xl border border-b-0 border-border bg-white/95 shadow-2xl backdrop-blur-md dark:border-border-dark dark:bg-zinc-950/95"
+            className="absolute bottom-0 left-0 right-0 z-20 mx-auto flex max-w-3xl flex-col rounded-t-2xl border border-b-0 border-border bg-white/95 shadow-2xl backdrop-blur-md dark:border-border-dark dark:bg-surface-dark/95"
             style={{ maxHeight: '45vh' }}
           >
             {/* Drag handle */}
