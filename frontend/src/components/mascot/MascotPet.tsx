@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { MascotEngine, type AnimationName } from './mascotEngine';
+import ChatBubble from './ChatBubble';
+import { getMascotSettings } from '../../api/mascot';
+import type { MascotSettings } from '../../types';
 
 const CELL_W = 192;
 const CELL_H = 208;
-const DEFAULT_SCALE = 1.2;
 const MARGIN = 20;
 const DRAG_THRESHOLD = 5;
 const CLOSE_BUTTON_SIZE = 20;
@@ -31,13 +33,14 @@ function pickWeighted(items: { name: AnimationName; weight: number }[]): Animati
 export default function MascotPet() {
   const [dismissed, setDismissed] = useState(() => sessionStorage.getItem('mascot-dismissed') === 'true');
   const [position, setPosition] = useState(() => ({
-    x: window.innerWidth - CELL_W * DEFAULT_SCALE - MARGIN,
-    y: window.innerHeight - CELL_H * DEFAULT_SCALE - MARGIN,
+    x: window.innerWidth - CELL_W * 1.2 - MARGIN,
+    y: window.innerHeight - CELL_H * 1.2 - MARGIN,
   }));
-  const [scale] = useState(DEFAULT_SCALE);
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [settings, setSettings] = useState<MascotSettings | null>(null);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,6 +51,28 @@ export default function MascotPet() {
   const randomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastInteractionRef = useRef(0);
   const scheduleRandomRef = useRef<() => void>(() => {});
+
+  // Load remote settings
+  useEffect(() => {
+    getMascotSettings()
+      .then((s) => {
+        setSettings(s);
+        if (s.mascot_position_x != null && s.mascot_position_y != null) {
+          setPosition({ x: s.mascot_position_x, y: s.mascot_position_y });
+        }
+      })
+      .catch(() => {
+        // Fallback: mascot works with defaults even without API
+      });
+  }, []);
+
+  // Derived values from settings (with safe defaults)
+  const scale = settings?.mascot_scale ?? 1.2;
+  const mascotVisible = settings?.mascot_visible ?? true;
+  const showOnMobile = settings?.show_on_mobile ?? false;
+  const dragEnabled = settings?.drag_enabled ?? true;
+  const greetingEnabled = settings?.greeting_enabled ?? true;
+  const greetingDelay = settings?.greeting_delay_seconds ?? 8;
 
   useEffect(() => {
     scheduleRandomRef.current = () => {
@@ -68,7 +93,7 @@ export default function MascotPet() {
 
   // Init engine & sprite loading
   useEffect(() => {
-    if (dismissed || isMobile) return;
+    if (dismissed || (isMobile && !showOnMobile) || !mascotVisible) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -94,8 +119,8 @@ export default function MascotPet() {
 
     const onResize = () => {
       setPosition((prev) => ({
-        x: Math.max(0, Math.min(prev.x, window.innerWidth - CELL_W * DEFAULT_SCALE)),
-        y: Math.max(0, Math.min(prev.y, window.innerHeight - CELL_H * DEFAULT_SCALE)),
+        x: Math.max(0, Math.min(prev.x, window.innerWidth - CELL_W * scale)),
+        y: Math.max(0, Math.min(prev.y, window.innerHeight - CELL_H * scale)),
       }));
     };
     window.addEventListener('resize', onResize);
@@ -106,7 +131,7 @@ export default function MascotPet() {
       mql.removeEventListener('change', onMediaChange);
       window.removeEventListener('resize', onResize);
     };
-  }, [dismissed, isMobile]);
+  }, [dismissed, isMobile, mascotVisible, scale]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     e.preventDefault();
@@ -127,8 +152,8 @@ export default function MascotPet() {
       }
       if (hasMovedRef.current) {
         setPosition({
-          x: Math.max(0, Math.min(dragElementOriginRef.current.x + dx, window.innerWidth - CELL_W * DEFAULT_SCALE)),
-          y: Math.max(0, Math.min(dragElementOriginRef.current.y + dy, window.innerHeight - CELL_H * DEFAULT_SCALE)),
+          x: Math.max(0, Math.min(dragElementOriginRef.current.x + dx, window.innerWidth - CELL_W * scale)),
+          y: Math.max(0, Math.min(dragElementOriginRef.current.y + dy, window.innerHeight - CELL_H * scale)),
         });
       }
     };
@@ -141,14 +166,18 @@ export default function MascotPet() {
 
       if (!hasMovedRef.current) {
         lastInteractionRef.current = performance.now();
-        const anim = INTERACT_ANIMS[Math.floor(Math.random() * INTERACT_ANIMS.length)];
-        engineRef.current?.playAnimation(anim);
+        if (settings?.enabled) {
+          setChatVisible((prev) => !prev);
+        } else {
+          const anim = INTERACT_ANIMS[Math.floor(Math.random() * INTERACT_ANIMS.length)];
+          engineRef.current?.playAnimation(anim);
+        }
       }
     };
 
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
-  }, [position]);
+  }, [position, scale, settings?.enabled]);
 
   const handleDismiss = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -156,7 +185,7 @@ export default function MascotPet() {
     sessionStorage.setItem('mascot-dismissed', 'true');
   }, []);
 
-  if (dismissed || isMobile) return null;
+  if (dismissed || (isMobile && !showOnMobile) || !mascotVisible) return null;
 
   const cssW = CELL_W * scale;
   const cssH = CELL_H * scale;
@@ -170,19 +199,27 @@ export default function MascotPet() {
         top: position.y,
         width: cssW,
         height: cssH,
-        cursor: isDragging ? 'grabbing' : 'grab',
+        cursor: dragEnabled ? (isDragging ? 'grabbing' : 'grab') : 'pointer',
       }}
-      onPointerDown={handlePointerDown}
+      onPointerDown={dragEnabled ? handlePointerDown : undefined}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <canvas
-        ref={canvasRef}
-        width={CELL_W}
-        height={CELL_H}
-        style={{ width: cssW, height: cssH }}
-        className="pointer-events-none block"
-      />
+      <div className="relative">
+        <canvas
+          ref={canvasRef}
+          width={CELL_W}
+          height={CELL_H}
+          style={{ width: cssW, height: cssH }}
+          className="pointer-events-none block"
+        />
+        <ChatBubble
+          visible={chatVisible}
+          greetingEnabled={greetingEnabled}
+          greetingDelaySeconds={greetingDelay}
+          onClose={() => setChatVisible(false)}
+        />
+      </div>
       <button
         className="absolute rounded-full bg-black/50 text-white text-xs leading-none
                    flex items-center justify-center hover:bg-black/70 transition-opacity"
