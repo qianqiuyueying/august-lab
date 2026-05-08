@@ -73,7 +73,12 @@ export default function MascotPet() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const engine = new MascotEngine(canvas);
+    let engine: MascotEngine;
+    try {
+      engine = new MascotEngine(canvas);
+    } catch {
+      return; // Canvas 2D not available (e.g. jsdom test environment)
+    }
     engineRef.current = engine;
 
     engine.loadSprite('/mascot/spritesheet.webp').then(() => {
