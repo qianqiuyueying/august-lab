@@ -14,6 +14,7 @@ import AdminArticles from './pages/admin/AdminArticles';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminPages from './pages/admin/AdminPages';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminMascot from './pages/admin/AdminMascot';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="pages" element={<AdminPages />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="mascot" element={<AdminMascot />} />
           </Route>
         </Routes>
       </AuthProvider>
