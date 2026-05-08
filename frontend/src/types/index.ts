@@ -90,3 +90,29 @@ export interface AssetListResponse {
   page: number;
   page_size: number;
 }
+
+// 看板娘设置（公开字段）
+export interface MascotSettings {
+  persona: string;
+  api_base_url: string;
+  model: string;
+  temperature: number;
+  max_tokens: number;
+  enabled: boolean;
+  mascot_visible: boolean;
+  mascot_scale: number;
+  mascot_position_x: number | null;
+  mascot_position_y: number | null;
+  show_on_mobile: boolean;
+  greeting_enabled: boolean;
+  greeting_delay_seconds: number;
+  random_action_interval: number;
+  context_aware: boolean;
+  drag_enabled: boolean;
+}
+
+// 管理后台完整设置（含 api_key）
+export interface MascotSettingsAdmin extends MascotSettings {
+  id: number;
+  api_key: string;
+}
