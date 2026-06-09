@@ -61,3 +61,22 @@ model SiteInfo {
   siteDescription String @default("")
   socialLinks     Json   @default("[]")
 }
+
+model MascotSettings {
+  id                  Int    @id @default(1)
+  enabled             Boolean @default(true)
+  mascotVisible       Boolean @default(true)
+  showOnMobile        Boolean @default(false)
+  person              String  @default("你是一位名叫「小光」的看板娘，性格温柔亲切，擅长用简洁温暖的语言介绍这个站点的内容和设计师的创作思路。")
+  apiKey              String  @default("")
+  baseUrl             String  @default("https://api.openai.com/v1")
+  model               String  @default("gpt-4o-mini")
+  temperature         Float   @default(0.7)
+  maxTokens           Int     @default(256)
+  greetingEnabled     Boolean @default(true)
+  greetingDelaySeconds Int    @default(8)
+  dragEnabled         Boolean @default(true)
+  mascotScale         Float   @default(1.0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

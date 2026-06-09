@@ -12,13 +12,25 @@ interface ChatBubbleProps {
   greetingDelay?: number;
 }
 
-export default function ChatBubble({ visible, onClose, greetingDelay = 8 }: ChatBubbleProps) {
+export default function ChatBubble({ visible, onClose, greetingDelay: defaultGreetingDelay = 8 }: ChatBubbleProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [greeted, setGreeted] = useState(false);
+  const [greetingDelay, setGreetingDelay] = useState(defaultGreetingDelay);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  // Load settings from API
+  useEffect(() => {
+    fetch("/api/mascot/settings")
+      .then((r) => r.json())
+      .then((s) => {
+        if (s.greetingEnabled != null && !s.greetingEnabled) setGreeted(true); // skip if disabled
+        if (s.greetingDelaySeconds != null) setGreetingDelay(s.greetingDelaySeconds);
+      })
+      .catch(() => {});
+  }, []);
 
   // Auto greeting
   useEffect(() => {
