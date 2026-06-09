@@ -4,6 +4,7 @@ import Header from './Header';
 import ScrollProgress from './ScrollProgress';
 import BrandMark from '../ui/BrandMark';
 import { PreviewParticles } from '../ui/ParticleBackground';
+import CursorGlow from '../ui/CursorGlow';
 import { MascotPet } from '../mascot';
 
 const footerLinks = [
@@ -19,6 +20,7 @@ export default function Layout() {
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
+      <CursorGlow />
       <PreviewParticles />
       <div className="site-texture" />
       <ScrollProgress />
