@@ -273,7 +273,7 @@ export default function HomePage() {
                     <TiltCard maxRotation={12} className="h-full">
                       <article className="lab-card flex h-full flex-col overflow-hidden transition-colors group-hover:border-accent-mid/40 group-hover:shadow-lg">
                         <div className="relative aspect-[3/2] overflow-hidden bg-background">
-                          <img src={product.cover_image || '/images/brand/fallback-product.webp'}
+                          <img src={product.cover_image || '/images/preview/fallback_product_00001_.webp'}
                             alt={product.cover_image ? product.title : ''} loading="lazy" decoding="async"
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                             aria-hidden={!product.cover_image} />

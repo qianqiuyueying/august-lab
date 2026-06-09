@@ -112,7 +112,7 @@ export default function ProductPage() {
             <div className="min-w-0 flex-1 overflow-auto px-5 pb-5">
               <div className="mt-2 flex items-start gap-4">
                 <img
-                  src={product.cover_image || '/images/brand/fallback-product.webp'}
+                  src={product.cover_image || '/images/preview/fallback_product_00001_.webp'}
                   alt={product.cover_image ? product.title : ''}
                   aria-hidden={!product.cover_image}
                   loading="lazy"

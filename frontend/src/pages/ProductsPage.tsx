@@ -98,7 +98,7 @@ export default function ProductsPage() {
                   <article className="lab-card flex h-full flex-col overflow-hidden transition-colors group-hover:border-accent-mid/40 group-hover:shadow-lg">
                     <div className="relative aspect-[3/2] overflow-hidden bg-background">
                       <img
-                        src={product.cover_image || '/images/brand/fallback-product.webp'}
+                        src={product.cover_image || '/images/preview/fallback_product_00001_.webp'}
                         alt={product.cover_image ? product.title : ''}
                         loading="lazy"
                         decoding="async"

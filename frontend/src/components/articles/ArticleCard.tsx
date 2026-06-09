@@ -11,7 +11,7 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article }: ArticleCardProps) {
   const readingTime = estimateReadingTime(`${article.title} ${article.summary}`);
-  const cover = article.cover_image || '/images/brand/fallback-article.webp';
+  const cover = article.cover_image || '/images/preview/fallback_article_00001_.webp';
   const ref = useRef<HTMLDivElement>(null);
   const rx = useSpring(useMotionValue(0), { stiffness: 350, damping: 30 });
   const ry = useSpring(useMotionValue(0), { stiffness: 350, damping: 30 });

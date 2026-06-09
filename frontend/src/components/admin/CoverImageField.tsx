@@ -5,7 +5,7 @@ interface CoverImageFieldProps {
 }
 
 export default function CoverImageField({ value, onSelect, onClear }: CoverImageFieldProps) {
-  const preview = value || '/images/brand/fallback-article.webp';
+  const preview = value || '/images/preview/fallback_article_00001_.webp';
 
   return (
     <div className="rounded-lg border border-border bg-white p-3 dark:border-border-dark dark:bg-zinc-950">
