@@ -4,6 +4,8 @@ import { DashboardClient } from "./dashboard-client";
 
 export const dynamic = "force-dynamic";
 
+interface TagItem { label: string; count: number; }
+
 export default async function AdminDashboard() {
   const [articleCount, productCount, publishedArticles, draftArticles, recentArticles, tagCounts] = await Promise.all([
     prisma.article.count(),
@@ -11,15 +13,15 @@ export default async function AdminDashboard() {
     prisma.article.count({ where: { published: true } }),
     prisma.article.count({ where: { published: false } }),
     prisma.article.findMany({ orderBy: { createdAt: "desc" }, take: 5, select: { id: true, slug: true, title: true, tags: true, published: true, createdAt: true } }),
-    (async () => {
+    (async (): Promise<TagItem[]> => {
       const articles = await prisma.article.findMany({ select: { tags: true } });
       const tagMap = new Map<string, number>();
       articles.forEach((a: { tags: string[] }) => a.tags.forEach((t: string) => tagMap.set(t, (tagMap.get(t) || 0) + 1)));
-      return Array.from(tagMap.entries()).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count).slice(0, 6);
+      return Array.from(tagMap.entries()).map(([label, count]: [string, number]) => ({ label, count })).sort((a: TagItem, b: TagItem) => b.count - a.count).slice(0, 6);
     })(),
   ]);
 
-  const allTags = tagCounts.length > 0
+  const allTags: TagItem[] = tagCounts.length > 0
     ? tagCounts
     : [{ label: "设计", count: 2 }, { label: "技术", count: 1 }, { label: "摄影", count: 1 }, { label: "AI", count: 1 }, { label: "思考", count: 1 }, { label: "灵感", count: 1 }];
 
@@ -29,8 +31,8 @@ export default async function AdminDashboard() {
       productCount={productCount}
       publishedArticles={publishedArticles}
       draftArticles={draftArticles}
-      tagCount={allTags.reduce((s, t) => s + t.count, 0)}
-      recentArticles={recentArticles.map((a) => ({ ...a, createdAt: a.createdAt.toISOString() }))}
+      tagCount={allTags.reduce((s: number, t: TagItem) => s + t.count, 0)}
+      recentArticles={recentArticles.map((a: { id: number; slug: string; title: string; tags: string[]; published: boolean; createdAt: Date }) => ({ ...a, createdAt: a.createdAt.toISOString() }))}
       tagChart={allTags}
     />
   );
