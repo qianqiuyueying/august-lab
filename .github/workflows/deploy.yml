@@ -31,8 +31,6 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/august-lab:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: 配置 SSH
         uses: webfactory/ssh-agent@v0.9.0
