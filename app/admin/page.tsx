@@ -14,7 +14,7 @@ export default async function AdminDashboard() {
     (async () => {
       const articles = await prisma.article.findMany({ select: { tags: true } });
       const tagMap = new Map<string, number>();
-      articles.forEach((a) => a.tags.forEach((t) => tagMap.set(t, (tagMap.get(t) || 0) + 1)));
+      articles.forEach((a: { tags: string[] }) => a.tags.forEach((t: string) => tagMap.set(t, (tagMap.get(t) || 0) + 1)));
       return Array.from(tagMap.entries()).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count).slice(0, 6);
     })(),
   ]);
