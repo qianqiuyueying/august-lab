@@ -94,8 +94,10 @@ export default function HomePage() {
           <img
             src="/images/preview/hero_bg_00001_.webp"
             alt=""
+            fetchPriority="high"
+            onLoad={(e) => (e.currentTarget.style.opacity = '1')}
             className="h-full w-full object-cover"
-            style={{ transform: 'scale(1.1)' }}
+            style={{ transform: 'scale(1.1)', backgroundColor: '#070b14', opacity: 0, transition: 'opacity 0.6s ease' }}
           />
         </div>
 
