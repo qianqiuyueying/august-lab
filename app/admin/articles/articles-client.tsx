@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Tags } from "@/components/tags";
 
 export function AdminArticlesClient({ articles }: { articles: any[] }) {
   const router = useRouter();
@@ -13,30 +12,41 @@ export function AdminArticlesClient({ articles }: { articles: any[] }) {
   };
 
   return (
-    <div>
-      <div className="admin-list-header">
-        <h1 className="admin-page-title">文章管理</h1>
-        <Link href="/admin/articles/new" className="btn">新建文章</Link>
+    <>
+      <div className="admin-page-header">
+        <div>
+          <div className="admin-page-header__label">Console</div>
+          <h1 className="admin-page-header__title">文章管理</h1>
+          <p className="admin-page-header__desc">创建、编辑和管理所有文章内容。</p>
+        </div>
+        <div className="admin-page-header__actions">
+          <Link href="/admin/articles/new" className="admin-btn admin-btn--primary">新建文章</Link>
+        </div>
       </div>
 
-      <div className="admin-card">
-        {articles.map((a) => (
-          <div key={a.id} className="admin-list-item">
-            <div>
-              <div className="admin-list-item__title">{a.title}</div>
-              <div style={{ marginTop: 4 }}><Tags tags={a.tags} /></div>
+      <div className="admin-panel">
+        <div className="admin-panel__body" style={{ padding: 0 }}>
+          {articles.map((a) => (
+            <div key={a.id} className="admin-list-item" style={{ gridTemplateColumns: "minmax(0, 1.2fr) 180px 100px 120px 120px" }}>
+              <div>
+                <div className="admin-list-item__title">{a.title}</div>
+                <div className="admin-list-item__meta" style={{ marginTop: 2 }}>{a.slug}</div>
+              </div>
+              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                {(a.tags || []).map((t: string) => <span key={t} className="recent-item__tag">{t}</span>)}
+              </div>
+              <span className="admin-list-item__meta" style={a.published ? { color: "oklch(0.65 0.12 160)" } : {}}>
+                {a.published ? "已发布" : "草稿"}
+              </span>
+              <span className="admin-list-item__meta">{new Date(a.updatedAt).toISOString().slice(0, 10)}</span>
+              <div className="admin-list-item__actions">
+                <Link href={`/admin/articles/${a.id}/edit`} className="admin-btn" style={{ padding: "4px 12px", fontSize: "var(--fs-meta)", height: 28 }}>编辑</Link>
+                <button onClick={() => handleDelete(a.id, a.title)} className="admin-btn" style={{ padding: "4px 12px", fontSize: "var(--fs-meta)", height: 28, color: "oklch(0.7 0.15 30)", borderColor: "oklch(0.55 0.15 20 / 0.3)" }}>删除</button>
+              </div>
             </div>
-            <span className="admin-list-item__meta">
-              {a.published ? "已发布" : "草稿"} · {new Date(a.updatedAt).toISOString().slice(0, 10)}
-            </span>
-            <div className="admin-list-item__actions">
-              <Link href={`/admin/articles/${a.id}/edit`} className="btn" style={{ padding: "var(--sp-2xs) var(--sp-sm)", fontSize: "var(--fs-meta)" }}>编辑</Link>
-              <button onClick={() => handleDelete(a.id, a.title)}
-                className="btn" style={{ padding: "var(--sp-2xs) var(--sp-sm)", fontSize: "var(--fs-meta)", borderColor: "oklch(0.5 0.15 30 / 0.3)", color: "oklch(0.7 0.12 30)" }}>删除</button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
