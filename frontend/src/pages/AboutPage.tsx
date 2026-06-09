@@ -51,7 +51,7 @@ export default function AboutPage() {
       {/* ===== Full-page background ===== */}
       <div className="fixed inset-0 z-0">
         <img
-          src="/images/preview/s06_tent_bg_00001_.png"
+          src="/images/preview/s06_tent_bg_00001_.webp"
           alt=""
           loading="lazy"
           className="h-full w-full object-cover"
@@ -60,13 +60,13 @@ export default function AboutPage() {
 
       {/* Foreground elements */}
       <div className="a-pulse glow-amber fixed z-1 pointer-events-none" style={{ width: 'clamp(90px,11vw,180px)', top: '6%', left: '50%', transform: 'translateX(-50%)' }}>
-        <img src="/images/preview/s06_lantern_00001_.png" alt="" className="w-full h-auto" />
+        <img src="/images/preview/s06_lantern_00001_.webp" alt="" className="w-full h-auto" />
       </div>
       <div className="a-float1 fixed z-1 pointer-events-none" style={{ width: 'clamp(90px,12vw,200px)', top: '48%', left: '3%' }}>
-        <img src="/images/preview/s06_telescope_00001_.png" alt="" className="w-full h-auto" />
+        <img src="/images/preview/s06_telescope_00001_.webp" alt="" className="w-full h-auto" />
       </div>
       <div className="a-float2 fixed z-1 pointer-events-none" style={{ width: 'clamp(70px,9vw,150px)', top: '42%', right: '4%' }}>
-        <img src="/images/preview/s06_diary_v2_00001_.png" alt="" className="w-full h-auto" />
+        <img src="/images/preview/s06_diary_v2_00001_.webp" alt="" className="w-full h-auto" />
       </div>
 
       <AnimatedPage className="relative z-10 mx-auto max-w-5xl space-y-10">

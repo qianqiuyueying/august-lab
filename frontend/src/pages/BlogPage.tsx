@@ -31,7 +31,7 @@ export default function BlogPage() {
       <section className="relative mb-10 overflow-hidden rounded-2xl" style={{ minHeight: '40vh' }}>
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
-            src="/images/preview/s04_darkroom_bg_00001_.png"
+            src="/images/preview/s04_darkroom_bg_00001_.webp"
             alt=""
             loading="lazy"
             className="h-full w-full object-cover"
@@ -44,10 +44,10 @@ export default function BlogPage() {
 
         {/* Foreground */}
         <div className="a-float1 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(140px,18vw,320px)', top: '22%', left: '2%' }}>
-          <img src="/images/preview/s04_film_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s04_film_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float2 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(50px,7vw,120px)', top: '12%', right: '7%' }}>
-          <img src="/images/preview/s04_tweezers_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s04_tweezers_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Content */}

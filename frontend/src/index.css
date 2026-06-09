@@ -132,7 +132,7 @@
     pointer-events: none;
     z-index: 1;
     opacity: 0.15;
-    background: url('/images/preview/global_texture_00001_.png') center / 512px repeat;
+    background: url('/images/preview/global_texture_00001_.webp') center / 512px repeat;
     mix-blend-mode: screen;
   }
 

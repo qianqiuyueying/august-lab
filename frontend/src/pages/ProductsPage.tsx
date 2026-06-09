@@ -26,7 +26,7 @@ export default function ProductsPage() {
       <section className="relative mb-6 overflow-hidden rounded-2xl" style={{ minHeight: '40vh' }}>
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
-            src="/images/preview/s05_luggage_bg_00001_.png"
+            src="/images/preview/s05_luggage_bg_00001_.webp"
             alt=""
             loading="lazy"
             className="h-full w-full object-cover"
@@ -39,13 +39,13 @@ export default function ProductsPage() {
 
         {/* Foreground */}
         <div className="a-float2 absolute z-2 pointer-events-none" style={{ width: 'clamp(60px,8vw,140px)', top: '10%', right: '5%' }}>
-          <img src="/images/preview/s05_compass2_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s05_compass2_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float1 glow-cyan absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(50px,7vw,120px)', top: '16%', left: '3%' }}>
-          <img src="/images/preview/s05_mineral_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s05_mineral_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float3 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(80px,11vw,180px)', top: '42%', right: '3%' }}>
-          <img src="/images/preview/s05_map_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s05_map_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Content */}

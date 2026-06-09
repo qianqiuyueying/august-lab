@@ -32,7 +32,7 @@ export default function HomePage() {
         {/* Background image */}
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
-            src="/images/preview/hero_bg_00001_.png"
+            src="/images/preview/hero_bg_00001_.webp"
             alt=""
             className="h-full w-full object-cover"
             style={{ transform: 'scale(1.1)' }}
@@ -52,7 +52,7 @@ export default function HomePage() {
           className="a-float1 absolute z-2 pointer-events-none"
           style={{ width: 'clamp(120px,16vw,280px)', bottom: '10%', left: 'clamp(10px,3vw,5%)' }}
         >
-          <img src="/images/preview/s01_notebook_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s01_notebook_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Foreground: Compass (top right) */}
@@ -60,7 +60,7 @@ export default function HomePage() {
           className="a-spin glow-amber absolute z-2 pointer-events-none"
           style={{ width: 'clamp(70px,10vw,160px)', top: 'clamp(40px,8vh,12%)', right: 'clamp(10px,5vw,8%)' }}
         >
-          <img src="/images/preview/s01_compass_v2_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s01_compass_v2_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Content */}
@@ -131,7 +131,7 @@ export default function HomePage() {
         {/* Background */}
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
-            src="/images/preview/s02_desk_bg_00001_.png"
+            src="/images/preview/s02_desk_bg_00001_.webp"
             alt=""
             loading="lazy"
             className="h-full w-full object-cover"
@@ -147,13 +147,13 @@ export default function HomePage() {
 
         {/* Foreground elements */}
         <div className="a-float1 absolute z-2 pointer-events-none" style={{ width: 'clamp(120px,16vw,280px)', top: '12%', left: '2%' }}>
-          <img src="/images/preview/s02_starchart_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s02_starchart_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float3 absolute z-2 pointer-events-none" style={{ width: 'clamp(40px,6vw,100px)', top: '18%', right: '7%' }}>
-          <img src="/images/preview/s02_quartz_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s02_quartz_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float2 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(35px,5vw,90px)', top: '48%', right: '3%' }}>
-          <img src="/images/preview/s02_leaf_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s02_leaf_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Content */}
@@ -208,7 +208,7 @@ export default function HomePage() {
         {/* Background */}
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
-            src="/images/preview/s03_shelf_bg_00001_.png"
+            src="/images/preview/s03_shelf_bg_00001_.webp"
             alt=""
             loading="lazy"
             className="h-full w-full object-cover"
@@ -224,13 +224,13 @@ export default function HomePage() {
 
         {/* Foreground elements */}
         <div className="a-pulse glow-cyan absolute z-2 pointer-events-none" style={{ width: 'clamp(80px,11vw,180px)', top: '10%', right: '5%' }}>
-          <img src="/images/preview/s03_orb_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s03_orb_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float1 absolute z-2 pointer-events-none" style={{ width: 'clamp(60px,8vw,140px)', top: '28%', left: '2%' }}>
-          <img src="/images/preview/s03_specimen_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s03_specimen_00001_.webp" alt="" className="w-full h-auto" />
         </div>
         <div className="a-float3 absolute z-2 pointer-events-none" style={{ width: 'clamp(90px,12vw,200px)', top: '52%', right: '3%' }}>
-          <img src="/images/preview/s03_scroll_00001_.png" alt="" className="w-full h-auto" />
+          <img src="/images/preview/s03_scroll_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
         {/* Content */}
