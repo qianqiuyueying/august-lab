@@ -55,7 +55,7 @@ sp-3xl: 10rem
 ### 结语
 
 光影和几何不是设计的手段，而是设计的本质。当你不再依赖颜色，你才会真正开始设计空间。`,
-        coverImage: "/uploads/lab-hero.webp",
+        coverImage: "/uploads/venetian-blind-shadow.png",
         tags: ["设计", "思考"],
         readingTime: 6,
         featured: true,
@@ -85,7 +85,7 @@ sp-3xl: 10rem
 ### 效果
 
 本地出图速度约 2-3 秒/张（快速模式），8-10 秒/张（高清模式）。完全离线运行，不依赖任何云服务。`,
-        coverImage: "/uploads/blog-field-notes.webp",
+        coverImage: "/uploads/perforated-metal-shadow.png",
         tags: ["技术", "AI"],
         readingTime: 4,
         featured: true,
@@ -109,7 +109,7 @@ sp-3xl: 10rem
 ### 玻璃杯的透明性
 
 玻璃杯的阴影不是黑色，而是半透明的、带有扭曲的。这提醒我：在设计中，阴影不应该是纯黑的，它们应该带有环境色的信息。`,
-        coverImage: "/uploads/about-workbench.webp",
+        coverImage: "/uploads/glass-shadow.png",
         tags: ["摄影", "灵感"],
         readingTime: 8,
         featured: false,
@@ -127,7 +127,7 @@ sp-3xl: 10rem
         title: "工具集 · 2026",
         description: "一组日常开发工具的摄影记录。从键盘到精密工具，通过俯拍和均匀打光，呈现工具本身的几何美感和材质细节。",
         content: "一组日常开发工具的摄影记录。从键盘到精密工具，通过俯拍和均匀打光，呈现工具本身的几何美感和材质细节。",
-        coverImage: "/uploads/products-bench.webp",
+        coverImage: "/uploads/metal-ruler.png",
         tags: ["摄影", "工具"],
         status: "online",
         featured: true,
@@ -139,7 +139,7 @@ sp-3xl: 10rem
         title: "键帽微距",
         description: "细节中的构成 — 键帽表面的纹理和光影。",
         content: "细节中的构成 — 键帽表面的纹理和光影。",
-        coverImage: "/uploads/fallback-product.webp",
+        coverImage: "/uploads/plaster-geometric.png",
         tags: ["摄影", "细节"],
         status: "online",
         featured: false,
@@ -151,7 +151,7 @@ sp-3xl: 10rem
         title: "阴影研究",
         description: "透明物体的光线行为。",
         content: "透明物体的光线行为。",
-        coverImage: "/uploads/about-workbench.webp",
+        coverImage: "/uploads/glass-shadow.png",
         tags: ["摄影", "实验"],
         status: "developing",
         featured: false,
