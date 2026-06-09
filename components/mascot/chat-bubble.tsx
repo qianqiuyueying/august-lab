@@ -88,6 +88,7 @@ export default function ChatBubble({ visible, onClose, greetingDelay: defaultGre
 
   return (
     <div
+      onPointerDown={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
         bottom: "100%",
