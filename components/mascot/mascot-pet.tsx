@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { MascotEngine } from "./mascot-engine";
 import type { AnimationName } from "./mascot-engine";
+import ChatBubble from "./chat-bubble";
 
 const SCALE = 1.0;
 const MARGIN = 20;
@@ -33,6 +34,7 @@ export default function MascotPet() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -133,6 +135,7 @@ export default function MascotPet() {
       document.removeEventListener("pointerup", onUp);
       setIsDragging(false);
       if (!hasMoved.current) {
+        setChatVisible((prev) => !prev);
         const anim = INTERACT_ANIMS[Math.floor(Math.random() * INTERACT_ANIMS.length)];
         engineRef.current?.playAnimation(anim);
       }
@@ -176,6 +179,7 @@ export default function MascotPet() {
         height={cssH}
         style={{ width: cssW, height: cssH, pointerEvents: "none", display: "block" }}
       />
+      <ChatBubble visible={chatVisible} onClose={() => setChatVisible(false)} />
       <button
         style={{
           position: "absolute",
