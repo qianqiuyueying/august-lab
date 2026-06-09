@@ -37,21 +37,13 @@ jobs:
           SERVER="root@192.144.154.17"
 
           echo "::group::准备目录"
-          ssh ${SERVER} "mkdir -p /opt/august-lab"
+          ssh ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
 
-          echo "::group::同步构建产物 + prisma"
-          rsync -az --delete --info=progress2 \
-            .next/standalone/ \
-            "${SERVER}:/opt/august-lab/"
-          rsync -az --delete --info=progress2 \
-            .next/static/ \
-            "${SERVER}:/opt/august-lab/.next/static/"
-          rsync -az --info=progress2 \
-            public/ \
-            "${SERVER}:/opt/august-lab/public/"
-          rsync -az --info=progress2 \
-            prisma/ \
-            "${SERVER}:/opt/august-lab/prisma/"
+          echo "::group::同步构建产物"
+          rsync -az --delete .next/standalone/ ${SERVER}:/opt/august-lab/
+          rsync -az --delete .next/static/ ${SERVER}:/opt/august-lab/.next/static/
+          rsync -az public/ ${SERVER}:/opt/august-lab/public/
+          rsync -az prisma/ ${SERVER}:/opt/august-lab/prisma/
 
           echo "::group::配置并重启"
           ssh ${SERVER} 'bash -s' << 'ENDSCRIPT'
