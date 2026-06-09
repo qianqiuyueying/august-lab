@@ -23,7 +23,7 @@ export default async function ProductsPage() {
   return (
     <>
       <ParallaxHero
-        image="/uploads/plaster-geometric.png"
+        image="/uploads/products-bench.webp"
         label="作品"
         title="创作 · 实验 · 工具"
         description="个人项目和实验性的数字作品"
@@ -38,7 +38,7 @@ export default async function ProductsPage() {
               {products.map((p) => (
                 <Link key={p.id} href={`/products/${p.slug}`}
                   style={{ position: "relative", overflow: "hidden", background: "var(--c-bg)", cursor: "pointer" }}>
-                  <img src={p.coverImage || "/uploads/metal-ruler.png"} alt={p.title}
+                  <img src={p.coverImage || "/uploads/fallback-product.webp"} alt={p.title}
                     style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.35) contrast(1.2)", transition: "transform 0.7s var(--ease-expo)" }} />
                   <div className="works-card-info">
                     <h2 style={{ fontFamily: "var(--ff-display)", fontSize: "var(--fs-h3)", fontWeight: 400, color: "#fff" }}>{p.title}</h2>

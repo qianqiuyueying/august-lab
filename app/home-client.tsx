@@ -66,10 +66,10 @@ export function HomeClient({ articles, products }: { articles: any[]; products: 
   useEffect(() => { updateScene(); }, [updateScene]);
 
   const sectionImages = [
-    "/uploads/venetian-blind-shadow.png",
-    "/uploads/perforated-metal-shadow.png",
-    "/uploads/plaster-geometric.png",
-    "/uploads/glass-shadow.png",
+    "/uploads/lab-hero.webp",
+    "/uploads/blog-field-notes.webp",
+    "/uploads/products-bench.webp",
+    "/uploads/about-workbench.webp",
   ];
 
   const sections = ["hero", "articles", "works", "quote"];
@@ -194,7 +194,7 @@ export function HomeClient({ articles, products }: { articles: any[]; products: 
                       position: "relative", overflow: "hidden", cursor: "pointer",
                       ...(i === 0 ? { gridRow: "1 / -1" } : {}),
                     }}>
-                    <img src={p.coverImage || "/uploads/metal-ruler.png"} alt={p.title}
+                    <img src={p.coverImage || "/uploads/fallback-product.webp"} alt={p.title}
                       style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.4) contrast(1.2)" }} />
                     <div className="works-card-info">
                       <h3 style={{ fontFamily: "var(--ff-display)", fontSize: "var(--fs-h3)", fontWeight: 400, color: "#fff" }}>{p.title}</h3>

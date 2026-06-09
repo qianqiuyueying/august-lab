@@ -16,7 +16,7 @@ export default async function BlogPage() {
   return (
     <>
       <ParallaxHero
-        image="/uploads/paper-folds-shadow.png"
+        image="/uploads/blog-field-notes.webp"
         label="笔记"
         title="阅读 · 思考 · 记录"
         description="关于设计、技术与摄影的个人笔记"

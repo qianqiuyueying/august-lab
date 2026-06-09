@@ -39,7 +39,7 @@ export function ProductDetailClient({ product }: { product: any }) {
           <div className="info-panel__handle-bar" />
         </div>
         <div className="info-panel__body">
-          <img src={product.coverImage || "/uploads/metal-ruler.png"} alt={product.title} className="info-panel__cover" />
+          <img src={product.coverImage || "/uploads/fallback-product.webp"} alt={product.title} className="info-panel__cover" />
           <div className="info-panel__content">
             <h1 className="info-panel__title">{product.title}</h1>
             <p className="info-panel__desc">{product.description}</p>

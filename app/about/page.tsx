@@ -13,7 +13,7 @@ export default async function AboutPage() {
   return (
     <>
       <ParallaxHero
-        image="/uploads/prism-light.png"
+        image="/uploads/about-workbench.webp"
         label="关于"
         title="光影之间"
         description="记录、实验与创作"

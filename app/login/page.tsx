@@ -33,7 +33,7 @@ export default function LoginPage() {
     <main className="login">
       {/* 背景 */}
       <div className="login__bg">
-        <img src="/uploads/glass-shadow.png" alt="" />
+        <img src="/uploads/lab-hero.webp" alt="" />
         <div className="photo-hero__overlay" />
       </div>
 
