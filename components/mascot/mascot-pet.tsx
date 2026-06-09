@@ -49,7 +49,6 @@ export default function MascotPet() {
 
   // Init engine
   useEffect(() => {
-    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mascot-dismissed") === "true") return;
     if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
     setPos({
@@ -148,7 +147,6 @@ export default function MascotPet() {
   const handleDismiss = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     setShow(false);
-    sessionStorage.setItem("mascot-dismissed", "true");
     engineRef.current?.destroy();
   }, []);
 
