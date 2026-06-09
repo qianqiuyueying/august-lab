@@ -1,8 +1,23 @@
-export default function Home() {
-  return (
-    <div style={{ padding: "2rem", textAlign: "center", marginTop: "30vh", color: "#ccc" }}>
-      <h1 style={{ fontSize: "3rem", fontFamily: "Georgia, serif" }}>Atelier</h1>
-      <p style={{ marginTop: "1rem", color: "#888" }}>光影几何 · 构建中...</p>
-    </div>
-  );
+import { prisma } from "@/lib/db";
+import { HomeClient } from "./home-client";
+
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [articles, products] = await Promise.all([
+    prisma.article.findMany({
+      where: { published: true, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: { id: true, slug: true, title: true, excerpt: true, tags: true, readingTime: true, publishedAt: true },
+    }),
+    prisma.product.findMany({
+      where: { published: true, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: { id: true, slug: true, title: true, description: true, coverImage: true, status: true },
+    }),
+  ]);
+
+  return <HomeClient articles={articles} products={products} />;
 }
