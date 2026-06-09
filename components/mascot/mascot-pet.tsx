@@ -135,7 +135,7 @@ export default function MascotPet() {
       document.removeEventListener("pointerup", onUp);
       setIsDragging(false);
       if (!hasMoved.current) {
-        setChatVisible((prev) => !prev);
+        setChatVisible(true);
         const anim = INTERACT_ANIMS[Math.floor(Math.random() * INTERACT_ANIMS.length)];
         engineRef.current?.playAnimation(anim);
       }
