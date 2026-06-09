@@ -23,7 +23,7 @@ export function ArticleClient({ article, prev, next }: ArticleClientProps) {
 
   /* ===== 导航滚动 solid ===== */
   useEffect(() => {
-    const nav = document.getElementById("articleMainNav");
+    const nav = document.getElementById("mainNav");
     const hero = document.querySelector(".article-hero");
     if (!nav || !hero) return;
 
@@ -46,17 +46,6 @@ export function ArticleClient({ article, prev, next }: ArticleClientProps) {
 
   return (
     <>
-      {/* 通用导航 */}
-      <nav className="nav-v2" id="articleMainNav">
-        <Link href="/" className="nav-v2__brand">August's Lab</Link>
-        <div className="nav-v2__links">
-          <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link active">博客</Link>
-          <Link href="/products" className="nav-v2__link">产品</Link>
-          <Link href="/about" className="nav-v2__link">关于</Link>
-        </div>
-      </nav>
-
       {/* 文章专属导航 */}
       <nav className="article-nav">
         <Link href="/blog" className="article-nav__back">← 返回博客</Link>

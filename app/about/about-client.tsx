@@ -7,7 +7,7 @@ export function AboutClient({ bio, links }: { bio: string; links: Array<{ label:
 
   /* ===== 导航滚动 solid ===== */
   useEffect(() => {
-    const nav = document.getElementById("aboutNav");
+    const nav = document.getElementById("mainNav");
     const hero = heroRef.current;
     if (!nav || !hero) return;
     const update = () => nav.classList.toggle("nav-v2--solid", hero.getBoundingClientRect().bottom < 60);
@@ -38,16 +38,6 @@ export function AboutClient({ bio, links }: { bio: string; links: Array<{ label:
 
   return (
     <>
-      <nav className="nav-v2" id="aboutNav">
-        <Link href="/" className="nav-v2__brand">August's Lab</Link>
-        <div className="nav-v2__links">
-          <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link">博客</Link>
-          <Link href="/products" className="nav-v2__link">产品</Link>
-          <Link href="/about" className="nav-v2__link active">关于</Link>
-        </div>
-      </nav>
-
       <main className="about-state-default">
         {/* Hero */}
         <header className="about-hero" ref={heroRef}>

@@ -32,7 +32,7 @@ export function BlogClient({ articles, allTags, archives }: BlogClientProps) {
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const nav = document.getElementById("blogNav");
+    const nav = document.getElementById("mainNav");
     const hero = heroRef.current;
     if (!nav || !hero) return;
 
@@ -115,17 +115,6 @@ export function BlogClient({ articles, allTags, archives }: BlogClientProps) {
 
   return (
     <>
-      {/* 导航 */}
-      <nav className="nav-v2" id="blogNav">
-        <Link href="/" className="nav-v2__brand">August's Lab</Link>
-        <div className="nav-v2__links">
-          <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link active">博客</Link>
-          <Link href="/products" className="nav-v2__link">产品</Link>
-          <Link href="/about" className="nav-v2__link">关于</Link>
-        </div>
-      </nav>
-
       <main className="blog-state-default">
         {/* Hero 视差区 */}
         <header className="blog-hero" ref={heroRef}>

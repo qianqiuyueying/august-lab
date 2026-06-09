@@ -22,7 +22,7 @@ export function ProductsClient({ products }: { products: Product[] }) {
 
   /* ===== 导航栏滚动 solid ===== */
   useEffect(() => {
-    const nav = document.getElementById("productsNav");
+    const nav = document.getElementById("mainNav");
     const hero = heroRef.current;
     if (!nav || !hero) return;
     const update = () => nav.classList.toggle("nav-v2--solid", hero.getBoundingClientRect().bottom < 60);
@@ -60,16 +60,6 @@ export function ProductsClient({ products }: { products: Product[] }) {
 
   return (
     <>
-      <nav className="nav-v2" id="productsNav">
-        <Link href="/" className="nav-v2__brand">August's Lab</Link>
-        <div className="nav-v2__links">
-          <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link">博客</Link>
-          <Link href="/products" className="nav-v2__link active">产品</Link>
-          <Link href="/about" className="nav-v2__link">关于</Link>
-        </div>
-      </nav>
-
       <main className="products-state-default">
         <header className="products-hero" ref={heroRef}>
           <div className="products-hero__bg" id="productsHeroBg">
