@@ -21,8 +21,8 @@ export function ProductDetailClient({ product }: { product: any }) {
         <main className="pd-state-default">
           {/* IFrame 运行环境 */}
           <div className="runtime-frame">
-            {product.url ? (
-              <iframe src={product.url} sandbox="allow-scripts allow-same-origin" title="作品运行环境" />
+            {product.runtimePath ? (
+              <iframe src={`/${product.runtimePath}/${product.runtimeEntry || "index.html"}`} sandbox="allow-scripts allow-same-origin" title="作品运行环境" />
             ) : (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--c-fg-dim)", fontFamily: "var(--ff-body)", background: "#000", position: "fixed", inset: 0, zIndex: 1 }}>
                 暂无可运行文件
@@ -36,8 +36,8 @@ export function ProductDetailClient({ product }: { product: any }) {
             <span className="runtime-toolbar__divider"></span>
             <span className="runtime-toolbar__title">{product.title}</span>
             <div className="runtime-toolbar__actions">
-              {product.url && (
-                <button className="runtime-toolbar__action" onClick={() => window.open(product.url, "_blank")}>新窗口</button>
+              {product.runtimePath && (
+                <button className="runtime-toolbar__action" onClick={() => window.open(`/${product.runtimePath}/${product.runtimeEntry || "index.html"}`, "_blank")}>新窗口</button>
               )}
               <button className="runtime-toolbar__action" onClick={() => setPanelOpen(!panelOpen)}>信息</button>
             </div>
