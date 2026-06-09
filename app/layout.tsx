@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ConditionalNav } from "@/components/conditional-nav";
+import { MascotLoader } from "@/components/mascot/mascot-loader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <ConditionalNav />
         <main>{children}</main>
+        <MascotLoader />
       </body>
     </html>
   );
