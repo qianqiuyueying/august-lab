@@ -28,7 +28,12 @@ export default function BlogPage() {
   return (
     <div className="mx-auto max-w-7xl">
       {/* ===== Page header ===== */}
-      <section className="relative mb-10 overflow-hidden rounded-2xl" style={{ minHeight: '40vh' }}>
+      <motion.section
+        className="relative mb-10 overflow-hidden rounded-2xl"
+        style={{ minHeight: '40vh' }}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}>
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
             src="/images/preview/s04_darkroom_bg_00001_.webp"
@@ -64,7 +69,7 @@ export default function BlogPage() {
             <span className="lab-chip mt-4 inline-block">{data.total} 篇公开笔记</span>
           )}
         </div>
-      </section>
+      </motion.section>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
         <div className="min-w-0">

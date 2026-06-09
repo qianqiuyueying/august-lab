@@ -23,7 +23,12 @@ export default function ProductsPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-10">
       {/* ===== Page header ===== */}
-      <section className="relative mb-6 overflow-hidden rounded-2xl" style={{ minHeight: '40vh' }}>
+      <motion.section
+        className="relative mb-6 overflow-hidden rounded-2xl"
+        style={{ minHeight: '40vh' }}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}>
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
             src="/images/preview/s05_luggage_bg_00001_.webp"
@@ -54,7 +59,7 @@ export default function ProductsPage() {
           <h1 className="text-paper mb-3">作品</h1>
           <p className="text-text-muted max-w-md mx-auto text-sm sm:text-base">从小工具到完整产品，每个都经过反复打磨</p>
         </div>
-      </section>
+      </motion.section>
 
       {error && (
         <motion.div
