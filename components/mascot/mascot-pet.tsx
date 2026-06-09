@@ -29,7 +29,7 @@ function pickWeighted(items: typeof RANDOM_ANIMS): AnimationName {
 }
 
 export default function MascotPet() {
-  const [visible, setVisible] = useState(false);
+  const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -41,69 +41,53 @@ export default function MascotPet() {
   const dragElOrigin = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
   const randomTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mounted = useRef(false);
 
   const cssW = CELL_W * SCALE;
   const cssH = CELL_H * SCALE;
 
+  // Init engine
   useEffect(() => {
-    if (mounted.current) return;
-    mounted.current = true;
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mascot-dismissed") === "true") return;
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
-    // Check dismissed
-    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mascot-dismissed") === "true") {
-      return;
-    }
-
-    // Check mobile - hide on screens < 768px
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      return;
-    }
-
-    // Set position
     setPos({
       x: window.innerWidth - cssW - MARGIN,
       y: window.innerHeight - cssH - MARGIN,
     });
 
-    // Delay canvas init slightly to ensure DOM is ready
-    const timer = setTimeout(() => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-      try {
-        const engine = new MascotEngine(canvas, SCALE);
-        engineRef.current = engine;
+    let destroyed = false;
+    let engine: MascotEngine | null = null;
 
-        engine.loadSprite("/mascot/spritesheet.webp").then(() => {
-          engine.start();
-          setVisible(true);
-          startRandomTimer(engine);
-        }).catch((err) => {
-          console.error("Mascot sprite load failed:", err);
-        });
-      } catch (err) {
-        console.error("Mascot engine init failed:", err);
-      }
-    }, 100);
+    try {
+      engine = new MascotEngine(canvas, SCALE);
+      engineRef.current = engine;
+    } catch (err) {
+      console.error("Mascot engine init failed:", err);
+      return;
+    }
 
-    // Resize handler
+    engine.loadSprite("/mascot/spritesheet.webp").then(() => {
+      if (destroyed) { engine?.destroy(); return; }
+      engine!.start();
+      setShow(true);
+      startRandomTimer(engine!);
+    }).catch((err) => {
+      console.error("Mascot sprite load failed:", err);
+    });
+
     const onResize = () => {
-      if (window.innerWidth < 768) {
-        setVisible(false);
-      } else {
-        setPos((prev) => ({
-          x: Math.max(0, Math.min(prev.x, window.innerWidth - cssW)),
-          y: Math.max(0, Math.min(prev.y, window.innerHeight - cssH)),
-        }));
-      }
+      if (window.innerWidth < 768) setShow(false);
     };
     window.addEventListener("resize", onResize);
 
     return () => {
-      clearTimeout(timer);
+      destroyed = true;
       if (randomTimer.current) clearTimeout(randomTimer.current);
-      engineRef.current?.destroy();
+      engine?.destroy();
+      engineRef.current = null;
       window.removeEventListener("resize", onResize);
     };
   }, []);
@@ -160,13 +144,12 @@ export default function MascotPet() {
 
   const handleDismiss = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    setVisible(false);
+    setShow(false);
     sessionStorage.setItem("mascot-dismissed", "true");
     engineRef.current?.destroy();
   }, []);
 
-  if (!visible) return null;
-
+  // Always render the container so canvas persists; toggle visibility via opacity/pointer-events
   return (
     <div
       ref={containerRef}
@@ -179,8 +162,11 @@ export default function MascotPet() {
         zIndex: 9999,
         cursor: isDragging ? "grabbing" : "grab",
         userSelect: "none",
+        opacity: show ? 1 : 0,
+        pointerEvents: show ? "auto" : "none",
+        transition: "opacity 0.3s",
       }}
-      onPointerDown={handlePointerDown}
+      onPointerDown={show ? handlePointerDown : undefined}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -207,7 +193,7 @@ export default function MascotPet() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          opacity: isHovered ? 1 : 0,
+          opacity: isHovered && show ? 1 : 0,
           transition: "opacity 0.2s",
         }}
         onClick={handleDismiss}
