@@ -12,72 +12,68 @@ jobs:
   deploy:
     name: 构建 & 部署
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v4
 
-      - name: 登录 GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 22
+          cache: npm
 
-      - name: 构建并推送 Docker 镜像
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/august-lab:latest
+      - name: 安装依赖 & 构建
+        run: |
+          npm ci --no-audit
+          npx prisma generate
+          npm run build
 
       - name: 配置 SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 添加服务器到已知主机
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H 192.144.154.17 >> ~/.ssh/known_hosts
-
-      - name: 同步配置并部署
+      - name: 部署到服务器
         run: |
           SERVER="root@192.144.154.17"
-          SSH_OPTS="-o ServerAliveInterval=30"
 
-          echo "::group::上传配置文件"
-          ssh ${SSH_OPTS} "${SERVER}" "mkdir -p /opt/august-lab"
-          rsync -az -e "ssh ${SSH_OPTS}" docker-compose.yml "${SERVER}:/opt/august-lab/"
-          echo "::endgroup::"
+          echo "::group::准备目录"
+          ssh ${SERVER} "mkdir -p /opt/august-lab"
 
-          ssh ${SSH_OPTS} "${SERVER}" 'bash -s' << 'REMOTE_SCRIPT'
-            set -e
+          echo "::group::同步构建产物 + prisma"
+          rsync -az --delete --info=progress2 \
+            .next/standalone/ \
+            "${SERVER}:/opt/august-lab/"
+          rsync -az --delete --info=progress2 \
+            .next/static/ \
+            "${SERVER}:/opt/august-lab/.next/static/"
+          rsync -az --info=progress2 \
+            public/ \
+            "${SERVER}:/opt/august-lab/public/"
+          rsync -az --info=progress2 \
+            prisma/ \
+            "${SERVER}:/opt/august-lab/prisma/"
+
+          echo "::group::配置并重启"
+          ssh ${SERVER} 'bash -s' << 'ENDSCRIPT'
             cd /opt/august-lab
 
-            echo "=== 登录 GHCR ==="
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            # 写入环境变量（仅首次，后续不覆盖）
+            if [ ! -f .env ]; then
+              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+              echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+            fi
 
-            echo "=== 写入环境变量 ==="
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            # 安装 PM2（如果还没有）
+            which pm2 || npm i -g pm2
 
-            echo "=== 拉取最新镜像 ==="
-            docker compose pull app
+            # 迁移数据库
+            npx prisma migrate deploy
 
-            echo "=== 停止旧容器 ==="
-            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
+            # 重启应用
+            pm2 delete august-lab 2>/dev/null || true
+            pm2 start server.js --name august-lab
+            pm2 save
 
-            echo "=== 启动新容器 ==="
-            docker compose up -d
-
-            echo "=== 数据库迁移 ==="
-            docker compose exec -T app npx prisma migrate deploy || true
-
-            echo "=== 状态 ==="
-            docker compose ps
-            sleep 3
-            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 || echo "等待启动..."
-          REMOTE_SCRIPT
+            sleep 2
+            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 && echo "OK" || echo "等待..."
+          ENDSCRIPT
