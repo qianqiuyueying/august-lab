@@ -13,21 +13,21 @@ export default async function BlogPage() {
   });
 
   // Aggregate all tags
-  const allTags = Array.from(new Set(articles.flatMap((a) => a.tags || [])));
+  const allTags = Array.from(new Set(articles.flatMap((a: { tags: string[] }) => a.tags || [])));
 
   // Monthly archive
   const monthMap = new Map<string, number>();
-  articles.forEach((a) => {
+  articles.forEach((a: { publishedAt: Date | null }) => {
     if (a.publishedAt) {
       const key = `${a.publishedAt.getFullYear()} 年 ${a.publishedAt.getMonth() + 1} 月`;
       monthMap.set(key, (monthMap.get(key) || 0) + 1);
     }
   });
-  const archives = Array.from(monthMap.entries()).map(([label, count]) => ({ label, count }));
+  const archives = Array.from(monthMap.entries()).map(([label, count]: [string, number]) => ({ label, count }));
 
   return (
     <BlogClient
-      articles={articles.map((a) => ({
+      articles={articles.map((a: { publishedAt: Date | null; tags: string[]; [key: string]: unknown }) => ({
         ...a,
         publishedAt: a.publishedAt ? a.publishedAt.toISOString() : null,
       }))}
