@@ -38,38 +38,38 @@ export function HomeClient({
         newIdx = i;
       }
 
-      // ——— 内容动画：戏剧性叠化 ———
+      // ——— 内容动画：加强叠化 ———
       const content = sec.querySelector(".home-anim-content") as HTMLElement;
       if (content) {
-        // 5% 开始出现，70% 完全可见 — 过渡区更紧凑
-        const raw = Math.max(0, Math.min(1, (visibility - 0.05) / 0.65));
-        // easeOutExpo — 比 easeOutCubic 更激进，开始快结束干脆
-        const eased = raw === 1 ? 1 : 1 - Math.pow(2, -10 * raw);
-        const sc = 0.82 + 0.18 * eased;
-        const blr = 14 * (1 - eased);
-        const tilt = 10 * (1 - eased);
+        // 8% 开始出现，63% 完全可见 — 更紧凑，变化更骤烈
+        const raw = Math.max(0, Math.min(1, (visibility - 0.08) / 0.55));
+        // easeOutExpo 加倍火力 — 指数从 10 → 12
+        const eased = raw === 1 ? 1 : 1 - Math.pow(2, -12 * raw);
+        const sc = 0.70 + 0.30 * eased;       // 从 70% 缩小开始（原来 82%）
+        const blr = 22 * (1 - eased);          // 最大模糊 22px（原来 14px）
+        const tilt = 14 * (1 - eased);         // 最大倾斜 14deg（原来 10deg）
         content.style.opacity = String(eased);
-        content.style.transform = `translateY(${(1 - eased) * 100}px) scale(${sc}) rotateX(${tilt}deg)`;
+        content.style.transform = `translateY(${(1 - eased) * 150}px) scale(${sc}) rotateX(${tilt}deg)`;
         content.style.filter = `blur(${blr}px)`;
       }
 
-      // ——— 背景视差 + Ken Burns 缩放 ———
+      // ——— 背景视差 + 加强 Ken Burns 缩放 ———
       const bg = sec.querySelector(".home-section__bg") as HTMLElement;
       if (bg) {
         const parallaxSpeed = parseFloat(bg.dataset.parallax || "0.15");
         const offset = r.top * Math.max(parallaxSpeed * 1.6, 0.35);
-        // 缩放: 离开视野时缩小到 0.92，可见时 1.08，有呼吸感
-        const scale = 1.0 + 0.08 * Math.max(0, Math.sin(visibility * Math.PI - 0.3));
+        // 放大到 1.10，缩小到 0.90 — 更明显的呼吸感
+        const scale = 1.0 + 0.12 * Math.max(0, Math.sin(visibility * Math.PI - 0.25));
         bg.style.transform = `translateY(${offset}px) scale(${scale})`;
       }
 
-      // ——— 动态幕布（叠化过渡） ———
+      // ——— 动态幕布（叠化过渡）— 更深黑 ———
       const scrim = sec.querySelector(".home-section__scrim") as HTMLElement;
       if (scrim) {
         const leaving = Math.max(0, Math.min(1, -r.top / secH));
         const entering = Math.max(0, Math.min(1, (r.bottom - winH) / secH));
-        // 幕布最高 92% 黑 — 过渡更厚重
-        const scrimO = Math.max(leaving * 0.92, entering * 0.72);
+        // 幕布最高 95% 黑 — 过渡更厚重
+        const scrimO = Math.max(leaving * 0.95, entering * 0.78);
         scrim.style.opacity = String(scrimO);
       }
 
