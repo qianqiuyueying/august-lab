@@ -205,6 +205,7 @@ export function HomeClient({
           <div className="home-section__overlay home-hero__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
+          <div className="home-section__aura"></div>
 
           <div className="home-section__content home-section__content--center home-anim-content" style={{ paddingTop: "5vh" }}>
             <p className="home-hero__label">光影之间</p>
@@ -235,6 +236,7 @@ export function HomeClient({
           <div className="home-section__overlay home-articles__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
+          <div className="home-section__aura"></div>
 
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
@@ -281,6 +283,7 @@ export function HomeClient({
           <div className="home-section__overlay home-works__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
+          <div className="home-section__aura"></div>
 
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
@@ -323,6 +326,7 @@ export function HomeClient({
           <div className="home-section__overlay home-quote__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
+          <div className="home-section__aura"></div>
 
           <div className="home-section__content home-section__content--center home-anim-content">
             <div className="home-quote__body">
