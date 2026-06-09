@@ -35,18 +35,19 @@ jobs:
       - name: 部署到服务器
         run: |
           SERVER="root@192.144.154.17"
+          SSH_OPTS="-o StrictHostKeyChecking=no -o ServerAliveInterval=30"
 
           echo "::group::准备目录"
-          ssh ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
+          ssh ${SSH_OPTS} ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
 
           echo "::group::同步构建产物"
-          rsync -az --delete .next/standalone/ ${SERVER}:/opt/august-lab/
-          rsync -az --delete .next/static/ ${SERVER}:/opt/august-lab/.next/static/
-          rsync -az public/ ${SERVER}:/opt/august-lab/public/
-          rsync -az prisma/ ${SERVER}:/opt/august-lab/prisma/
+          rsync -az --delete -e "ssh ${SSH_OPTS}" .next/standalone/ ${SERVER}:/opt/august-lab/
+          rsync -az --delete -e "ssh ${SSH_OPTS}" .next/static/ ${SERVER}:/opt/august-lab/.next/static/
+          rsync -az -e "ssh ${SSH_OPTS}" public/ ${SERVER}:/opt/august-lab/public/
+          rsync -az -e "ssh ${SSH_OPTS}" prisma/ ${SERVER}:/opt/august-lab/prisma/
 
           echo "::group::配置并重启"
-          ssh ${SERVER} 'bash -s' << 'ENDSCRIPT'
+          ssh ${SSH_OPTS} ${SERVER} 'bash -s' << 'ENDSCRIPT'
             cd /opt/august-lab
 
             # 写入环境变量（仅首次，后续不覆盖）
