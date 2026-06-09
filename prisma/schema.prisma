@@ -33,7 +33,9 @@ model Product {
   images      String[]  @default([])
   tags        String[]  @default([])
   status      String    @default("draft")
-  url         String    @default("")
+  runtimePath  String    @default("")
+  fileSize     Int       @default(0)
+  runtimeEntry String    @default("index.html")
   featured    Boolean   @default(false)
   published   Boolean   @default(false)
   publishedAt DateTime?
