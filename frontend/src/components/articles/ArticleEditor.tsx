@@ -15,7 +15,7 @@ export default function ArticleEditor({ initialContent = '', onChange, onRequest
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300">
+        <label className="block text-sm font-bold text-text-primary">
           内容 (Markdown)
         </label>
         <div className="flex gap-2">
@@ -38,7 +38,7 @@ export default function ArticleEditor({ initialContent = '', onChange, onRequest
         </div>
       </div>
       {preview ? (
-        <div className="markdown-body min-h-[300px] rounded-lg border border-border bg-paper p-4 dark:border-border-dark dark:bg-surface-dark">
+        <div className="markdown-body min-h-[300px] rounded-lg border border-border bg-paper-soft p-4">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
             {initialContent}
           </ReactMarkdown>
@@ -48,7 +48,7 @@ export default function ArticleEditor({ initialContent = '', onChange, onRequest
           value={initialContent}
           onChange={(event) => onChange(event.target.value)}
           rows={16}
-          className="w-full rounded-lg border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 transition-all focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-zinc-700 dark:bg-surface-dark dark:text-zinc-100"
+          className="w-full rounded-lg border border-border bg-background p-3 font-mono text-sm text-paper transition-all focus:border-accent-mid focus:outline-none focus:ring-2 focus:ring-accent-mid/30"
           placeholder="在此输入 Markdown 内容，图片可使用标准语法：![说明](/uploads/images/example.webp)"
         />
       )}

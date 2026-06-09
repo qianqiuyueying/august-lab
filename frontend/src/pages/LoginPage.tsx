@@ -40,19 +40,19 @@ export default function LoginPage() {
           <Link to="/" className="mb-5 inline-flex rounded-lg focus-ring">
             <BrandMark />
           </Link>
-          <p className="font-mono text-xs text-text-muted/40 dark:text-text-muted-dark/25 mb-4 text-center">
+          <p className="font-mono text-xs text-text-muted/25 mb-4 text-center">
             EXP-LOGIN
           </p>
-          <h1 className="text-2xl font-extrabold text-text-primary dark:text-text-primary-dark">登录</h1>
-          <p className="mt-2 text-sm text-text-muted dark:text-text-muted-dark">输入凭据以管理后台</p>
+          <h1 className="text-2xl font-extrabold text-paper">登录</h1>
+          <p className="mt-2 text-sm text-text-muted">输入凭据以管理后台</p>
         </div>
 
-        <div className="paper-panel-strong p-6 sm:p-8">
+        <div className="glass-panel p-6 sm:p-8">
           {error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="mb-5 rounded-lg border border-danger/20 bg-danger-subtle p-3 text-sm font-semibold text-danger dark:bg-danger-subtle-dark"
+              className="mb-5 rounded-lg border border-danger/20 bg-danger-subtle p-3 text-sm font-semibold text-danger"
             >
               {error}
             </motion.div>
@@ -60,7 +60,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-text-secondary dark:text-text-secondary-dark">
+              <label className="mb-1.5 block text-sm font-bold text-text-secondary">
                 用户名
               </label>
               <input
@@ -68,12 +68,12 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="focus-ring w-full rounded-lg border border-border bg-paper px-3.5 py-2.5 text-sm text-text-primary transition-all placeholder:text-text-muted focus:border-accent dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark"
+                className="focus-ring w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-paper transition-all placeholder:text-text-muted focus:border-accent-mid"
                 placeholder="输入用户名"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-text-secondary dark:text-text-secondary-dark">
+              <label className="mb-1.5 block text-sm font-bold text-text-secondary">
                 密码
               </label>
               <input
@@ -81,7 +81,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="focus-ring w-full rounded-lg border border-border bg-paper px-3.5 py-2.5 text-sm text-text-primary transition-all placeholder:text-text-muted focus:border-accent dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark"
+                className="focus-ring w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-paper transition-all placeholder:text-text-muted focus:border-accent-mid"
                 placeholder="输入密码"
               />
             </div>

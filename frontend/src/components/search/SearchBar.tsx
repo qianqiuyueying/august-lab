@@ -15,7 +15,7 @@ export default function SearchBar() {
 
   return (
     <motion.form onSubmit={handleSearch} className="flex gap-2">
-      <div className="relative flex-1 sm:flex-none sm:w-72">
+      <div className="relative flex-1">
         <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <circle cx="11" cy="11" r="8" />
           <path strokeLinecap="round" d="m21 21-4.35-4.35" />
@@ -25,7 +25,7 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="搜索文章..."
-          className="focus-ring w-full rounded-lg border border-border bg-paper/90 py-2.5 pl-9 pr-4 text-sm text-text-primary transition-all placeholder:text-text-muted focus:border-accent dark:border-border-dark dark:bg-surface-dark/90 dark:text-text-primary-dark"
+          className="focus-ring w-full rounded-lg border border-border bg-background py-2.5 pl-9 pr-4 text-sm text-paper transition-all placeholder:text-text-muted focus:border-accent-mid focus:shadow-[0_0_20px_rgba(59,165,196,.1)]"
         />
       </div>
       <motion.button

@@ -25,7 +25,7 @@ const itemVariants = {
 };
 
 export default function TagList({ tags, loading }: TagListProps) {
-  if (loading) return <div className="text-sm text-text-muted dark:text-text-muted-dark">标签加载中...</div>;
+  if (loading) return <div className="text-sm text-text-muted">标签加载中...</div>;
 
   return (
     <motion.div
@@ -38,7 +38,7 @@ export default function TagList({ tags, loading }: TagListProps) {
         <motion.div key={tag.id} variants={itemVariants}>
           <Link
             to={`/blog?tag=${encodeURIComponent(tag.name)}`}
-            className="lab-chip hover:border-accent hover:bg-accent-subtle hover:text-accent-hover dark:hover:border-text-muted-dark dark:hover:bg-accent-subtle-dark"
+            className="lab-chip hover:border-accent-mid/50 hover:bg-blueprint/30 hover:text-paper"
           >
             #{tag.name}
           </Link>

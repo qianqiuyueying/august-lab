@@ -17,10 +17,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
     <Link to={`/articles/${article.slug}`} className="group block rounded-xl focus-ring">
       <TiltCard maxRotation={6}>
         <motion.div
-          whileHover={{ boxShadow: '0 18px 45px rgba(37,99,235,0.11)' }}
-          className="gradient-border flex overflow-hidden rounded-xl border border-border/80 bg-paper/88 shadow-sm dark:border-border-dark/80 dark:bg-surface-dark/88"
+          whileHover={{ boxShadow: '0 20px 60px rgba(0,0,0,.3), 0 0 0 1px rgba(59,165,196,.4)' }}
+          className="flex overflow-hidden rounded-xl border border-border bg-paper-soft backdrop-blur-xl shadow-sm transition-colors group-hover:border-accent-mid/40"
         >
-          <div className="relative w-36 shrink-0 overflow-hidden bg-paper-soft dark:bg-background-dark">
+          <div className="relative w-36 shrink-0 overflow-hidden bg-background">
             <img
               src={cover}
               alt={article.cover_image ? article.title : ''}
@@ -33,20 +33,20 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
           <div className="flex min-w-0 flex-1 flex-col justify-between p-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-text-muted dark:text-text-muted-dark">
+              <div className="flex items-center gap-2 text-xs font-bold text-text-muted">
                 <span>{formatDate(article.created_at) || '未标注日期'}</span>
                 <span aria-hidden="true">·</span>
                 <span>{readingTime} min</span>
               </div>
-              <h3 className="mt-1 text-lg font-extrabold leading-tight text-text-primary transition-colors group-hover:text-accent dark:text-text-primary-dark line-clamp-2">
+              <h3 className="mt-1 text-lg font-extrabold leading-tight text-paper transition-colors line-clamp-2">
                 {article.title}
               </h3>
-              <p className="mt-1 line-clamp-2 text-sm leading-6 text-text-secondary dark:text-text-secondary-dark">
+              <p className="mt-1 line-clamp-2 text-sm leading-6 text-text-secondary">
                 {article.summary}
               </p>
             </div>
 
-            <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/80 pt-3 dark:border-border-dark/80">
+            <div className="mt-3 flex items-center justify-between gap-3 border-t border-border pt-3">
               <div className="flex flex-wrap gap-1.5">
                 {article.tags.slice(0, 3).map((tag) => (
                   <span key={tag.id} className="lab-chip text-[10px] px-1.5 py-0.5">

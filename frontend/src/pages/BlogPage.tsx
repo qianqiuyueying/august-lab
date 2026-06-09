@@ -8,22 +8,8 @@ import TagList from '../components/tags/TagList';
 import SearchBar from '../components/search/SearchBar';
 import { Skeleton } from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
-import PageIntro from '../components/ui/PageIntro';
 import GlassPanel from '../components/ui/GlassPanel';
 import SectionNumber from '../components/ui/SectionNumber';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.06, delayChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const } },
-};
 
 export default function BlogPage() {
   const [searchParams] = useSearchParams();
@@ -41,88 +27,139 @@ export default function BlogPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
-      <div className="min-w-0">
-        <GlassPanel className="mb-8 p-6" accentLine>
-          <PageIntro eyebrow="Notebook" title={title}>
-            {data && !tag && !search && (
-              <span className="lab-chip">{data.total} 篇公开笔记</span>
-            )}
-          </PageIntro>
-        </GlassPanel>
+      {/* ===== Page header ===== */}
+      <section className="relative mb-10 overflow-hidden rounded-2xl" style={{ minHeight: '40vh' }}>
+        <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
+          <img
+            src="/images/preview/s04_darkroom_bg_00001_.png"
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+            style={{ transform: 'scale(1.1)' }}
+          />
+        </div>
+        <div className="absolute inset-0 z-1 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(10,15,26,.5) 100%)' }}
+        />
 
-        <div className="mb-8 flex flex-col gap-4 border-y border-border py-5 dark:border-border-dark sm:flex-row sm:items-center sm:justify-between">
-          <SearchBar />
+        {/* Foreground */}
+        <div className="a-float1 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(140px,18vw,320px)', top: '22%', left: '2%' }}>
+          <img src="/images/preview/s04_film_00001_.png" alt="" className="w-full h-auto" />
+        </div>
+        <div className="a-float2 absolute z-2 pointer-events-none hidden sm:block" style={{ width: 'clamp(50px,7vw,120px)', top: '12%', right: '7%' }}>
+          <img src="/images/preview/s04_tweezers_00001_.png" alt="" className="w-full h-auto" />
         </div>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-6 rounded-lg border border-danger/20 bg-danger-subtle p-4 text-sm font-semibold text-danger dark:bg-danger-subtle-dark"
-          >
-            {error}
-          </motion.div>
-        )}
+        {/* Content */}
+        <div className="relative z-10 text-center px-4 py-[clamp(60px,12vh,100px)]">
+          <p className="text-xs font-extrabold text-accent tracking-wider uppercase mb-2">Notebook</p>
+          <h1 className="text-paper mb-3">{title}</h1>
+          <p className="text-text-muted max-w-md mx-auto text-sm sm:text-base">技术探索的记录，慢慢成形的想法</p>
 
-        {loading ? (
-          <div className="space-y-5">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-44" />
-            ))}
+          <div className="max-w-md mx-auto mt-5">
+            <SearchBar />
           </div>
-        ) : data?.items.length ? (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
-            {data.items.map((article) => (
-              <motion.div key={article.id} variants={itemVariants}>
-                <ArticleCard article={article} />
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          <EmptyState title="没有找到文章" />
-        )}
 
-        {data && data.total > data.page_size && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-10 flex items-center justify-center gap-4"
-          >
-            <motion.button
-              onClick={() => setPageState({ key: filterKey, page: Math.max(1, page - 1) })}
-              disabled={page === 1}
-              whileTap={{ scale: page === 1 ? 1 : 0.96 }}
-              className="lab-button-secondary disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              上一页
-            </motion.button>
-            <span className="font-mono text-sm font-bold text-text-muted dark:text-text-muted-dark">
-              {data.page} / {totalPages}
-            </span>
-            <motion.button
-              onClick={() => setPageState({ key: filterKey, page: page + 1 })}
-              disabled={page * data.page_size >= data.total}
-              whileTap={{ scale: page * data.page_size >= data.total ? 1 : 0.96 }}
-              className="lab-button-secondary disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              下一页
-            </motion.button>
-          </motion.div>
-        )}
-      </div>
-
-      <aside className="lg:pt-8">
-        <div className="sticky top-24 space-y-6">
-          <GlassPanel className="p-5" accentLine>
-            <SectionNumber number="" label="主题标签" />
-            <div className="mt-4">
-              <TagList tags={tags} loading={tagsLoading} />
-            </div>
-          </GlassPanel>
+          {data && !tag && !search && (
+            <span className="lab-chip mt-4 inline-block">{data.total} 篇公开笔记</span>
+          )}
         </div>
-      </aside>
+      </section>
+
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_18rem]">
+        <div className="min-w-0">
+          {/* Tag cloud */}
+          <div className="mb-6">
+            <GlassPanel className="p-4">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {tagsLoading ? (
+                  <span className="text-xs text-text-muted">加载标签中...</span>
+                ) : tags?.length ? (
+                  tags.map((t) => (
+                    <a
+                      key={t.id}
+                      href={`/blog?tag=${encodeURIComponent(t.name)}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.history.pushState(null, '', `/blog?tag=${encodeURIComponent(t.name)}`);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="text-xs px-3 py-1.5 rounded-full border border-blueprint/20 bg-blueprint/10 text-blueprint font-bold transition-all hover:bg-blueprint/25 hover:text-paper hover:-translate-y-px no-underline"
+                    >
+                      {t.name}
+                    </a>
+                  ))
+                ) : null}
+              </div>
+            </GlassPanel>
+          </div>
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-6 rounded-lg border border-danger/20 bg-danger-subtle p-4 text-sm font-semibold text-danger"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          {loading ? (
+            <div className="space-y-5">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-44" />
+              ))}
+            </div>
+          ) : data?.items.length ? (
+            <div className="space-y-4">
+              {data.items.map((article, i) => (
+                <motion.div
+                  key={article.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <ArticleCard article={article} />
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState title="没有找到文章" />
+          )}
+
+          {data && data.total > data.page_size && (
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <button
+                onClick={() => setPageState({ key: filterKey, page: Math.max(1, page - 1) })}
+                disabled={page === 1}
+                className="lab-button-secondary disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                上一页
+              </button>
+              <span className="font-mono text-sm font-bold text-text-muted">
+                {data.page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPageState({ key: filterKey, page: page + 1 })}
+                disabled={page * data.page_size >= data.total}
+                className="lab-button-secondary disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                下一页
+              </button>
+            </div>
+          )}
+        </div>
+
+        <aside className="lg:pt-4">
+          <div className="sticky top-24 space-y-6">
+            <GlassPanel className="p-5" accentLine>
+              <SectionNumber number="" label="主题标签" />
+              <div className="mt-4">
+                <TagList tags={tags} loading={tagsLoading} />
+              </div>
+            </GlassPanel>
+          </div>
+        </aside>
       </div>
     </div>
   );

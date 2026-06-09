@@ -3,19 +3,20 @@ import { useEffect, useRef } from 'react';
 interface Particle {
   x: number;
   y: number;
-  r: number;
-  dx: number;
-  dy: number;
-  alpha: number;
+  size: number;
+  speed: number;
+  opacity: number;
+  warm: boolean; // true = amber, false = cyan
+  wobble: number;
 }
 
-const DOT_COUNT = 30;
-const COLOR = { r: 37, g: 99, b: 235 };
+const MAX = 60;
 
-export default function ParticleBackground() {
+export function PreviewParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animFrameRef = useRef<number>(0);
+  const lastScrollRef = useRef(0);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -33,30 +34,50 @@ export default function ParticleBackground() {
     resize();
     window.addEventListener('resize', resize);
 
-    particlesRef.current = Array.from({ length: DOT_COUNT }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 2 + 0.5,
-      dx: (Math.random() - 0.5) * 0.3,
-      dy: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.3 + 0.1,
-    }));
+    // Init particles
+    particlesRef.current = Array.from({ length: MAX }, () => {
+      const p = newParticle(canvas);
+      p.y = Math.random() * canvas.height; // spread across screen initially
+      return p;
+    });
+
+    function newParticle(c: HTMLCanvasElement): Particle {
+      return {
+        x: Math.random() * c.width,
+        y: c.height + 10,
+        size: Math.random() * 2 + 0.5,
+        speed: 0.2 + Math.random() * 0.6,
+        opacity: Math.random() * 0.4 + 0.1,
+        warm: Math.random() > 0.6, // 40% warm amber, 60% cool cyan
+        wobble: Math.random() * 2,
+      };
+    }
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const c = canvas;
+      const scrollSpeed = Math.abs(window.scrollY - lastScrollRef.current) * 0.02;
+      lastScrollRef.current = window.scrollY;
+
+      ctx.clearRect(0, 0, c.width, c.height);
+
       for (const p of particlesRef.current) {
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        p.y -= p.speed + scrollSpeed * 0.3;
+        p.x += Math.sin(p.y * 0.01 + p.wobble) * 0.3;
+
+        if (p.y < -10) {
+          Object.assign(p, newParticle(c));
+          p.y = c.height + 10;
+        }
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${COLOR.r}, ${COLOR.g}, ${COLOR.b}, ${p.alpha})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        const color = p.warm
+          ? `rgba(200,132,60,${p.opacity})`
+          : `rgba(59,165,196,${p.opacity})`;
+        ctx.fillStyle = color;
         ctx.fill();
       }
+
       animFrameRef.current = requestAnimationFrame(draw);
     };
     draw();

@@ -56,9 +56,9 @@ export default function ContactLinks({ contacts }: ContactLinksProps) {
             href={contact.platform === 'email' ? `mailto:${contact.url}` : contact.url}
             target={contact.platform === 'email' ? undefined : '_blank'}
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-text-secondary hover:text-accent dark:text-text-secondary-dark dark:hover:text-accent-dark transition-colors"
+            className="flex items-center gap-2 text-text-secondary hover:text-accent transition-colors"
           >
-            <Icon className="text-text-muted dark:text-text-muted-dark" />
+            <Icon className="text-text-muted" />
             <span className="text-sm">{label}</span>
           </a>
         );

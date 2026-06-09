@@ -18,7 +18,7 @@ export default function StatusDot({ status, showLabel = true }: StatusDotProps) 
     <span className="inline-flex items-center gap-1.5">
       <span className={`status-dot ${config.className}`} />
       {showLabel && (
-        <span className="text-xs font-bold text-text-muted dark:text-text-muted-dark">
+        <span className="text-xs font-bold text-text-muted">
           {config.label}
         </span>
       )}

@@ -1,31 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 
-const STORAGE_KEY = 'august-lab-theme';
-
-function getSystemTheme(): 'light' | 'dark' {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
+/**
+ * Always dark mode — matching the "AugLab 2.0" preview design.
+ * Keeps the API shape for backward compatibility.
+ */
 export function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'light' || stored === 'dark') return stored;
-    return getSystemTheme();
-  });
-
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
-
-  const toggle = useCallback(() => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    root.classList.add('dark');
   }, []);
 
-  return { theme, toggle };
+  const toggle = () => {
+    // No-op: theme is always dark per the preview design
+  };
+
+  return { theme: 'dark' as const, toggle };
 }

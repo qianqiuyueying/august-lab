@@ -27,7 +27,7 @@ export default function ArticlePage() {
       <motion.button
         onClick={() => navigate(-1)}
         whileHover={{ x: -3 }}
-        className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-text-muted transition-colors hover:text-accent dark:text-text-muted-dark"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-text-muted transition-colors hover:text-accent"
       >
         <span aria-hidden="true">←</span>
         返回上一页
@@ -37,7 +37,7 @@ export default function ArticlePage() {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-mono text-sm text-text-muted/50 dark:text-text-muted-dark/30 mb-4"
+        className="font-mono text-sm text-text-muted/30 mb-4"
       >
         EXP-{String(article.id).padStart(4, '0')}
       </motion.p>
@@ -47,22 +47,22 @@ export default function ArticlePage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-10"
       >
-        <h1 className="text-4xl font-extrabold leading-[1.08] text-text-primary dark:text-text-primary-dark sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-extrabold leading-[1.08] text-paper sm:text-5xl lg:text-6xl">
           {article.title}
         </h1>
-        <p className="mt-6 max-w-3xl text-lg leading-9 text-text-secondary dark:text-text-secondary-dark">
+        <p className="mt-6 max-w-3xl text-lg leading-9 text-text-secondary">
           {article.summary}
         </p>
 
         {/* Metadata row */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-border py-4 text-sm font-bold text-text-muted dark:border-border-dark dark:text-text-muted-dark">
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-border py-4 text-sm font-bold text-text-muted">
           <span>{formatDate(article.created_at) || '未标注日期'}</span>
-          <span aria-hidden="true" className="text-border dark:text-border-dark">·</span>
+          <span aria-hidden="true" className="text-border">·</span>
           <span>{readingTime} min read</span>
-          <span aria-hidden="true" className="text-border dark:text-border-dark">·</span>
+          <span aria-hidden="true" className="text-border">·</span>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag) => (
-              <Link key={tag.id} to={`/blog?tag=${encodeURIComponent(tag.name)}`} className="lab-chip text-[10px] px-1.5 py-0.5">
+              <Link key={tag.id} to={`/blog?tag=${encodeURIComponent(tag.name)}`} className="lab-chip text-[10px] px-1.5 py-0.5 no-underline">
                 #{tag.name}
               </Link>
             ))}
