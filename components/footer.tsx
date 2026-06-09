@@ -10,7 +10,7 @@ export function Footer() {
         borderTop: "1px solid var(--c-border)",
       }}
     >
-      <p>Atelier · 光影几何 · 2026</p>
+      <p>August's Lab · 2026</p>
     </footer>
   );
 }

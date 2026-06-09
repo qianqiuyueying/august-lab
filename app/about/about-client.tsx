@@ -39,11 +39,11 @@ export function AboutClient({ bio, links }: { bio: string; links: Array<{ label:
   return (
     <>
       <nav className="nav-v2" id="aboutNav">
-        <Link href="/" className="nav-v2__brand">Atelier</Link>
+        <Link href="/" className="nav-v2__brand">August's Lab</Link>
         <div className="nav-v2__links">
           <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link">笔记</Link>
-          <Link href="/products" className="nav-v2__link">作品</Link>
+          <Link href="/blog" className="nav-v2__link">博客</Link>
+          <Link href="/products" className="nav-v2__link">产品</Link>
           <Link href="/about" className="nav-v2__link active">关于</Link>
         </div>
       </nav>
@@ -72,7 +72,7 @@ export function AboutClient({ bio, links }: { bio: string; links: Array<{ label:
               <div className="about-intro__text">
                 <p className="about-intro__numbered">EXP-ABOUT-01</p>
                 <p className="about-intro__eyebrow">August</p>
-                <h2 className="about-intro__name">创作者 · 开发者</h2>
+                <h2 className="about-intro__name">开发者 · 实验者</h2>
                 <div className="about-intro__rule"></div>
                 <p className="about-intro__bio">{bio}</p>
               </div>
@@ -130,9 +130,8 @@ export function AboutClient({ bio, links }: { bio: string; links: Array<{ label:
               <details>
                 <summary>了解更多</summary>
                 <div className="about-details__content">
-                  <p>这个网站是我的个人创作空间，用来记录和展示在设计、开发、摄影方面的探索。</p>
-                  <p>所有图片均使用 ComfyUI 本地生成，设计方向以"光影几何"为核心——深色基底、高对比光影、干净的几何结构。</p>
-                  <p>网站本身也是一个实验项目，从设计到实现全部在这里完成。</p>
+                  <p>一个喜欢动手折腾的创作者。写代码、拍照片、做实验是日常。</p>
+                  <p>工具不拘，想法先行。只要灵光一闪，就搭个东西出来看看。</p>
                 </div>
               </details>
             </div>

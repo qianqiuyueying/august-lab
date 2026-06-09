@@ -117,11 +117,11 @@ export function BlogClient({ articles, allTags, archives }: BlogClientProps) {
     <>
       {/* 导航 */}
       <nav className="nav-v2" id="blogNav">
-        <Link href="/" className="nav-v2__brand">Atelier</Link>
+        <Link href="/" className="nav-v2__brand">August's Lab</Link>
         <div className="nav-v2__links">
           <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link active">笔记</Link>
-          <Link href="/products" className="nav-v2__link">作品</Link>
+          <Link href="/blog" className="nav-v2__link active">博客</Link>
+          <Link href="/products" className="nav-v2__link">产品</Link>
           <Link href="/about" className="nav-v2__link">关于</Link>
         </div>
       </nav>
@@ -135,9 +135,9 @@ export function BlogClient({ articles, allTags, archives }: BlogClientProps) {
           <div className="blog-hero__overlay"></div>
           <div className="blog-hero__spot"></div>
           <div className="blog-hero__content">
-            <p className="blog-hero__label">/ 笔记</p>
-            <h1 className="blog-hero__title">文字记录</h1>
-            <p className="blog-hero__desc">设计、技术、摄影、灵感——关于创作过程的一切</p>
+            <p className="blog-hero__label">/ 博客</p>
+            <h1 className="blog-hero__title">实验笔记</h1>
+            <p className="blog-hero__desc">代码实验、设计思考、影像记录</p>
           </div>
         </header>
 

@@ -165,9 +165,9 @@ sp-3xl: 10rem
   await prisma.siteInfo.create({
     data: {
       id: 1,
-      aboutBio: "光影之间的创作者。用摄影和代码构建数字空间。\n\n专注于界面设计、前端开发与创意编程。相信好的设计应该像光一样自然——你不一定注意到它，但它让一切变得清晰。",
-      siteTitle: "Atelier · 光影几何",
-      siteDescription: "一个以光影和几何为核心的深色设计系统。",
+      aboutBio: "一个喜欢动手折腾的创作者。写代码、拍照片、做实验是日常。\n\n工具不拘，想法先行。只要灵光一闪，就搭个东西出来看看。",
+      siteTitle: "August's Lab",
+      siteDescription: "写点代码，拍点照片，偶尔做出点什么。",
       aboutLinks: [
         { label: "GitHub", url: "https://github.com/august" },
         { label: "Twitter", url: "https://twitter.com/august" },

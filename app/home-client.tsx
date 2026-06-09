@@ -153,8 +153,8 @@ export function HomeClient({
 
   const navLinks = [
     { href: "/", label: "首页" },
-    { href: "/blog", label: "笔记" },
-    { href: "/products", label: "作品" },
+    { href: "/blog", label: "博客" },
+    { href: "/products", label: "产品" },
     { href: "/about", label: "关于" },
   ];
 
@@ -173,7 +173,7 @@ export function HomeClient({
       <nav className="home-nav" ref={navRef}>
         <div className="home-nav__brand">
           <span className="home-nav__mark"></span>
-          <span className="home-nav__name">Atelier</span>
+          <span className="home-nav__name">August's Lab</span>
         </div>
         <div className="home-nav__links">
           {navLinks.map((l) => (
@@ -208,14 +208,13 @@ export function HomeClient({
           <div className="home-section__aura"></div>
 
           <div className="home-section__content home-section__content--center home-anim-content" style={{ paddingTop: "5vh" }}>
-            <p className="home-hero__label">光影之间</p>
+            <p className="home-hero__label">实验工坊</p>
             <h1 className="home-hero__title">
               August&apos;s
-              <span className="thin">Atelier</span>
+              <span className="thin">Lab</span>
             </h1>
             <p className="home-hero__desc">
-              用光影与图像驱动的创作空间<br />
-              记录灵感、实验与作品
+              写点代码，拍点照片，偶尔做出点什么
             </p>
           </div>
 
@@ -225,7 +224,7 @@ export function HomeClient({
           </div>
         </section>
 
-        {/* ====== 场景 2 — 最新笔记 ====== */}
+        {/* ====== 场景 2 — 博客 ====== */}
         <section
           ref={(el) => { sectionsRef.current[1] = el; }}
           className="home-section" data-section="articles"
@@ -241,8 +240,8 @@ export function HomeClient({
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
               <div>
-                <p className="home-section__number">/ 01</p>
-                <h2 className="home-section__heading">最新笔记</h2>
+                <p className="home-section__number">/ 博客</p>
+                <h2 className="home-section__heading">博客</h2>
               </div>
               <Link href="/blog" className="home-section__link">查看全部 →</Link>
             </div>
@@ -272,7 +271,7 @@ export function HomeClient({
           </div>
         </section>
 
-        {/* ====== 场景 3 — 精选作品 ====== */}
+        {/* ====== 场景 3 — 产品 ====== */}
         <section
           ref={(el) => { sectionsRef.current[2] = el; }}
           className="home-section" data-section="works"
@@ -288,8 +287,8 @@ export function HomeClient({
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
               <div>
-                <p className="home-section__number">/ 02</p>
-                <h2 className="home-section__heading">精选作品</h2>
+                <p className="home-section__number">/ 产品</p>
+                <h2 className="home-section__heading">产品</h2>
               </div>
               <Link href="/products" className="home-section__link">查看全部 →</Link>
             </div>
@@ -331,9 +330,9 @@ export function HomeClient({
           <div className="home-section__content home-section__content--center home-anim-content">
             <div className="home-quote__body">
               <figure className="home-quote__text">
-                &quot;光影不是装饰，<br />它是空间的骨架。&quot;
+                &quot;所有的创造都始于一次实验。&quot;
               </figure>
-              <p className="home-quote__attribution">— 2026 · Atelier</p>
+              <p className="home-quote__attribution">— August's Lab</p>
             </div>
           </div>
         </section>

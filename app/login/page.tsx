@@ -56,7 +56,7 @@ export default function LoginPage() {
 
         {/* 登录卡片 */}
         <div className="login__card">
-          <div className="login__brand">Atelier</div>
+          <div className="login__brand">August's Lab</div>
 
           <div className="login__header">
             <h1 className="login__title">登录</h1>

@@ -48,18 +48,18 @@ export function ArticleClient({ article, prev, next }: ArticleClientProps) {
     <>
       {/* 通用导航 */}
       <nav className="nav-v2" id="articleMainNav">
-        <Link href="/" className="nav-v2__brand">Atelier</Link>
+        <Link href="/" className="nav-v2__brand">August's Lab</Link>
         <div className="nav-v2__links">
           <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link active">笔记</Link>
-          <Link href="/products" className="nav-v2__link">作品</Link>
+          <Link href="/blog" className="nav-v2__link active">博客</Link>
+          <Link href="/products" className="nav-v2__link">产品</Link>
           <Link href="/about" className="nav-v2__link">关于</Link>
         </div>
       </nav>
 
       {/* 文章专属导航 */}
       <nav className="article-nav">
-        <Link href="/blog" className="article-nav__back">← 返回笔记</Link>
+        <Link href="/blog" className="article-nav__back">← 返回博客</Link>
       </nav>
 
       <main className="article-state-default">
@@ -118,14 +118,14 @@ export function ArticleClient({ article, prev, next }: ArticleClientProps) {
         <div className="state-card__icon">!</div>
         <div className="state-card__title">加载失败</div>
         <p className="state-card__desc">无法获取文章内容。</p>
-        <Link href="/blog" className="btn" style={{ marginTop: "var(--sp-lg)" }}>返回笔记列表</Link>
+        <Link href="/blog" className="btn" style={{ marginTop: "var(--sp-lg)" }}>返回博客列表</Link>
       </div>
 
       <div className="state-card article-state-empty article-state-override" style={{ minHeight: "100vh" }}>
         <div className="state-card__icon">—</div>
         <div className="state-card__title">文章不存在</div>
         <p className="state-card__desc">这篇笔记可能已被删除。</p>
-        <Link href="/blog" className="btn" style={{ marginTop: "var(--sp-lg)" }}>返回笔记列表</Link>
+        <Link href="/blog" className="btn" style={{ marginTop: "var(--sp-lg)" }}>返回博客列表</Link>
       </div>
     </>
   );

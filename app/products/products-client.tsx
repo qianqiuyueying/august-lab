@@ -61,11 +61,11 @@ export function ProductsClient({ products }: { products: Product[] }) {
   return (
     <>
       <nav className="nav-v2" id="productsNav">
-        <Link href="/" className="nav-v2__brand">Atelier</Link>
+        <Link href="/" className="nav-v2__brand">August's Lab</Link>
         <div className="nav-v2__links">
           <Link href="/" className="nav-v2__link">首页</Link>
-          <Link href="/blog" className="nav-v2__link">笔记</Link>
-          <Link href="/products" className="nav-v2__link active">作品</Link>
+          <Link href="/blog" className="nav-v2__link">博客</Link>
+          <Link href="/products" className="nav-v2__link active">产品</Link>
           <Link href="/about" className="nav-v2__link">关于</Link>
         </div>
       </nav>
@@ -77,9 +77,9 @@ export function ProductsClient({ products }: { products: Product[] }) {
           </div>
           <div className="products-hero__overlay"></div>
           <div className="products-hero__content">
-            <p className="products-hero__label">/ 作品</p>
-            <h1 className="products-hero__title">项目与实验</h1>
-            <p className="products-hero__desc">从工具到创意项目，每一个都经过反复打磨</p>
+            <p className="products-hero__label">/ 产品</p>
+            <h1 className="products-hero__title">实验项目</h1>
+            <p className="products-hero__desc">从灵感闪现到跑起来的 Demo，放在这里随时把玩</p>
           </div>
         </header>
 

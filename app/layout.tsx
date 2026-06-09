@@ -4,8 +4,8 @@ import { MascotLoader } from "@/components/mascot/mascot-loader";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Atelier · 光影几何",
-  description: "一个以光影和几何为核心的深色设计系统。",
+  title: "August's Lab",
+  description: "写点代码，拍点照片，偶尔做出点什么。",
 };
 
 export default function RootLayout({
