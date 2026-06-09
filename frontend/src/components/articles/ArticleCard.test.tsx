@@ -58,8 +58,10 @@ describe('ArticleCard', () => {
     expect(screen.getByText('Test Article')).toBeInTheDocument();
   });
 
-  it('uses the brand article fallback when no cover image is set', () => {
+  it('renders placeholder when no cover image is set', () => {
     const { container } = renderWithRouter(<ArticleCard article={mockArticle} />);
-    expect(container.querySelector('img')).toHaveAttribute('src', '/images/brand/fallback-article.webp');
+    // No cover_image → renders gradient placeholder with first tag's initial (no <img>)
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.getByText('r')).toBeInTheDocument(); // first tag 'react' → 'r'
   });
 });
