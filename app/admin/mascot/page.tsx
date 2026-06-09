@@ -88,18 +88,12 @@ export default function MascotPage() {
         <div className="admin-section" style={{ marginTop: "var(--sp-sm)" }}>
           <h2 className="admin-section__title">外观</h2>
           <div className="admin-form-group"><label className="admin-form-label">缩放比例 ({scale.toFixed(1)})</label><input type="range" min="0.5" max="3" step="0.1" value={scale} onChange={(e) => setScale(parseFloat(e.target.value))} /></div>
-          <div className="mascot-preview" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--sp-sm)", padding: "var(--sp-md)", background: "var(--c-bg)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-sm)", marginTop: "var(--sp-sm)" }}>
-            <div style={{ transform: `scale(${scale})`, transition: "transform 0.15s var(--ease-expo)", transformOrigin: "center" }}>
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <circle cx="30" cy="28" r="14" fill="oklch(0.55 0.06 90 / 0.15)" stroke="oklch(0.55 0.06 90 / 0.4)" strokeWidth="1"/>
-                <circle cx="24" cy="25" r="1.5" fill="oklch(0.55 0.06 90 / 0.6)"/><circle cx="36" cy="25" r="1.5" fill="oklch(0.55 0.06 90 / 0.6)"/>
-                <path d="M24 33c1.5 2 4 3 6 3s4.5-1 6-3" stroke="oklch(0.55 0.06 90 / 0.5)" strokeWidth="1" strokeLinecap="round"/>
-                <path d="M18 10l-4-4M42 10l4-4" stroke="oklch(0.55 0.06 90 / 0.3)" strokeWidth="1" strokeLinecap="round"/>
-                <rect x="26" y="44" width="8" height="12" rx="1" fill="oklch(0.55 0.06 90 / 0.12)" stroke="oklch(0.55 0.06 90 / 0.3)" strokeWidth="0.8"/>
-                <circle cx="30" cy="48" r="1.5" fill="oklch(0.55 0.06 90 / 0.15)" stroke="oklch(0.55 0.06 90 / 0.3)" strokeWidth="0.5"/>
-              </svg>
+          <div className="mascot-preview" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--sp-sm)", padding: "var(--sp-md)", background: "var(--c-bg)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-sm)", marginTop: "var(--sp-sm)", overflow: "hidden" }}>
+            <div style={{ transform: `scale(${scale})`, transition: "transform 0.15s var(--ease-expo)", transformOrigin: "center", width: 192, height: 208 }}>
+              <img src="/mascot/spritesheet.webp" alt="看板娘预览"
+                style={{ display: "block", width: 192, height: 208, objectFit: "none", objectPosition: "0px 0px" }} />
             </div>
-            <span className="mascot-preview__hint" style={{ fontSize: 10, color: "var(--c-muted)", fontFamily: "var(--ff-mono)" }}>外观实时预览</span>
+            <span className="mascot-preview__hint" style={{ fontSize: 10, color: "var(--c-muted)", fontFamily: "var(--ff-mono)" }}>外观实时预览 · 拖动滑条查看缩放效果</span>
           </div>
         </div>
       </div>

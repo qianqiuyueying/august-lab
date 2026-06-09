@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { MascotEngine } from "./mascot-engine";
 import type { AnimationName } from "./mascot-engine";
 
-const DEFAULT_SCALE = 1.0;
+const SCALE = 1.0;
 const MARGIN = 20;
 const DRAG_THRESHOLD = 5;
 const CLOSE_BTN = 20;
@@ -29,12 +29,10 @@ function pickWeighted(items: typeof RANDOM_ANIMS): AnimationName {
 }
 
 export default function MascotPet() {
-  const [dismissed, setDismissed] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -43,47 +41,70 @@ export default function MascotPet() {
   const dragElOrigin = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
   const randomTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef(false);
 
-  const scale = DEFAULT_SCALE;
-  const cssW = CELL_W * scale;
-  const cssH = CELL_H * scale;
+  const cssW = CELL_W * SCALE;
+  const cssH = CELL_H * SCALE;
 
-  // Init
   useEffect(() => {
+    if (mounted.current) return;
+    mounted.current = true;
+
     // Check dismissed
-    if (sessionStorage.getItem("mascot-dismissed") === "true") {
-      setDismissed(true);
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mascot-dismissed") === "true") {
       return;
     }
 
-    // Check mobile
-    const mql = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mql.matches);
-    const onMedia = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", onMedia);
+    // Check mobile - hide on screens < 768px
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return;
+    }
 
-    // Position
+    // Set position
     setPos({
       x: window.innerWidth - cssW - MARGIN,
       y: window.innerHeight - cssH - MARGIN,
     });
 
-    // Engine
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new MascotEngine(canvas, scale);
-    engineRef.current = engine;
+    // Delay canvas init slightly to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    engine.loadSprite("/mascot/spritesheet.webp").then(() => {
-      engine.start();
-      setLoaded(true);
-      startRandomTimer(engine);
-    }).catch(() => { /* silent */ });
+      try {
+        const engine = new MascotEngine(canvas, SCALE);
+        engineRef.current = engine;
+
+        engine.loadSprite("/mascot/spritesheet.webp").then(() => {
+          engine.start();
+          setVisible(true);
+          startRandomTimer(engine);
+        }).catch((err) => {
+          console.error("Mascot sprite load failed:", err);
+        });
+      } catch (err) {
+        console.error("Mascot engine init failed:", err);
+      }
+    }, 100);
+
+    // Resize handler
+    const onResize = () => {
+      if (window.innerWidth < 768) {
+        setVisible(false);
+      } else {
+        setPos((prev) => ({
+          x: Math.max(0, Math.min(prev.x, window.innerWidth - cssW)),
+          y: Math.max(0, Math.min(prev.y, window.innerHeight - cssH)),
+        }));
+      }
+    };
+    window.addEventListener("resize", onResize);
 
     return () => {
-      engine.destroy();
+      clearTimeout(timer);
       if (randomTimer.current) clearTimeout(randomTimer.current);
-      mql.removeEventListener("change", onMedia);
+      engineRef.current?.destroy();
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -139,13 +160,12 @@ export default function MascotPet() {
 
   const handleDismiss = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    setDismissed(true);
+    setVisible(false);
     sessionStorage.setItem("mascot-dismissed", "true");
     engineRef.current?.destroy();
   }, []);
 
-  // Hide on mobile or not loaded
-  if (dismissed || isMobile || !loaded) return null;
+  if (!visible) return null;
 
   return (
     <div
@@ -156,7 +176,7 @@ export default function MascotPet() {
         top: pos.y,
         width: cssW,
         height: cssH,
-        zIndex: 60,
+        zIndex: 9999,
         cursor: isDragging ? "grabbing" : "grab",
         userSelect: "none",
       }}
