@@ -181,6 +181,7 @@ export default function MascotPet() {
       />
       <ChatBubble visible={chatVisible} onClose={() => setChatVisible(false)} />
       <button
+        onPointerDown={(e) => e.stopPropagation()}
         style={{
           position: "absolute",
           top: -6,
