@@ -141,7 +141,7 @@ jobs:
                 "}" \
                 "" \
                 "server {" \
-                "    listen 80;" \
+                "    listen 80 default_server;" \
                 "    server_name _;" \
                 "" \
                 "    location / {" \
@@ -156,6 +156,12 @@ jobs:
               echo "Nginx config applied"
             else
               echo "Nginx config already exists"
+              # Ensure default_server is set (fix for BT-Panel 0.default.conf conflict)
+              if ! grep -q 'default_server' "$NGINX_CONF"; then
+                sed -i 's/listen 80;/listen 80 default_server;/' "$NGINX_CONF"
+                nginx -t && nginx -s reload
+                echo "Added default_server to existing config"
+              fi
             fi
           REMOTE_SCRIPT
 
