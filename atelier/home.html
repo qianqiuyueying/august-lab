@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>首页 · Atelier</title>
+  <link rel="stylesheet" href="design-tokens.css" />
+  <style>
+    /* ==========================================
+       Home — 叠化视差滚动 · 电影级
+       Full-screen sections, cinematic dissolve
+       transitions, Ken Burns parallax
+       ========================================== */
+
+    html, body {
+      overflow-x: hidden;
+      background: var(--c-bg);
+    }
+
+    /* ———— 场景容器 ———— */
+    .scene {
+      position: relative;
+      width: 100%;
+    }
+
+    /* ———— 全屏 Section ———— */
+    .section {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    /* ———— 背景层 ———— */
+    .section__bg {
+      position: absolute;
+      inset: -8%;
+      z-index: 0;
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    .section__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      will-change: transform;
+    }
+
+    /* ———— 渐变遮罩 ———— */
+    .section__overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ———— 中心聚光（增强文字对比） ———— */
+    .section__spot {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse 80% 60% at 50% 45%,
+        transparent 0%,
+        oklch(0 0 0 / 0.35) 60%,
+        oklch(0 0 0 / 0.55) 100%
+      );
+    }
+
+    /* ———— 叠化幕布（section 边界过渡用） ———— */
+    .section__scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: var(--c-bg);
+      opacity: 0;
+      transition: none;
+      pointer-events: none;
+    }
+
+    /* ———— 环境光晕 ———— */
+    .section__aura {
+      position: absolute;
+      width: 70vw;
+      height: 70vw;
+      max-width: 900px;
+      max-height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(0.72 0.015 270 / 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    .section.active .section__aura { opacity: 1; }
+
+    /* ———— 内容层 ———— */
+    .section__content {
+      position: relative;
+      z-index: 3;
+      width: min(92%, 1280px);
+      margin-inline: auto;
+      will-change: opacity, transform;
+    }
+
+    /* ———— 内容居中 ———— */
+    .section__content--center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* ———— Section 编号 ———— */
+    .section__number {
+      font-family: var(--ff-mono);
+      font-size: clamp(0.7rem, 0.7vw, 0.8rem);
+      color: oklch(0.65 0.01 270 / 0.4);
+      letter-spacing: 0.15em;
+      margin-bottom: var(--sp-md);
+    }
+
+    .section__heading {
+      font-family: var(--ff-display);
+      font-size: var(--fs-display);
+      font-weight: 400;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: var(--sp-xl);
+    }
+
+    .section__link {
+      font-family: var(--ff-body);
+      font-size: var(--fs-small);
+      color: var(--c-fg-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.4s var(--ease-expo);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-sm);
+    }
+
+    .section__link:hover { color: var(--c-fg); }
+
+    /* ==========================================
+       Nav — 统一玻璃导航
+       ========================================== */
+    .nav-premium {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-lg) var(--sp-xl);
+      transition: all 0.5s var(--ease-expo);
+      pointer-events: none;
+    }
+
+    .nav-premium * { pointer-events: auto; }
+
+    .nav-premium--solid {
+      background: oklch(0.035 0.008 275 / 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 var(--c-border);
+    }
+
+    .nav-premium__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+    }
+
+    .nav-premium__mark {
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--c-fg);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-premium__mark::after {
+      content: '';
+      width: 8px;
+      height: 1px;
+      background: var(--c-fg);
+    }
+
+    .nav-premium__name {
+      font-family: var(--ff-body);
+      font-size: var(--fs-small);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-fg);
+      font-weight: 400;
+    }
+
+    .nav-premium__links {
+      display: flex;
+      gap: var(--sp-xl);
+    }
+
+    .nav-premium__link {
+      font-family: var(--ff-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.7 0.01 270 / 0.55);
+      transition: color 0.3s var(--ease-expo);
+      position: relative;
+    }
+
+    .nav-premium__link:hover,
+    .nav-premium__link.active { color: var(--c-fg); }
+
+    .nav-premium__link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--c-fg);
+    }
+
+    /* ==========================================
+       Section 导航点（右侧）
+       ========================================== */
+    .section-nav {
+      position: fixed;
+      right: var(--sp-lg);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      pointer-events: none;
+    }
+
+    .section-nav__dot {
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: oklch(0.5 0.01 270 / 0.3);
+      transition: all 0.6s var(--ease-expo);
+      cursor: pointer;
+      pointer-events: auto;
+      position: relative;
+    }
+
+    .section-nav__dot.active {
+      width: 32px;
+      height: 2px;
+      border-radius: 1px;
+      background: oklch(0.85 0.01 270 / 0.6);
+    }
+
+    .section-nav__dot.active::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: oklch(0.85 0.01 270 / 0.15);
+    }
+
+    .section-nav__dot:not(.active):hover {
+      background: oklch(0.7 0.01 270 / 0.5);
+    }
+
+    /* ==========================================
+       Hero 专属
+       ========================================== */
+    .hero__overlay {
+      background: linear-gradient(
+        180deg,
+        oklch(0 0 0 / 0.65) 0%,
+        oklch(0 0 0 / 0.3) 35%,
+        oklch(0 0 0 / 0.35) 50%,
+        oklch(0 0 0 / 0.5) 75%,
+        oklch(0 0 0 / 0.7) 100%
+      );
+    }
+
+    .hero__label {
+      font-family: var(--ff-mono);
+      font-size: clamp(0.6rem, 0.6vw, 0.7rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: oklch(0.7 0.01 270 / 0.45);
+      margin-bottom: var(--sp-lg);
+    }
+
+    .hero__title {
+      font-family: var(--ff-display);
+      font-size: clamp(3rem, 8vw, 9rem);
+      font-weight: 400;
+      line-height: 0.92;
+      color: #fff;
+      text-shadow:
+        0 4px 48px oklch(0 0 0 / 0.6),
+        0 1px 0 rgb(255 255 255 / 0.08);
+      letter-spacing: -0.03em;
+    }
+
+    .hero__title .thin {
+      font-weight: 300;
+      font-size: 0.55em;
+      display: block;
+      opacity: 0.7;
+      letter-spacing: 0.08em;
+      margin-top: var(--sp-sm);
+    }
+
+    .hero__desc {
+      font-size: clamp(1rem, 1.3vw, 1.3rem);
+      color: oklch(0.72 0.01 270 / 0.7);
+      max-width: 36rem;
+      line-height: 1.65;
+      font-weight: 300;
+      margin-top: var(--sp-lg);
+      text-shadow: 0 2px 24px oklch(0 0 0 / 0.7);
+    }
+
+    /* 向下提示 */
+    .hero__scroll {
+      position: absolute;
+      bottom: var(--sp-xl);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-sm);
+      color: oklch(0.65 0.01 270 / 0.35);
+      font-family: var(--ff-mono);
+      font-size: clamp(0.5rem, 0.5vw, 0.6rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, oklch(0.65 0.01 270 / 0.25), transparent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to bottom, oklch(0.7 0.01 270 / 0.35), transparent);
+      animation: scrollDash 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollDash {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(200%); }
+    }
+
+    /* ==========================================
+       Section 2 — 最新笔记
+       ========================================== */
+    .articles__overlay {
+      background: linear-gradient(
+        180deg,
+        oklch(0 0 0 / 0.55) 0%,
+        oklch(0 0 0 / 0.2) 25%,
+        oklch(0 0 0 / 0.2) 75%,
+        oklch(0 0 0 / 0.55) 100%
+      );
+    }
+
+    .articles__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .articles__card {
+      position: relative;
+      padding: var(--sp-xl) var(--sp-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-md);
+      cursor: pointer;
+      transition: all 0.6s var(--ease-expo);
+      border: 1px solid transparent;
+      border-color: rgb(255 255 255 / 0.04);
+      min-height: 260px;
+      overflow: hidden;
+    }
+
+    .articles__card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, oklch(0 0 0 / 0.4));
+      opacity: 0;
+      transition: opacity 0.6s var(--ease-expo);
+    }
+
+    .articles__card-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-md);
+      flex: 1;
+    }
+
+    .articles__card:hover {
+      border-color: rgb(255 255 255 / 0.12);
+    }
+
+    .articles__card:hover::before { opacity: 1; }
+
+    .articles__card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: oklch(0.75 0.015 270 / 0.65);
+      text-shadow: 0 1px 8px oklch(0 0 0 / 0.4);
+    }
+
+    .articles__card-dot {
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: oklch(0.65 0.01 270 / 0.25);
+    }
+
+    .articles__card-index {
+      font-family: var(--ff-mono);
+      font-size: 0.55rem;
+      color: oklch(0.7 0.01 270 / 0.4);
+      letter-spacing: 0.1em;
+    }
+
+    .articles__card-title {
+      font-family: var(--ff-display);
+      font-size: var(--fs-h3);
+      font-weight: 400;
+      line-height: 1.3;
+      color: #fff;
+    }
+
+    .articles__card-excerpt {
+      color: oklch(0.82 0.015 270 / 0.78);
+      font-size: var(--fs-small);
+      line-height: 1.7;
+      text-shadow: 0 1px 12px oklch(0 0 0 / 0.5);
+    }
+
+    .articles__card-tags {
+      display: flex;
+      gap: var(--sp-xs);
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .articles__card-tags .tag {
+      font-size: 0.5rem;
+      border-color: rgb(255 255 255 / 0.15);
+      color: oklch(0.78 0.01 270 / 0.65);
+      background: oklch(0 0 0 / 0.2);
+    }
+
+    /* ==========================================
+       Section 3 — 精选作品
+       ========================================== */
+    .works__overlay {
+      background: linear-gradient(
+        180deg,
+        oklch(0 0 0 / 0.55) 0%,
+        oklch(0 0 0 / 0.15) 25%,
+        oklch(0 0 0 / 0.15) 75%,
+        oklch(0 0 0 / 0.55) 100%
+      );
+    }
+
+    .works__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 2px;
+      height: 55vh;
+      min-height: 360px;
+    }
+
+    .works__card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .works__card--featured { grid-row: 1 / -1; }
+
+    .works__card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.9s var(--ease-expo);
+      filter: saturate(0.35) contrast(1.2);
+    }
+
+    .works__card:hover img { transform: scale(1.07); }
+
+    .works__card-info {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--sp-lg);
+      background: linear-gradient(transparent 35%, oklch(0 0 0 / 0.85));
+      transition: background 0.5s var(--ease-expo);
+    }
+
+    .works__card:hover .works__card-info {
+      background: linear-gradient(transparent 25%, oklch(0 0 0 / 0.95));
+    }
+
+    .works__card-title {
+      font-family: var(--ff-display);
+      font-size: var(--fs-h3);
+      font-weight: 400;
+      color: #fff;
+    }
+
+    .works__card-sub {
+      font-size: var(--fs-small);
+      color: oklch(0.68 0.01 270 / 0.5);
+      margin-top: var(--sp-2xs);
+    }
+
+    .works__card-status {
+      position: absolute;
+      top: var(--sp-md);
+      right: var(--sp-md);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      padding: 0.2em 0.6em;
+      border: 1px solid rgb(255 255 255 / 0.12);
+      color: oklch(0.68 0.01 270 / 0.55);
+      background: oklch(0 0 0 / 0.35);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+
+    /* ==========================================
+       Section 4 — 引用
+       ========================================== */
+    .quote__overlay {
+      background: linear-gradient(
+        180deg,
+        oklch(0 0 0 / 0.6) 0%,
+        oklch(0 0 0 / 0.2) 30%,
+        oklch(0 0 0 / 0.2) 70%,
+        oklch(0 0 0 / 0.6) 100%
+      );
+    }
+
+    .quote__body {
+      text-align: center;
+      max-width: 680px;
+      margin-inline: auto;
+    }
+
+    .quote__text {
+      font-family: var(--ff-display);
+      font-size: clamp(1.5rem, 3.8vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.35;
+      color: #fff;
+      font-style: italic;
+      text-shadow: 0 2px 40px oklch(0 0 0 / 0.5);
+    }
+
+    .quote__attribution {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-small);
+      color: oklch(0.65 0.01 270 / 0.45);
+      margin-top: var(--sp-lg);
+      font-style: normal;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* ==========================================
+       叠化 & 视差 — JS 驱动
+       ========================================== */
+
+    /* 初始状态（JS 会覆盖） */
+    .anim-content {
+      opacity: 0;
+      transform: translateY(40px) scale(0.97);
+      filter: blur(4px);
+    }
+
+    /* ==========================================
+       状态覆盖
+       ========================================== */
+    .state-override { display: none; }
+    body[data-state="loading"] .dissolve-body { display: none; }
+    body[data-state="loading"] .state-loading { display: flex; }
+    body[data-state="error"] .dissolve-body { display: none; }
+    body[data-state="error"] .state-error { display: flex; }
+    body[data-state="empty"] .articles__grid,
+    body[data-state="empty"] .works__grid { display: none; }
+    body[data-state="empty"] .section[data-section="articles"] .section__content,
+    body[data-state="empty"] .section[data-section="works"] .section__content {
+      justify-content: center;
+    }
+    body[data-state="empty"] .state-empty { display: flex; }
+
+    /* ==========================================
+       响应式
+       ========================================== */
+    @media (max-width: 920px) {
+      .nav-premium { padding: var(--sp-md); }
+      .nav-premium__links { gap: var(--sp-md); }
+
+      .articles__grid { grid-template-columns: 1fr; }
+
+      .works__grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+      }
+      .works__card--featured {
+        grid-row: auto;
+        height: 50vh;
+        min-height: 280px;
+      }
+      .works__card { height: 30vh; min-height: 200px; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-premium__links { display: none; }
+      .section-nav { display: none; }
+      .hero__title { font-size: var(--fs-display); }
+      .section { min-height: 100dvh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== 导航 ====== -->
+  <nav class="nav-premium" id="mainNav">
+    <div class="nav-premium__brand">
+      <span class="nav-premium__mark"></span>
+      <span class="nav-premium__name">Atelier</span>
+    </div>
+    <div class="nav-premium__links">
+      <a href="home.html" class="nav-premium__link active">首页</a>
+      <a href="blog.html" class="nav-premium__link">笔记</a>
+      <a href="products.html" class="nav-premium__link">作品</a>
+      <a href="about.html" class="nav-premium__link">关于</a>
+    </div>
+  </nav>
+
+  <!-- Section 导航点 -->
+  <nav class="section-nav" id="sectionNav">
+    <span class="section-nav__dot" data-target="hero"></span>
+    <span class="section-nav__dot" data-target="articles"></span>
+    <span class="section-nav__dot" data-target="works"></span>
+    <span class="section-nav__dot" data-target="quote"></span>
+  </nav>
+
+  <!-- 主体 -->
+  <div class="dissolve-body" id="dissolveBody">
+
+    <!-- ====== 场景 1 — Hero ====== -->
+    <section class="section" data-section="hero">
+      <div class="section__bg" data-parallax="0.3">
+        <img src="../images/venetian-blind-shadow.png" alt="百叶窗光影" loading="eager" />
+      </div>
+      <div class="section__overlay hero__overlay"></div>
+      <div class="section__spot"></div>
+      <div class="section__scrim"></div>
+
+      <div class="section__content section__content--center anim-content" style="padding-top:5vh">
+        <p class="hero__label">光影之间</p>
+        <h1 class="hero__title">
+          August's
+          <span class="thin">Atelier</span>
+        </h1>
+        <p class="hero__desc">
+          用光影与图像驱动的创作空间<br />
+          记录灵感、实验与作品
+        </p>
+      </div>
+
+      <div class="hero__scroll">
+        <span>向下探索</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ====== 场景 2 — 最新笔记 ====== -->
+    <section class="section" data-section="articles">
+      <div class="section__bg" data-parallax="0.3">
+        <img src="../images/perforated-metal-shadow.png" alt="穿孔金属板光影" loading="lazy" />
+      </div>
+      <div class="section__overlay articles__overlay"></div>
+      <div class="section__spot"></div>
+      <div class="section__scrim"></div>
+
+      <div class="section__content anim-content">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--sp-xl)">
+          <div>
+            <p class="section__number">/ 01</p>
+            <h2 class="section__heading">最新笔记</h2>
+          </div>
+          <a href="blog.html" class="section__link">查看全部 →</a>
+        </div>
+
+        <div class="articles__grid">
+          <article class="articles__card">
+            <div class="articles__card-content">
+              <div class="articles__card-meta">
+                <span class="articles__card-index">01</span>
+                <span class="articles__card-dot"></span>
+                <span>2026.06.09</span>
+                <span class="articles__card-dot"></span>
+                <span>6 分钟</span>
+              </div>
+              <h3 class="articles__card-title">用光影构建空间感</h3>
+              <p class="articles__card-excerpt">关于如何在数字界面中通过光影对比建立视觉层次，而不是依赖颜色。</p>
+              <div class="articles__card-tags">
+                <span class="tag">设计</span>
+                <span class="tag">思考</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="articles__card">
+            <div class="articles__card-content">
+              <div class="articles__card-meta">
+                <span class="articles__card-index">02</span>
+                <span class="articles__card-dot"></span>
+                <span>2026.06.05</span>
+                <span class="articles__card-dot"></span>
+                <span>4 分钟</span>
+              </div>
+              <h3 class="articles__card-title">ComfyUI 本地生图工作流</h3>
+              <p class="articles__card-excerpt">搭建了一套本地化的图像生成管线，从快速出图到高清超分的完整记录。</p>
+              <div class="articles__card-tags">
+                <span class="tag">技术</span>
+                <span class="tag">AI</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="articles__card">
+            <div class="articles__card-content">
+              <div class="articles__card-meta">
+                <span class="articles__card-index">03</span>
+                <span class="articles__card-dot"></span>
+                <span>2026.06.01</span>
+                <span class="articles__card-dot"></span>
+                <span>8 分钟</span>
+              </div>
+              <h3 class="articles__card-title">日常物件的诗意</h3>
+              <p class="articles__card-excerpt">摄影如何改变了设计的理解——从日常物件中提取质感与叙事。</p>
+              <div class="articles__card-tags">
+                <span class="tag">摄影</span>
+                <span class="tag">灵感</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== 场景 3 — 精选作品 ====== -->
+    <section class="section" data-section="works">
+      <div class="section__bg" data-parallax="0.25">
+        <img src="../images/plaster-geometric.png" alt="几何石膏体" loading="lazy" />
+      </div>
+      <div class="section__overlay works__overlay"></div>
+      <div class="section__spot"></div>
+      <div class="section__scrim"></div>
+
+      <div class="section__content anim-content">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--sp-xl)">
+          <div>
+            <p class="section__number">/ 02</p>
+            <h2 class="section__heading">精选作品</h2>
+          </div>
+          <a href="products.html" class="section__link">查看全部 →</a>
+        </div>
+
+        <div class="works__grid">
+          <div class="works__card works__card--featured">
+            <img src="../images/plaster-geometric.png" alt="几何石膏体" loading="lazy" />
+            <div class="works__card-info">
+              <h3 class="works__card-title">工具集 · 2026</h3>
+              <p class="works__card-sub">日常开发工具的摄影记录</p>
+            </div>
+            <span class="works__card-status">在线</span>
+          </div>
+
+          <div class="works__card">
+            <img src="../images/perforated-metal-shadow.png" alt="穿孔金属板光影" loading="lazy" />
+            <div class="works__card-info">
+              <h3 class="works__card-title">键帽微距</h3>
+              <p class="works__card-sub">细节中的构成</p>
+            </div>
+          </div>
+
+          <div class="works__card">
+            <img src="../images/glass-shadow.png" alt="阴影研究" loading="lazy" />
+            <div class="works__card-info">
+              <h3 class="works__card-title">阴影研究</h3>
+              <p class="works__card-sub">透明物体的光线行为</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== 场景 4 — 引用 ====== -->
+    <section class="section" data-section="quote">
+      <div class="section__bg" data-parallax="0.2">
+        <img src="../images/glass-shadow.png" alt="玻璃杯阴影" loading="lazy" />
+      </div>
+      <div class="section__overlay quote__overlay"></div>
+      <div class="section__spot"></div>
+      <div class="section__scrim"></div>
+
+      <div class="section__content section__content--center anim-content">
+        <div class="quote__body">
+          <figure class="quote__text">
+            "光影不是装饰，<br />它是空间的骨架。"
+          </figure>
+          <p class="quote__attribution">— 2026 · Atelier</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /dissolve-body -->
+
+  <!-- 状态: Loading -->
+  <div class="state-card state-loading state-override" style="min-height:100vh">
+    <div class="state-card__icon" style="animation:pulse 1.5s ease-in-out infinite">⟳</div>
+    <div class="state-card__title">加载中</div>
+    <p class="state-card__desc">正在获取内容…</p>
+    <style>@keyframes pulse { 0%,100% { opacity:0.3; } 50% { opacity:0.8; } }</style>
+  </div>
+
+  <!-- 状态: Error -->
+  <div class="state-card state-error state-override" style="min-height:100vh">
+    <div class="state-card__icon">!</div>
+    <div class="state-card__title">加载失败</div>
+    <p class="state-card__desc">无法连接到服务器，请稍后重试。</p>
+    <button class="btn" style="margin-top:var(--sp-lg)" onclick="location.reload()">重新加载</button>
+  </div>
+
+  <!-- 状态: Empty -->
+  <div class="state-card state-empty state-override" style="min-height:100vh">
+    <div class="state-card__icon">—</div>
+    <div class="state-card__title">暂无内容</div>
+    <p class="state-card__desc">还没有发布任何内容，敬请期待。</p>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // ——— URL 参数状态 ———
+      const params = new URLSearchParams(window.location.search);
+      const state = params.get('state');
+      if (state) document.body.dataset.state = state;
+
+      // ——— 常量 ———
+      const sections = document.querySelectorAll('.section');
+      const contents = document.querySelectorAll('.anim-content');
+      const dots = document.querySelectorAll('.section-nav__dot');
+      const nav = document.getElementById('mainNav');
+      const vh = () => window.innerHeight;
+
+      let currentIdx = 0;
+      let bgScale = 1.0;
+
+      // ——— 核心更新 ———
+      function updateScene() {
+        const winH = vh();
+        let maxVis = 0;
+        let newIdx = 0;
+
+        sections.forEach((sec, i) => {
+          const r = sec.getBoundingClientRect();
+          const secH = sec.offsetHeight;
+
+          // 可见比例
+          const visibleInView = Math.min(r.bottom, winH) - Math.max(r.top, 0);
+          const visibility = Math.max(0, Math.min(1, visibleInView / secH));
+
+          if (visibility > maxVis) {
+            maxVis = visibility;
+            newIdx = i;
+          }
+
+          // ——— 内容动画：戏剧性叠化 ———
+          const content = sec.querySelector('.anim-content');
+          if (content) {
+            // 5% 开始出现，70% 完全可见 — 过渡区更紧凑
+            const raw = Math.max(0, Math.min(1, (visibility - 0.05) / 0.65));
+            // easeOutExpo — 比 easeOutCubic 更激进，开始快结束干脆
+            const eased = raw === 1 ? 1 : 1 - Math.pow(2, -10 * raw);
+            const scale = 0.82 + 0.18 * eased;
+            const blur = 14 * (1 - eased);
+            const tilt = 10 * (1 - eased);
+            content.style.opacity = eased;
+            content.style.transform = `translateY(${(1 - eased) * 100}px) scale(${scale}) rotateX(${tilt}deg)`;
+            content.style.filter = `blur(${blur}px)`;
+          }
+
+          // ——— 背景视差 + Ken Burns 缩放 ———
+          const bg = sec.querySelector('.section__bg');
+          if (bg) {
+            const parallaxSpeed = parseFloat(bg.dataset.parallax) || 0.15;
+            const offset = r.top * Math.max(parallaxSpeed * 1.6, 0.35);
+            // 缩放: 离开视野时缩小到 0.92，可见时 1.08，有呼吸感
+            const scale = 1.0 + 0.08 * Math.max(0, Math.sin(visibility * Math.PI - 0.3));
+            bg.style.transform = `translateY(${offset}px) scale(${scale})`;
+          }
+
+          // ——— 动态幕布（叠化过渡） ———
+          const scrim = sec.querySelector('.section__scrim');
+          if (scrim) {
+            const leaving = Math.max(0, Math.min(1, -r.top / secH));
+            const entering = Math.max(0, Math.min(1, (r.bottom - winH) / secH));
+            // 幕布最高 92% 黑 — 过渡更厚重
+            const scrimO = Math.max(leaving * 0.92, entering * 0.72);
+            scrim.style.opacity = scrimO;
+          }
+
+          // 活跃状态标记
+          sec.classList.toggle('active', visibility > 0.3);
+        });
+
+        currentIdx = newIdx;
+
+        // ——— 导航点 ———
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIdx);
+        });
+
+        // ——— 导航 solid 状态 ———
+        const heroR = sections[0].getBoundingClientRect();
+        nav.classList.toggle('nav-premium--solid', heroR.bottom < 60);
+      }
+
+      // ——— rAF 节流 ———
+      let ticking = false;
+      const scrollHandler = () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            updateScene();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+
+      // ——— 导航点点击 ———
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          const target = dot.dataset.target;
+          const sec = document.querySelector(`[data-section="${target}"]`);
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // ——— resize ———
+      let rt;
+      window.addEventListener('resize', () => {
+        clearTimeout(rt);
+        rt = setTimeout(updateScene, 100);
+      }, { passive: true });
+
+      // ——— 初始 ———
+      updateScene();
+
+    })();
+  </script>
+</body>
+</html>

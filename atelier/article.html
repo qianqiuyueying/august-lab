@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用光影构建空间感 · Atelier</title>
+  <link rel="stylesheet" href="design-tokens.css" />
+  <style>
+    /* ==========================================
+       Article — 文章详情 · 光影几何阅读体验
+       ========================================== */
+
+    /* ———— 顶部导航条 ———— */
+    .article-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: var(--sp-md) var(--sp-xl);
+      gap: var(--sp-lg);
+      background: oklch(0.045 0.008 275 / 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--c-border);
+    }
+
+    .article-nav__back {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      transition: color 0.3s ease;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .article-nav__back:hover { color: var(--c-fg); }
+
+    /* ———— Hero ———— */
+    .article-hero {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      min-height: 400px;
+      overflow: hidden;
+    }
+
+    .article-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.5) contrast(1.15);
+    }
+
+    .article-hero .photo-hero__overlay {
+      background: linear-gradient(
+        180deg,
+        transparent 30%,
+        var(--c-bg) 100%
+      );
+    }
+
+    /* ———— 文章主体 ———— */
+    .article-body {
+      position: relative;
+      margin-top: -80px;
+      z-index: 2;
+      padding-bottom: var(--sp-3xl);
+    }
+
+    .article-body .container--narrow {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-lg);
+    }
+
+    .article-header {
+      padding-bottom: var(--sp-xl);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .article-header__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      margin-bottom: var(--sp-md);
+    }
+
+    .article-header__dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--c-muted);
+    }
+
+    .article-header__title {
+      font-family: var(--ff-display);
+      font-size: var(--fs-display);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: var(--sp-md);
+    }
+
+    .article-header__desc {
+      color: var(--c-fg-dim);
+      font-size: var(--fs-h3);
+      font-weight: 300;
+      line-height: 1.5;
+      max-width: 640px;
+    }
+
+    .article-header__tags {
+      display: flex;
+      gap: var(--sp-xs);
+      margin-top: var(--sp-md);
+    }
+
+    /* ———— Markdown 内容样式 ———— */
+    .article-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-lg);
+    }
+
+    .article-content p {
+      color: var(--c-fg);
+      font-size: var(--fs-body);
+      line-height: 1.85;
+    }
+
+    .article-content h2 {
+      font-family: var(--ff-display);
+      font-size: var(--fs-h2);
+      font-weight: 400;
+      margin-top: var(--sp-xl);
+      padding-top: var(--sp-lg);
+      border-top: 1px solid var(--c-border);
+    }
+
+    .article-content h3 {
+      font-family: var(--ff-display);
+      font-size: var(--fs-h3);
+      font-weight: 400;
+      margin-top: var(--sp-lg);
+    }
+
+    .article-content blockquote {
+      margin: var(--sp-lg) 0;
+      padding: var(--sp-lg) var(--sp-xl);
+      border-left: 2px solid var(--c-light);
+      background: var(--c-surf);
+      font-family: var(--ff-display);
+      font-size: var(--fs-h3);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--c-light);
+    }
+
+    .article-content pre {
+      margin: var(--sp-lg) 0;
+      padding: var(--sp-lg);
+      background: var(--c-surf-2);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      font-family: var(--ff-mono);
+      font-size: var(--fs-small);
+      line-height: 1.6;
+    }
+
+    .article-content code {
+      font-family: var(--ff-mono);
+      font-size: 0.85em;
+      padding: 0.15em 0.4em;
+      background: var(--c-surf);
+      border-radius: 2px;
+    }
+
+    .article-content pre code {
+      padding: 0;
+      background: none;
+    }
+
+    .article-content ul, .article-content ol {
+      padding-left: var(--sp-lg);
+      color: var(--c-fg);
+      line-height: 1.85;
+    }
+
+    .article-content li {
+      margin-bottom: var(--sp-xs);
+    }
+
+    .article-content a {
+      color: var(--c-link);
+      border-bottom: 1px solid var(--c-border);
+      transition: border-color 0.3s ease;
+    }
+
+    .article-content a:hover {
+      border-color: var(--c-link);
+    }
+
+    .article-content img {
+      margin: var(--sp-lg) 0;
+      border-radius: var(--radius-sm);
+      filter: saturate(0.6) contrast(1.1);
+    }
+
+    /* ———— 脚注 ———— */
+    .article-footer {
+      margin-top: var(--sp-2xl);
+      padding-top: var(--sp-lg);
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .article-footer__nav {
+      display: flex;
+      gap: var(--sp-lg);
+    }
+
+    .article-footer__link {
+      font-size: var(--fs-small);
+      color: var(--c-fg-dim);
+      transition: color 0.3s ease;
+    }
+
+    .article-footer__link:hover {
+      color: var(--c-fg);
+    }
+
+    /* ———— 响应式 ———— */
+    @media (max-width: 768px) {
+      .article-nav { padding: var(--sp-md) var(--sp-lg); }
+      .article-hero { height: 40vh; min-height: 300px; }
+      .article-body { margin-top: -40px; }
+    }
+
+    /* ———— 状态覆盖 ———— */
+    .state-override { display: none; }
+    body[data-state="loading"] .state-default { display: none; }
+    body[data-state="loading"] .state-loading { display: flex; }
+    body[data-state="error"] .state-default { display: none; }
+    body[data-state="error"] .state-error { display: flex; }
+    body[data-state="empty"] .state-default .article-body { display: none; }
+    body[data-state="empty"] .state-empty { display: flex; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-v2" id="mainNav">
+    <a href="index.html" class="nav-v2__brand">Atelier</a>
+    <div class="nav-v2__links">
+      <a href="home.html" class="nav-v2__link">首页</a>
+      <a href="blog.html" class="nav-v2__link active">笔记</a>
+      <a href="products.html" class="nav-v2__link">作品</a>
+      <a href="about.html" class="nav-v2__link">关于</a>
+    </div>
+  </nav>
+
+  <nav class="article-nav">
+    <a href="blog.html" class="article-nav__back">← 返回笔记</a>
+  </nav>
+
+  <main class="state-default">
+    <div class="article-hero">
+      <img src="../images/paper-folds-shadow.png" alt="折纸几何光影" loading="eager" />
+      <div class="photo-hero__overlay"></div>
+    </div>
+
+    <article class="article-body">
+      <div class="container--narrow">
+        <header class="article-header">
+          <div class="article-header__meta">
+            <span>2026.06.09</span>
+            <span class="article-header__dot"></span>
+            <span>6 分钟阅读</span>
+          </div>
+          <h1 class="article-header__title">用光影构建空间感</h1>
+          <p class="article-header__desc">关于如何在数字界面中通过光影对比建立视觉层次，而不是依赖颜色。</p>
+          <div class="article-header__tags">
+            <span class="tag">设计</span>
+            <span class="tag">思考</span>
+          </div>
+        </header>
+
+        <div class="article-content">
+          <p>在做这个网站之前，我花了很长时间思考一个问题：一个不需要依赖彩色就能传递情感和层次的界面，它的核心是什么？</p>
+          <p>答案是——<strong>光影</strong>。</p>
+          <p>摄影里有一个概念叫"光的质量"——硬光产生明确的阴影边界，软光产生柔和的过渡。同样的逻辑在界面设计中也成立。一个元素要"浮起来"，不是靠投影的模糊半径和颜色，而是靠它和背景之间的对比关系。</p>
+
+          <h2>从摄影中学到的</h2>
+          <p>去年我开始拍一些日常物件——书页边缘、杯中液体的反光、百叶窗在墙上的投影。这些照片给我最大的启发是：</p>
+          <blockquote>空间感不是靠颜色建立的，是靠对比建立的。</blockquote>
+          <p>一张黑白照片里，如果影调层次足够丰富，你完全能感受到物体的体积和空间位置。界面设计也一样——不需要蓝色渐变和紫色光晕，只需要正确的明暗排布。</p>
+
+          <h2>深色基底的选择</h2>
+          <p>这个网站选择了深色基底，但不是纯黑。纯黑在屏幕上看起来像"空洞"，而 <code>oklch(0.035 0.008 275)</code> 这个值——一个微微带冷紫的深色——因为有了色相，变得有"物质感"。</p>
+          <p>几个关键的对比层次：</p>
+          <ul>
+            <li><strong>背景层</strong>：最深的色彩，像画廊的墙面</li>
+            <li><strong>表面层</strong>：比背景亮约 5%，用于卡片和面板</li>
+            <li><strong>文字层</strong>：近白，但保留一定的柔和度</li>
+            <li><strong>高光</strong>：银灰色，仅用于交互和强调元素</li>
+          </ul>
+          <p>不用纯白文字是因为在深色背景上，纯白有一种"浮在屏幕上"的感觉，而近白（93% 亮度）像是"从纸面发出的光"。</p>
+
+          <h2>几何构图</h2>
+          <p>既然不用颜色来建立视觉趣味，构图的几何性就变得至关重要。每个页面都基于一个清晰的网格——但并不是均匀的 Bootstrap 式网格。</p>
+          <p>首页的作品展示区是 2:1 的不对称网格——一张大图占据左侧 2/3，两张小图堆叠在右侧。这种不对称创造了张力，让视线在页面中有停留和移动的节奏。</p>
+
+          <h2>图像的角色</h2>
+          <p>既然颜色被克制使用，图像就承担了提供色彩和温度的职责。每一张摄影图都经过挑选：</p>
+          <ul>
+            <li>C 饱和度降至 0.5，统一不同照片的风格</li>
+            <li>对比度 +15%，突出纹理和光影</li>
+            <li>从深色背景到图片的过渡用渐变蒙版（不锐利切割）</li>
+          </ul>
+          <p>整个网站只有 8 张图，但每一张图都在页面中扮演结构性的角色——它们不是"插图"，而是页面的空间构成元素。</p>
+
+          <p style="text-align:right; margin-top:var(--sp-xl); color:var(--c-fg-dim);">— August<br>2026 年 6 月</p>
+        </div>
+
+        <footer class="article-footer">
+          <div class="article-footer__nav">
+            <a href="#" class="article-footer__link">← 上一篇</a>
+            <a href="#" class="article-footer__link">下一篇 →</a>
+          </div>
+        </footer>
+      </div>
+    </article>
+  </main>
+
+  <!-- 状态: Loading -->
+  <div class="state-card state-loading state-override" style="min-height:100vh">
+    <div class="state-card__icon" style="animation:pulse 1.5s ease-in-out infinite">⟳</div>
+    <div class="state-card__title">加载中</div>
+    <p class="state-card__desc">正在加载文章…</p>
+    <style>@keyframes pulse { 0%,100% { opacity:0.3; } 50% { opacity:0.8; } }</style>
+  </div>
+
+  <!-- 状态: Error -->
+  <div class="state-card state-error state-override" style="min-height:100vh">
+    <div class="state-card__icon">!</div>
+    <div class="state-card__title">加载失败</div>
+    <p class="state-card__desc">无法获取文章内容。</p>
+    <a href="blog.html" class="btn" style="margin-top:var(--sp-lg)">返回笔记列表</a>
+  </div>
+
+  <!-- 状态: Empty -->
+  <div class="state-card state-empty state-override" style="min-height:100vh">
+    <div class="state-card__icon">—</div>
+    <div class="state-card__title">文章不存在</div>
+    <p class="state-card__desc">这篇笔记可能已被删除。</p>
+    <a href="blog.html" class="btn" style="margin-top:var(--sp-lg)">返回笔记列表</a>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('state')) document.body.dataset.state = params.get('state');
+
+      // 导航滚动 solid
+      const nav = document.getElementById('mainNav');
+      const hero = document.querySelector('.article-hero');
+      if (nav && hero) {
+        function updateNav() {
+          nav.classList.toggle('nav-v2--solid', hero.getBoundingClientRect().bottom < 60);
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+      }
+    })();
+  </script>
+</body>
+</html>

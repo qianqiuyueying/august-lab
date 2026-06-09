@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章管理 · 管理后台 · Atelier</title>
+  <link rel="stylesheet" href="design-tokens.css" />
+  <link rel="stylesheet" href="admin-tokens.css" />
+  <style>
+    html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+
+    /* 文章列表行 - 网格 */
+    .article-row {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1.2fr) 180px 100px 120px 120px;
+      gap: var(--sp-md);
+      align-items: center;
+      padding: var(--sp-md) var(--sp-lg);
+      border-bottom: 1px solid var(--c-border);
+      transition: background 0.2s var(--ease-expo);
+    }
+
+    .article-row:last-child { border-bottom: none; }
+    .article-row:hover { background: var(--c-surf-2); }
+
+    .article-row__title {
+      font-size: var(--fs-small);
+      font-weight: 500;
+      color: var(--c-fg);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .article-row__summary {
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .article-row__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .article-row__tag {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      padding: 1px 6px;
+      border: 1px solid var(--c-border);
+      color: var(--c-fg-dim);
+      border-radius: 1px;
+    }
+
+    .article-row__actions {
+      display: flex;
+      gap: var(--sp-sm);
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 800px) {
+      .article-row {
+        grid-template-columns: 1fr;
+        gap: var(--sp-xs);
+      }
+      .article-row__actions { justify-content: flex-start; }
+    }
+
+    /* 编辑器 - 简易 Markdown */
+    .md-editor {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-sm);
+      min-height: 280px;
+    }
+
+    .md-editor__input {
+      width: 100%;
+      height: 280px;
+      padding: var(--sp-sm);
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: var(--admin-radius-sm);
+      color: var(--c-fg);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-small);
+      outline: none;
+      resize: none;
+      transition: border-color 0.25s var(--ease-expo);
+    }
+
+    .md-editor__input:focus { border-color: var(--c-accent); }
+
+    .md-editor__preview {
+      height: 280px;
+      padding: var(--sp-sm);
+      overflow-y: auto;
+      background: var(--c-surf-2);
+      border: 1px solid var(--c-border);
+      border-radius: var(--admin-radius-sm);
+      font-size: var(--fs-small);
+      color: var(--c-fg);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 640px) {
+      .md-editor { grid-template-columns: 1fr; }
+      .md-editor__input { height: 200px; }
+      .md-editor__preview { height: 200px; }
+    }
+
+    /* 封面预览 */
+    .cover-preview {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      padding: var(--sp-sm);
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: var(--admin-radius-sm);
+      min-height: 40px;
+    }
+
+    .cover-preview__img {
+      width: 60px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 1px;
+      background: var(--c-surf-2);
+    }
+
+    .cover-preview__empty {
+      width: 60px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--c-muted);
+      background: var(--c-surf-2);
+      border-radius: 1px;
+    }
+
+    .cover-preview__label {
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      flex: 1;
+    }
+
+    /* 加载骨架 */
+    @keyframes shimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--c-surf) 25%, var(--c-surf-2) 50%, var(--c-surf) 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="admin-body">
+  <!-- ========== 侧边栏 ========== -->
+  <aside class="admin-sidebar admin-sidebar--open" id="sidebar">
+    <div class="admin-sidebar__header">
+      <span class="admin-sidebar__brand" id="sidebarBrand">管理后台</span>
+      <button class="admin-sidebar__toggle" id="sidebarToggle" title="收起侧边栏" onclick="toggleSidebar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="admin-dashboard.html" class="admin-nav__item">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span class="admin-nav__label">仪表盘</span>
+      </a>
+      <a href="admin-articles.html" class="admin-nav__item admin-nav__item--active">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 1 4 19.5z"/>
+          <line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/>
+        </svg>
+        <span class="admin-nav__label">文章管理</span>
+      </a>
+      <a href="admin-products.html" class="admin-nav__item">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/>
+        </svg>
+        <span class="admin-nav__label">产品管理</span>
+      </a>
+      <a href="admin-about.html" class="admin-nav__item">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span class="admin-nav__label">关于页</span>
+      </a>
+      <a href="admin-mascot.html" class="admin-nav__item">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="14" r="3"/><path d="M12 2a4 4 0 0 1 4 4c0 1.1-.7 2.6-1.5 3.5M9 10c-2 0-4 1-4 3s1 3 2 3.5M15 10c2 0 4 1 4 3s-1 3-2 3.5"/>
+        </svg>
+        <span class="admin-nav__label">看板娘</span>
+      </a>
+    </nav>
+
+    <div class="admin-sidebar__footer">
+      <a href="index.html" class="admin-nav__item">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="admin-nav__label">返回首页</span>
+      </a>
+      <button class="admin-nav__item" onclick="handleLogout()">
+        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span class="admin-nav__label">退出登录</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========== 主内容 ========== -->
+  <main class="admin-main">
+    <div class="admin-main__inner">
+
+      <!-- ===== 页面标题 ===== -->
+      <div class="admin-page-header">
+        <div>
+          <div class="admin-page-header__label">Console</div>
+          <h1 class="admin-page-header__title">文章管理</h1>
+          <p class="admin-page-header__desc">维护文章、草稿、标签、封面和发布状态。默认从列表进入编辑，标签和图片资源可以复用。</p>
+        </div>
+        <div class="admin-page-header__actions">
+          <button class="admin-btn" onclick="handleMdUpload()">上传 Markdown</button>
+          <button class="admin-btn admin-btn--primary" onclick="openCreateDrawer()">新建文章</button>
+        </div>
+      </div>
+
+      <!-- 隐藏的 Markdown 文件输入 -->
+      <input type="file" id="mdFileInput" accept=".md" style="display:none" onchange="handleMdFile(event)" />
+
+      <!-- ===== 统计卡片 ===== -->
+      <div class="admin-stats" id="statsRow">
+        <div class="admin-stat-card">
+          <div class="admin-stat-card__label admin-stat-card__label--blue">全部文章</div>
+          <div class="admin-stat-card__value">24</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-card__label admin-stat-card__label--green">已发布</div>
+          <div class="admin-stat-card__value">18</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-card__label admin-stat-card__label--amber">草稿</div>
+          <div class="admin-stat-card__value">6</div>
+        </div>
+      </div>
+
+      <!-- ===== 工具栏 ===== -->
+      <div class="admin-toolbar">
+        <label class="admin-search">
+          <input class="admin-search__input" type="text" placeholder="搜索标题、摘要或正文" id="searchInput" oninput="filterArticles()" />
+        </label>
+        <select class="admin-filter" id="statusFilter" onchange="filterArticles()">
+          <option value="all">全部状态</option>
+          <option value="published">已发布</option>
+          <option value="draft">草稿</option>
+        </select>
+        <select class="admin-filter" id="tagFilter" onchange="filterArticles()" style="width:140px;">
+          <option value="">全部标签</option>
+          <option value="设计">设计</option>
+          <option value="前端">前端</option>
+          <option value="摄影">摄影</option>
+          <option value="AI">AI</option>
+          <option value="随笔">随笔</option>
+          <option value="工具">工具</option>
+        </select>
+      </div>
+
+      <!-- ===== 文章列表 ===== -->
+      <div class="admin-panel">
+        <!-- 表头 -->
+        <div class="article-row" style="background:var(--c-surf-2);font-family:var(--ff-mono);font-size:11px;color:var(--c-fg-dim);letter-spacing:0.08em;cursor:default;">
+          <span></span><span>文章</span>
+          <span>标签</span>
+          <span>状态</span>
+          <span>更新时间</span>
+          <span style="text-align:right;">操作</span>
+        </div>
+
+        <!-- 文章行 -->
+        <div id="articleList">
+          <div class="article-row" data-status="published" data-tags="设计,前端" data-search="光影几何：深色主题的设计语言探索">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">光影几何：深色主题的设计语言探索</div>
+              <div class="article-row__summary">探讨在深色 UI 中如何通过光影、几何和材质构建有层次感的视觉系统。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">设计</span>
+              <span class="article-row__tag">前端</span>
+            </div>
+            <div><span class="admin-badge admin-badge--published">已发布</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">6月8日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="published" data-tags="设计,排版" data-search="Prata 与 Noto Serif SC 中英文混排字体搭配实践">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">Prata 与 Noto Serif SC：中英文混排字体搭配实践</div>
+              <div class="article-row__summary">如何优雅地在同一页面中协调英文衬线体和中文字体。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">设计</span>
+              <span class="article-row__tag">排版</span>
+            </div>
+            <div><span class="admin-badge admin-badge--published">已发布</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">6月5日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="draft" data-tags="前端,工具" data-search="JetBrains Mono 在 UI 设计中的 tabular-nums 应用">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">JetBrains Mono 在 UI 设计中的 tabular-nums 应用</div>
+              <div class="article-row__summary">在 data-heavy 界面中使用等宽数字实现整齐的表格和数值排列。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">前端</span>
+              <span class="article-row__tag">工具</span>
+            </div>
+            <div><span class="admin-badge admin-badge--draft">草稿</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">6月1日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="draft" data-tags="摄影" data-search="胶片颗粒质感在 Web 设计中的 digital-native 转译">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">胶片颗粒质感在 Web 设计中的 digital-native 转译</div>
+              <div class="article-row__summary">使用 SVG turbulence 滤镜和 CSS mask 实现不依赖图片的胶片颗粒纹理。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">摄影</span>
+            </div>
+            <div><span class="admin-badge admin-badge--draft">草稿</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">5月28日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="published" data-tags="AI" data-search="本地 ComfyUI 工作流搭建与加速技巧">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">本地 ComfyUI 工作流搭建与加速技巧</div>
+              <div class="article-row__summary">在 RTX 4060 上使用 z_image_turbo 实现快速出图和超分工作流。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">AI</span>
+            </div>
+            <div><span class="admin-badge admin-badge--published">已发布</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">5月20日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="published" data-tags="前端,设计" data-search="CSS Grid 布局中的响应式断点设计策略">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">CSS Grid 布局中的响应式断点设计策略</div>
+              <div class="article-row__summary">从 mobile-first 到 container queries，现代 CSS 布局的断点管理方法。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">前端</span>
+              <span class="article-row__tag">设计</span>
+            </div>
+            <div><span class="admin-badge admin-badge--published">已发布</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">5月15日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="draft" data-tags="AI,工具" data-search="利用 LLM 辅助前端 UI 组件生成的最佳实践">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">利用 LLM 辅助前端 UI 组件生成的最佳实践</div>
+              <div class="article-row__summary">从 prompt engineering 到组件迭代，用 AI 提升前端开发效率的经验总结。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">AI</span>
+              <span class="article-row__tag">工具</span>
+            </div>
+            <div><span class="admin-badge admin-badge--draft">草稿</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">5月8日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <div class="article-row" data-status="published" data-tags="摄影,设计" data-search="暗调摄影在深色主题 web 设计中的视觉叙事">
+            <span class="admin-drag-handle" draggable="true">⠿</span><div>
+              <div class="article-row__title">暗调摄影在深色主题 Web 设计中的视觉叙事</div>
+              <div class="article-row__summary">如何用高对比度摄影作品强化深色界面的情感表达与品牌记忆点。</div>
+            </div>
+            <div class="article-row__tags">
+              <span class="article-row__tag">摄影</span>
+              <span class="article-row__tag">设计</span>
+            </div>
+            <div><span class="admin-badge admin-badge--published">已发布</span></div>
+            <div style="font-size:var(--fs-meta);color:var(--c-fg-dim);">4月28日</div>
+            <div class="article-row__actions">
+              <button class="admin-action-link" onclick="openEditDrawer(this)">编辑</button>
+              <button class="admin-action-link admin-action-link--danger" onclick="openDeleteModal(this)">删除</button>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="admin-pagination" id="articlePagination">
+            <button class="admin-pagination__btn admin-pagination__btn--disabled" onclick="goToPage(1, 'prev')" id="prevBtn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div id="pageButtons"></div>
+            <span class="admin-pagination__info" id="pageInfo">1 / 2</span>
+            <button class="admin-pagination__btn" onclick="goToPage(1, 'next')" id="nextBtn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== 新建/编辑抽屉 ========== -->
+  <div class="admin-drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="admin-drawer" id="articleDrawer">
+    <div class="admin-drawer__header">
+      <div>
+        <h2 class="admin-drawer__title" id="drawerTitle">新建文章</h2>
+        <p class="admin-drawer__desc">填写标题、摘要、封面、标签和发布状态，正文支持 Markdown 与图片链接。</p>
+      </div>
+      <button class="admin-drawer__close" onclick="closeDrawer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="admin-drawer__body">
+      <form id="articleForm" onsubmit="saveArticle(event)">
+        <!-- 标题 + 状态 -->
+        <div class="admin-form-grid">
+          <div class="admin-form-group">
+            <label class="admin-form-label">标题</label>
+            <input class="admin-input" type="text" id="articleTitle" required placeholder="文章标题" />
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">状态</label>
+            <select class="admin-select" id="articleStatus">
+              <option value="draft">草稿</option>
+              <option value="published">发布</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 摘要 -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">摘要</label>
+          <input class="admin-input" type="text" id="articleSummary" placeholder="用于列表和文章页的简短说明" />
+        </div>
+
+        <!-- 封面 -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">封面图片</label>
+          <div class="cover-preview">
+            <div class="cover-preview__empty" id="coverPreviewEmpty">+</div>
+            <img class="cover-preview__img" id="coverPreviewImg" src="" alt="" style="display:none;" />
+            <span class="cover-preview__label" id="coverLabel">点击选择封面图片</span>
+            <button type="button" class="admin-btn admin-btn--ghost" onclick="selectCover()" style="height:28px;padding:0 10px;font-size:11px;">选择</button>
+            <button type="button" class="admin-btn admin-btn--ghost" onclick="clearCover()" style="height:28px;padding:0 10px;font-size:11px;color:var(--c-danger);">清除</button>
+          </div>
+        </div>
+
+        <!-- 标签 -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">标签</label>
+          <div class="admin-tag-selector" id="tagSelector">
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">设计</span>
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">前端</span>
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">摄影</span>
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">AI</span>
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">随笔</span>
+            <span class="admin-tag-selector__item" onclick="toggleTag(this)">工具</span>
+          </div>
+        </div>
+
+        <!-- 正文 -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">正文（Markdown）</label>
+          <div class="md-editor">
+            <textarea class="md-editor__input" id="articleContent" placeholder="使用 Markdown 格式编写正文..." oninput="updatePreview()">## 开始写作
+
+在这里输入你的文章内容。
+
+- 支持 **Markdown** 语法
+- 支持 *斜体* 和 `代码块`
+- 支持图片链接 `![alt](url)`</textarea>
+            <div class="md-editor__preview" id="mdPreview">## 开始写作
+
+在这里输入你的文章内容。
+
+- 支持 **Markdown** 语法
+- 支持 *斜体* 和 `代码块`
+- 支持图片链接 `![alt](url)`</div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="admin-drawer__footer">
+      <button class="admin-btn" onclick="closeDrawer()">取消</button>
+      <button class="admin-btn admin-btn--primary" form="articleForm">保存</button>
+    </div>
+  </aside>
+
+  <!-- ========== 确认删除弹窗 ========== -->
+  <div class="admin-modal-overlay" id="deleteModal">
+    <div class="admin-modal">
+      <h3 class="admin-modal__title">删除文章</h3>
+      <p class="admin-modal__desc" id="deleteDesc">确定要删除这篇文章吗？这个操作不能撤销。</p>
+      <div class="admin-modal__actions">
+        <button class="admin-btn" onclick="closeDeleteModal()">取消</button>
+        <button class="admin-btn admin-btn--danger" onclick="confirmDelete()">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 放弃修改确认 ========== -->
+  <div class="admin-modal-overlay" id="discardModal">
+    <div class="admin-modal">
+      <h3 class="admin-modal__title">放弃修改？</h3>
+      <p class="admin-modal__desc">你有未保存的修改，确定要放弃吗？</p>
+      <div class="admin-modal__actions">
+        <button class="admin-btn" onclick="closeDiscardModal()">继续编辑</button>
+        <button class="admin-btn admin-btn--danger" onclick="confirmDiscard()">放弃修改</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 退出弹窗 ========== -->
+  <div class="admin-modal-overlay" id="logoutModal">
+    <div class="admin-modal">
+      <h3 class="admin-modal__title">退出登录</h3>
+      <p class="admin-modal__desc">确定要退出管理后台吗？</p>
+      <div class="admin-modal__actions">
+        <button class="admin-btn" onclick="closeLogoutModal()">取消</button>
+        <button class="admin-btn admin-btn--danger" onclick="confirmLogout()">退出</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================
+    // 侧边栏
+    // =========================================
+    var sidebarCollapsed = localStorage.getItem('atelier-admin-sidebar') === 'collapsed';
+    function applySidebarState() {
+      var s = document.getElementById('sidebar');
+      var b = document.getElementById('sidebarBrand');
+      var labels = document.querySelectorAll('.admin-nav__label');
+      var t = document.getElementById('sidebarToggle');
+      if (sidebarCollapsed) {
+        s.classList.remove('admin-sidebar--open'); s.classList.add('admin-sidebar--closed');
+        b.classList.add('admin-sidebar__brand--hidden');
+        labels.forEach(function(l) { l.classList.add('admin-nav__label--hidden'); });
+        t.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+        t.title = '展开侧边栏';
+      } else {
+        s.classList.remove('admin-sidebar--closed'); s.classList.add('admin-sidebar--open');
+        b.classList.remove('admin-sidebar__brand--hidden');
+        labels.forEach(function(l) { l.classList.remove('admin-nav__label--hidden'); });
+        t.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+        t.title = '收起侧边栏';
+      }
+    }
+    function toggleSidebar() { sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('atelier-admin-sidebar', sidebarCollapsed ? 'collapsed' : 'open'); applySidebarState(); }
+    applySidebarState();
+
+    // =========================================
+    // 退出
+    // =========================================
+    function handleLogout() { document.getElementById('logoutModal').classList.add('admin-modal-overlay--open'); }
+    function closeLogoutModal() { document.getElementById('logoutModal').classList.remove('admin-modal-overlay--open'); }
+    function confirmLogout() { closeLogoutModal(); }
+    document.getElementById('logoutModal').addEventListener('click', function(e) { if (e.target === this) closeLogoutModal(); });
+
+    // =========================================
+    // 搜索/筛选
+    // =========================================
+    function filterArticles() {
+      var q = document.getElementById('searchInput').value.toLowerCase();
+      var status = document.getElementById('statusFilter').value;
+      var tag = document.getElementById('tagFilter').value;
+      var rows = document.querySelectorAll('.article-row[data-status]');
+      rows.forEach(function(row) {
+        var match = true;
+        if (status !== 'all' && row.getAttribute('data-status') !== status) match = false;
+        if (tag && row.getAttribute('data-tags').indexOf(tag) === -1) match = false;
+        if (q && row.getAttribute('data-search').toLowerCase().indexOf(q) === -1) match = false;
+        row.style.display = match ? '' : 'none';
+      });
+    }
+
+    // =========================================
+    // 文章编辑抽屉
+    // =========================================
+    var drawerMode = 'create';
+    var currentDeleteRow = null;
+    var formDirty = false;
+    var pendingClose = null;
+
+    function markDirty() { formDirty = true; }
+
+    function resetDirty() {
+      formDirty = false;
+      document.querySelectorAll('#articleForm input, #articleForm textarea, #articleForm select').forEach(function(el) {
+        el.removeEventListener('input', markDirty);
+        el.addEventListener('input', markDirty);
+      });
+    }
+
+    function openCreateDrawer() {
+      drawerMode = 'create';
+      document.getElementById('drawerTitle').textContent = '新建文章';
+      document.getElementById('articleTitle').value = '';
+      document.getElementById('articleStatus').value = 'draft';
+      document.getElementById('articleSummary').value = '';
+      document.getElementById('articleContent').value = '';
+      clearCover();
+      document.querySelectorAll('#tagSelector .admin-tag-selector__item--active').forEach(function(el) { el.classList.remove('admin-tag-selector__item--active'); });
+      updatePreview();
+      resetDirty();
+      openDrawer();
+    }
+
+    function openEditDrawer(btn) {
+      drawerMode = 'edit';
+      document.getElementById('drawerTitle').textContent = '编辑文章';
+      var row = btn.closest('.article-row');
+      var title = row.querySelector('.article-row__title').textContent;
+      document.getElementById('articleTitle').value = title;
+      document.getElementById('articleStatus').value = row.getAttribute('data-status');
+      document.getElementById('articleSummary').value = row.querySelector('.article-row__summary').textContent;
+      document.getElementById('articleContent').value = '# ' + title + '\n\n在此编辑文章内容...';
+      // 标签
+      document.querySelectorAll('#tagSelector .admin-tag-selector__item--active').forEach(function(el) { el.classList.remove('admin-tag-selector__item--active'); });
+      var tags = row.getAttribute('data-tags').split(',');
+      document.querySelectorAll('#tagSelector .admin-tag-selector__item').forEach(function(el) {
+        if (tags.indexOf(el.textContent) !== -1) el.classList.add('admin-tag-selector__item--active');
+      });
+      updatePreview();
+      resetDirty();
+      openDrawer();
+    }
+
+    function openDrawer() {
+      document.getElementById('drawerOverlay').classList.add('admin-drawer-overlay--open');
+      document.getElementById('articleDrawer').classList.add('admin-drawer--open');
+    }
+
+    function closeDrawer() {
+      if (formDirty) {
+        document.getElementById('discardModal').classList.add('admin-modal-overlay--open');
+        return;
+      }
+      document.getElementById('drawerOverlay').classList.remove('admin-drawer-overlay--open');
+      document.getElementById('articleDrawer').classList.remove('admin-drawer--open');
+    }
+
+    function closeDiscardModal() {
+      document.getElementById('discardModal').classList.remove('admin-modal-overlay--open');
+    }
+
+    function confirmDiscard() {
+      document.getElementById('discardModal').classList.remove('admin-modal-overlay--open');
+      formDirty = false;
+      document.getElementById('drawerOverlay').classList.remove('admin-drawer-overlay--open');
+      document.getElementById('articleDrawer').classList.remove('admin-drawer--open');
+    }
+
+    document.getElementById('discardModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDiscardModal();
+    });
+
+    function saveArticle(e) {
+      e.preventDefault();
+      formDirty = false;
+      closeDrawer();
+    }
+
+    // =========================================
+    // 标签选择
+    // =========================================
+    function toggleTag(el) {
+      el.classList.toggle('admin-tag-selector__item--active');
+    }
+
+    // =========================================
+    // Markdown 预览
+    // =========================================
+    function updatePreview() {
+      var md = document.getElementById('articleContent').value;
+      var preview = document.getElementById('mdPreview');
+      // 简易 Markdown → 纯文本预览（原型层面展示布局）
+      var html = md
+        .replace(/^### (.+)$/gm, '<strong>$1</strong>')
+        .replace(/^## (.+)$/gm, '<strong>$1</strong>')
+        .replace(/^# (.+)$/gm, '<strong>$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code style="font-family:var(--ff-mono);background:var(--c-surf-2);padding:1px 4px;border-radius:1px;font-size:0.9em;">$1</code>')
+        .replace(/^- (.+)$/gm, '• $1')
+        .replace(/\n\n/g, '<br><br>');
+      preview.innerHTML = html;
+    }
+
+    // =========================================
+    // 封面
+    // =========================================
+    var coverUrl = '';
+
+    function selectCover() {
+      coverUrl = '/images/prism-light.png';
+      document.getElementById('coverPreviewImg').src = coverUrl;
+      document.getElementById('coverPreviewImg').style.display = '';
+      document.getElementById('coverPreviewEmpty').style.display = 'none';
+      document.getElementById('coverLabel').textContent = coverUrl;
+    }
+
+    function clearCover() {
+      coverUrl = '';
+      document.getElementById('coverPreviewImg').style.display = 'none';
+      document.getElementById('coverPreviewEmpty').style.display = 'flex';
+      document.getElementById('coverLabel').textContent = '点击选择封面图片';
+    }
+
+    // =========================================
+    // Markdown 上传
+    // =========================================
+    function handleMdUpload() {
+      document.getElementById('mdFileInput').click();
+    }
+
+    function handleMdFile(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var content = ev.target.result;
+        // 尝试从第一行提取标题
+        var lines = content.split('\n');
+        var title = '';
+        for (var i = 0; i < Math.min(lines.length, 10); i++) {
+          var m = lines[i].match(/^#\s+(.+)/);
+          if (m) { title = m[1]; break; }
+        }
+        openCreateDrawer();
+        document.getElementById('articleTitle').value = title || file.name.replace(/\.md$/, '');
+        document.getElementById('articleContent').value = content;
+        updatePreview();
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    // =========================================
+    // 删除
+    // =========================================
+    function openDeleteModal(btn) {
+      currentDeleteRow = btn.closest('.article-row');
+      var title = currentDeleteRow.querySelector('.article-row__title').textContent;
+      document.getElementById('deleteDesc').textContent = '确定要删除文章「' + title + '」吗？这个操作不能撤销。';
+      document.getElementById('deleteModal').classList.add('admin-modal-overlay--open');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.remove('admin-modal-overlay--open');
+      currentDeleteRow = null;
+    }
+
+    function confirmDelete() {
+      if (currentDeleteRow) {
+        currentDeleteRow.remove();
+        // 更新统计
+        updateStats();
+      }
+      closeDeleteModal();
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDeleteModal();
+    });
+
+    function updateStats() {
+      var published = document.querySelectorAll('.article-row[data-status="published"]').length;
+      var draft = document.querySelectorAll('.article-row[data-status="draft"]').length;
+      var total = published + draft;
+      document.querySelectorAll('.admin-stat-card__value')[0].textContent = total;
+      document.querySelectorAll('.admin-stat-card__value')[1].textContent = published;
+      document.querySelectorAll('.admin-stat-card__value')[2].textContent = draft;
+    }
+
+    // =========================================
+    // 拖拽排序
+    // =========================================
+    function initDragSort(containerId) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var items = container.querySelectorAll('[data-status]');
+      items.forEach(function(item) { item.draggable = true; });
+
+      container.addEventListener('dragstart', function(e) {
+        var row = e.target.closest('[data-status]');
+        if (!row) return;
+        row.classList.add('admin-row--dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', Array.prototype.indexOf.call(container.children, row));
+      });
+
+      container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        var target = e.target.closest('[data-status]');
+        if (!target || target.classList.contains('admin-row--dragging')) return;
+        target.classList.remove('admin-row--drag-over');
+        target.classList.add('admin-row--drag-over');
+      });
+
+      container.addEventListener('dragleave', function(e) {
+        var target = e.target.closest('[data-status]');
+        if (target) target.classList.remove('admin-row--drag-over');
+      });
+
+      container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        container.querySelectorAll('.admin-row--dragging, .admin-row--drag-over').forEach(function(el) {
+          el.classList.remove('admin-row--dragging', 'admin-row--drag-over');
+        });
+        var dragged = container.querySelector('.admin-row--dragging');
+        var target = e.target.closest('[data-status]');
+        if (!target || !dragged || dragged === target) return;
+        var rect = target.getBoundingClientRect();
+        var mid = rect.top + rect.height / 2;
+        if (e.clientY < mid) container.insertBefore(dragged, target);
+        else container.insertBefore(dragged, target.nextSibling);
+        showToast('排序已更新');
+      });
+
+      container.addEventListener('dragend', function(e) {
+        container.querySelectorAll('.admin-row--dragging, .admin-row--drag-over').forEach(function(el) {
+          el.classList.remove('admin-row--dragging', 'admin-row--drag-over');
+        });
+      });
+    }
+
+    // =========================================
+    // Toast 消息
+    // =========================================
+    function showToast(msg) {
+      var t = document.getElementById('sortToast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'sortToast';
+        t.className = 'admin-toast';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.classList.add('admin-toast--show');
+      setTimeout(function() { t.classList.remove('admin-toast--show'); }, 2000);
+    }
+
+    initDragSort('articleList');
+
+    // =========================================
+    // 分页
+    // =========================================
+    var PER_PAGE = 5;
+    var currentPage = 1;
+
+    function getAllItems() {
+      return Array.prototype.slice.call(document.querySelectorAll('#articleList > .article-row[data-status]'));
+    }
+
+    function getVisibleItems() {
+      return getAllItems().filter(function(row) { return row.style.display !== 'none'; });
+    }
+
+    function renderPagination() {
+      var visible = getVisibleItems();
+      var totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      // 隐藏所有
+      visible.forEach(function(row, i) {
+        row.style.display = i >= (currentPage - 1) * PER_PAGE && i < currentPage * PER_PAGE ? '' : 'none';
+      });
+
+      // 页面按钮
+      var container = document.getElementById('pageButtons');
+      container.innerHTML = '';
+      for (var p = 1; p <= totalPages; p++) {
+        var btn = document.createElement('button');
+        btn.className = 'admin-pagination__btn' + (p === currentPage ? ' admin-pagination__btn--active' : '');
+        btn.textContent = p;
+        btn.onclick = (function(page) { return function() { goToPage(page); }; })(p);
+        container.appendChild(btn);
+      }
+
+      // 上下页
+      document.getElementById('prevBtn').className = 'admin-pagination__btn' + (currentPage <= 1 ? ' admin-pagination__btn--disabled' : '');
+      document.getElementById('nextBtn').className = 'admin-pagination__btn' + (currentPage >= totalPages ? ' admin-pagination__btn--disabled' : '');
+      document.getElementById('pageInfo').textContent = currentPage + ' / ' + totalPages;
+
+      updateStats();
+    }
+
+    function goToPage(page, dir) {
+      var visible = getVisibleItems();
+      var totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+      if (dir === 'prev') page = Math.max(1, currentPage - 1);
+      else if (dir === 'next') page = Math.min(totalPages, currentPage + 1);
+      else page = Math.max(1, Math.min(totalPages, page));
+      if (page === currentPage) return;
+      currentPage = page;
+      renderPagination();
+    }
+
+    // 分页感知的 updateStats
+    function updateStats() {
+      var all = getAllItems();
+      var published = all.filter(function(row) { return row.getAttribute('data-status') === 'published'; }).length;
+      var draft = all.filter(function(row) { return row.getAttribute('data-status') === 'draft'; }).length;
+      var total = published + draft;
+      document.querySelectorAll('.admin-stat-card__value')[0].textContent = total;
+      document.querySelectorAll('.admin-stat-card__value')[1].textContent = published;
+      document.querySelectorAll('.admin-stat-card__value')[2].textContent = draft;
+    }
+
+    // 覆盖 filterArticles 以支持分页
+    function filterArticles() {
+      var q = document.getElementById('searchInput').value.toLowerCase();
+      var status = document.getElementById('statusFilter').value;
+      var tag = document.getElementById('tagFilter').value;
+      var rows = getAllItems();
+      rows.forEach(function(row) {
+        var match = true;
+        if (status !== 'all' && row.getAttribute('data-status') !== status) match = false;
+        if (tag && row.getAttribute('data-tags').indexOf(tag) === -1) match = false;
+        if (q && row.getAttribute('data-search').toLowerCase().indexOf(q) === -1) match = false;
+        row.style.display = match ? '' : 'none';
+      });
+      currentPage = 1;
+      renderPagination();
+    }
+
+    // 覆盖 confirmDelete
+    function confirmDelete() {
+      if (currentDeleteRow) {
+        currentDeleteRow.remove();
+        currentPage = 1;
+        renderPagination();
+      }
+      closeDeleteModal();
+    }
+
+    // 初始渲染分页
+    renderPagination();
+  </script>
+</body>
+</html>

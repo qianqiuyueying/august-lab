@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录 · Atelier</title>
+  <link rel="stylesheet" href="design-tokens.css" />
+  <style>
+    /* ==========================================
+       Login — 登录页 · 光影几何
+       ========================================== */
+
+    .login {
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 背景光影 */
+    .login__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .login__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.3) contrast(1.2) brightness(0.4);
+    }
+
+    .login__bg .photo-hero__overlay {
+      background: linear-gradient(
+        135deg,
+        oklch(0.035 0.008 275 / 0.7) 0%,
+        var(--c-bg) 100%
+      );
+    }
+
+    /* ———— 表单卡片 ———— */
+    .login__card {
+      position: relative;
+      z-index: 2;
+      width: min(92%, 400px);
+      padding: var(--sp-xl);
+      background: oklch(0.08 0.01 270 / 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-lg);
+    }
+
+    .login__brand {
+      font-family: var(--ff-display);
+      font-size: var(--fs-display);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-align: center;
+      color: var(--c-light);
+    }
+
+    .login__header {
+      text-align: center;
+    }
+
+    .login__title {
+      font-family: var(--ff-body);
+      font-size: var(--fs-h3);
+      font-weight: 400;
+      margin-bottom: var(--sp-xs);
+    }
+
+    .login__sub {
+      color: var(--c-fg-dim);
+      font-size: var(--fs-small);
+    }
+
+    /* ———— 表单 ———— */
+    .login__form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-md);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-xs);
+    }
+
+    .form-group label {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input {
+      padding: var(--sp-sm) var(--sp-md);
+      background: oklch(0.15 0.012 270 / 0.6);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      color: var(--c-fg);
+      font-family: var(--ff-body);
+      font-size: var(--fs-body);
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--c-light);
+    }
+
+    .form-group input::placeholder {
+      color: var(--c-muted);
+    }
+
+    .login__submit {
+      padding: var(--sp-sm) var(--sp-lg);
+      background: transparent;
+      border: 1px solid var(--c-border-l);
+      border-radius: var(--radius-sm);
+      color: var(--c-fg);
+      font-family: var(--ff-body);
+      font-size: var(--fs-small);
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-expo);
+      margin-top: var(--sp-sm);
+    }
+
+    .login__submit:hover {
+      background: var(--c-fg);
+      color: var(--c-bg);
+      border-color: var(--c-fg);
+    }
+
+    .login__error {
+      padding: var(--sp-sm) var(--sp-md);
+      background: oklch(0.5 0.15 30 / 0.15);
+      border: 1px solid oklch(0.5 0.15 30 / 0.3);
+      border-radius: var(--radius-sm);
+      color: oklch(0.7 0.12 30);
+      font-size: var(--fs-small);
+      display: none;
+    }
+
+    .login__error--visible {
+      display: block;
+    }
+
+    /* ———— Loading 状态 ———— */
+    .login__submit--loading {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* ———— 响应式 ———— */
+    @media (max-width: 430px) {
+      .login__card {
+        padding: var(--sp-lg);
+      }
+    }
+
+    /* ———— 状态覆盖 ———— */
+    .state-override { display: none; }
+    body[data-state="loading"] .state-loading { display: flex; }
+    body[data-state="error"] .state-error { display: flex; }
+    body[data-state="error"] .login__error { display: block; }
+    body[data-state="empty"] .state-empty { display: flex; }
+  </style>
+</head>
+<body>
+
+  <main class="login">
+    <!-- 背景 -->
+    <div class="login__bg photo-hero">
+      <img src="../images/glass-shadow.png" alt="" loading="eager" />
+      <div class="photo-hero__overlay"></div>
+    </div>
+
+    <!-- 登录卡片 -->
+    <div class="login__card" style="position:relative;z-index:2">
+      <div class="login__brand">Atelier</div>
+
+      <div class="login__header">
+        <h1 class="login__title">登录</h1>
+        <p class="login__sub">输入凭据以管理后台</p>
+      </div>
+
+      <div class="login__error" id="loginError">
+        用户名或密码错误，请重试。
+      </div>
+
+      <form class="login__form" id="loginForm">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input id="username" type="text" placeholder="输入用户名" />
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input id="password" type="password" placeholder="输入密码" />
+        </div>
+        <button type="submit" class="login__submit" id="loginBtn">
+          登录
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <div class="state-card state-loading state-override" style="min-height:100vh">
+    <div class="state-card__icon" style="animation:pulse 1.5s ease-in-out infinite">⟳</div>
+    <div class="state-card__title">验证中</div>
+    <p class="state-card__desc">正在验证身份…</p>
+    <style>@keyframes pulse { 0%,100% { opacity:0.3; } 50% { opacity:0.8; } }</style>
+  </div>
+
+  <div class="state-card state-error state-override" style="min-height:100vh">
+    <div class="state-card__icon">!</div>
+    <div class="state-card__title">验证失败</div>
+    <p class="state-card__desc">无法连接到认证服务。</p>
+    <button class="btn" style="margin-top:var(--sp-lg)" onclick="location.reload()">重试</button>
+  </div>
+
+  <div class="state-card state-empty state-override" style="min-height:100vh">
+    <div class="state-card__icon">—</div>
+    <div class="state-card__title">服务不可用</div>
+    <p class="state-card__desc">认证服务暂未配置。</p>
+  </div>
+
+  <script>
+    (function() {
+      // 登录表单交互
+      const form = document.getElementById('loginForm');
+      const btn = document.getElementById('loginBtn');
+      const error = document.getElementById('loginError');
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          btn.classList.add('login__submit--loading');
+          btn.textContent = '验证中…';
+          error.classList.remove('login__error--visible');
+
+          // 模拟验证延迟
+          setTimeout(() => {
+            btn.classList.remove('login__submit--loading');
+            btn.textContent = '登录';
+            error.classList.add('login__error--visible');
+          }, 1500);
+        });
+      }
+
+      // URL 参数状态
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('state')) {
+        document.querySelectorAll('.login, .login__card').forEach(el => {
+          if (params.get('state') === 'loading') el.style.display = 'none';
+        });
+        if (params.get('state') === 'loading') document.body.dataset.state = 'loading';
+        if (params.get('state') === 'error') document.body.dataset.state = 'error';
+        if (params.get('state') === 'empty') document.body.dataset.state = 'empty';
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier — 光影几何 · 设计系统</title>
+  <link rel="stylesheet" href="design-tokens.css" />
+  <style>
+    /* ==========================================
+       Index — 设计系统入口总览
+       ========================================== */
+
+    /* ———— Hero ———— */
+    .ds-hero {
+      padding: calc(var(--sp-3xl) + var(--sp-2xl)) 0 var(--sp-2xl);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ds-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--c-border-l), transparent);
+    }
+
+    .ds-hero__label {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: var(--sp-md);
+    }
+
+    .ds-hero__title {
+      font-family: var(--ff-display);
+      font-size: var(--fs-hero);
+      font-weight: 400;
+      line-height: 1.08;
+      margin-bottom: var(--sp-lg);
+    }
+
+    .ds-hero__title .light { color: var(--c-light); }
+
+    .ds-hero__desc {
+      color: var(--c-fg-dim);
+      max-width: 480px;
+      margin-inline: auto;
+      font-weight: 300;
+    }
+
+    /* ———— 色板 ———— */
+    .palette {
+      padding: var(--sp-2xl) 0;
+    }
+
+    .palette .container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--sp-md);
+    }
+
+    .palette__item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-xs);
+    }
+
+    .palette__swatch {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border);
+    }
+
+    .palette__name {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+    }
+
+    .palette__value {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      color: var(--c-muted);
+      word-break: break-all;
+    }
+
+    /* ———— 字体 ———— */
+    .fonts {
+      padding: var(--sp-2xl) 0;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .fonts .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-xl);
+    }
+
+    .font-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-sm);
+    }
+
+    .font-card__preview {
+      font-size: var(--fs-h2);
+      line-height: 1.2;
+      padding: var(--sp-lg) 0;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .font-card__name {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-fg-dim);
+    }
+
+    .font-card__role {
+      font-size: var(--fs-small);
+      color: var(--c-muted);
+    }
+
+    /* ———— 页面导航 ———— */
+    .page-nav {
+      padding: var(--sp-2xl) 0;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .page-nav__title {
+      font-family: var(--ff-body);
+      font-size: var(--fs-meta);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c-fg-dim);
+      margin-bottom: var(--sp-lg);
+      padding-bottom: var(--sp-sm);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .page-nav__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--c-border);
+    }
+
+    .page-card {
+      background: var(--c-bg);
+      padding: var(--sp-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-sm);
+      transition: background 0.3s var(--ease-expo);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page-card:hover {
+      background: var(--c-surf);
+    }
+
+    .page-card__icon {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .page-card__name {
+      font-family: var(--ff-display);
+      font-size: var(--fs-h3);
+      font-weight: 400;
+    }
+
+    .page-card__desc {
+      color: var(--c-fg-dim);
+      font-size: var(--fs-small);
+    }
+
+    .page-card__state {
+      display: flex;
+      gap: var(--sp-xs);
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      color: var(--c-muted);
+      margin-top: auto;
+    }
+
+    .page-card__state span {
+      padding: 0.15em 0.4em;
+      border: 1px solid var(--c-border);
+      border-radius: 1px;
+    }
+
+    /* ———— 状态说明 ———— */
+    .states-section {
+      padding: var(--sp-2xl) 0;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .states-section__title {
+      font-family: var(--ff-body);
+      font-size: var(--fs-meta);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c-fg-dim);
+      margin-bottom: var(--sp-lg);
+      padding-bottom: var(--sp-sm);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-lg);
+    }
+
+    .state-demo {
+      padding: var(--sp-lg);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-sm);
+    }
+
+    .state-demo__name {
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      color: var(--c-light);
+    }
+
+    .state-demo__code {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      color: var(--c-muted);
+    }
+
+    /* ———— 响应式 ———— */
+    @media (max-width: 920px) {
+      .palette .container { grid-template-columns: repeat(3, 1fr); }
+      .fonts .container { grid-template-columns: 1fr; }
+      .page-nav__grid { grid-template-columns: repeat(2, 1fr); }
+      .states-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .palette .container { grid-template-columns: repeat(2, 1fr); }
+      .page-nav__grid { grid-template-columns: 1fr; }
+    }
+
+    /* ———— 页脚 ———— */
+    .ds-footer {
+      padding: var(--sp-2xl) 0;
+      text-align: center;
+      color: var(--c-muted);
+      font-family: var(--ff-mono);
+      font-size: var(--fs-meta);
+      border-top: 1px solid var(--c-border);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-v2 nav-v2--solid">
+    <a href="index.html" class="nav-v2__brand">Atelier</a>
+    <div class="nav-v2__links">
+      <a href="home.html" class="nav-v2__link">首页</a>
+      <a href="blog.html" class="nav-v2__link">笔记</a>
+      <a href="products.html" class="nav-v2__link">作品</a>
+      <a href="about.html" class="nav-v2__link">关于</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <header class="ds-hero">
+      <div class="container">
+        <p class="ds-hero__label">光影几何 · 设计系统</p>
+        <h1 class="ds-hero__title">
+          <span class="light">Atelier</span>
+        </h1>
+        <p class="ds-hero__desc">
+          一个以光影和几何为核心的深色设计系统。不使用彩色，依靠对比、空间和结构建立视觉层次。
+        </p>
+      </div>
+    </header>
+
+    <!-- 色板 -->
+    <section class="palette">
+      <div class="container">
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-bg)"></div>
+          <span class="palette__name">背景</span>
+          <span class="palette__value">oklch(0.035 0.008 275)</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-surf)"></div>
+          <span class="palette__name">表面</span>
+          <span class="palette__value">oklch(0.085 0.012 270)</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-surf-2)"></div>
+          <span class="palette__name">表面凸起</span>
+          <span class="palette__value">oklch(0.11 0.014 268)</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-fg)"></div>
+          <span class="palette__name">文字</span>
+          <span class="palette__value">oklch(0.93 0.005 270)</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-fg-dim)"></div>
+          <span class="palette__name">文字弱</span>
+          <span class="palette__value">oklch(0.45 0.012 270)</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:var(--c-light)"></div>
+          <span class="palette__name">高光</span>
+          <span class="palette__value">oklch(0.78 0.015 270)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 字体 -->
+    <section class="fonts">
+      <div class="container">
+        <div class="font-card">
+          <div class="font-card__preview" style="font-family:var(--ff-display)">
+            Prata · 衬线
+          </div>
+          <span class="font-card__name">展示字体</span>
+          <span class="font-card__role">标题、Hero、引文 — 优雅几何衬线</span>
+        </div>
+        <div class="font-card">
+          <div class="font-card__preview" style="font-family:'Noto Sans SC',system-ui,sans-serif">
+            思源黑体 · 正文
+          </div>
+          <span class="font-card__name">正文字体</span>
+          <span class="font-card__role">内容、导航、UI — 中文阅读优化</span>
+        </div>
+        <div class="font-card">
+          <div class="font-card__preview" style="font-family:var(--ff-mono)">
+            JetBrains Mono · 等宽
+          </div>
+          <span class="font-card__name">等宽字体</span>
+          <span class="font-card__role">代码、标签、元数据 — 精密感</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图片库 -->
+    <section class="palette" style="border-top:1px solid var(--c-border)">
+      <div class="container" style="grid-template-columns:repeat(4,1fr)">
+        <div style="grid-column:1/-1;margin-bottom:var(--sp-md)">
+          <p class="page-nav__title" style="margin-bottom:0">图片库 · 8 张摄影作品</p>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/venetian-blind-shadow.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">百叶窗光影</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/glass-shadow.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">玻璃杯阴影</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/perforated-metal-shadow.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">穿孔金属板</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/plaster-geometric.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">几何石膏体</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/paper-folds-shadow.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">折纸几何</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/prism-light.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">棱镜折射</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/grid-shadow.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">网格投影</span>
+        </div>
+        <div class="palette__item">
+          <div class="palette__swatch" style="background:url('../images/metal-ruler.png') center/cover;aspect-ratio:4/3;border-radius:2px"></div>
+          <span class="palette__name">金属尺微距</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页面导航 -->
+    <section class="page-nav">
+      <div class="container">
+        <h2 class="page-nav__title">页面</h2>
+        <div class="page-nav__grid">
+
+          <a href="home.html" class="page-card">
+            <span class="page-card__icon">/ 01</span>
+            <span class="page-card__name">首页</span>
+            <span class="page-card__desc">4 屏全屏叠化视差 · Hero + 笔记 + 作品 + 引用</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="blog.html" class="page-card">
+            <span class="page-card__icon">/ 02</span>
+            <span class="page-card__name">笔记列表</span>
+            <span class="page-card__desc">杂志式网格 · 图片/文本交替 · 搜索 + 标签 + 归档</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="article.html" class="page-card">
+            <span class="page-card__icon">/ 03</span>
+            <span class="page-card__name">文章详情</span>
+            <span class="page-card__desc">Markdown + 代码高亮 + SEO 元标签</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="page-card">
+            <span class="page-card__icon">/ 04</span>
+            <span class="page-card__name">作品列表</span>
+            <span class="page-card__desc">画廊网格 + 状态徽标 + 悬停信息</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html" class="page-card">
+            <span class="page-card__icon">/ 05</span>
+            <span class="page-card__name">作品详情</span>
+            <span class="page-card__desc">IFrame + 浮动工具栏 + 信息面板</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="about.html" class="page-card">
+            <span class="page-card__icon">/ 06</span>
+            <span class="page-card__name">关于</span>
+            <span class="page-card__desc">棱镜折射 Hero · 编号简介 · 分隔线统计 · 双栏展示</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+          <a href="login.html" class="page-card">
+            <span class="page-card__icon">/ 07</span>
+            <span class="page-card__name">登录</span>
+            <span class="page-card__desc">表单 + loading + 错误验证</span>
+            <div class="page-card__state">
+              <span>loading</span>
+              <span>error</span>
+              <span>empty</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 状态用法 -->
+    <section class="states-section">
+      <div class="container">
+        <h2 class="states-section__title">状态覆盖</h2>
+        <div class="states-grid">
+          <div class="state-demo">
+            <span class="state-demo__name">Loading</span>
+            <span class="state-demo__code">?state=loading</span>
+            <span style="font-size:var(--fs-small);color:var(--c-fg-dim)">骨架屏 + 脉冲动画</span>
+          </div>
+          <div class="state-demo">
+            <span class="state-demo__name">Error</span>
+            <span class="state-demo__code">?state=error</span>
+            <span style="font-size:var(--fs-small);color:var(--c-fg-dim)">错误提示 + 重试按钮</span>
+          </div>
+          <div class="state-demo">
+            <span class="state-demo__name">Empty</span>
+            <span class="state-demo__code">?state=empty</span>
+            <span style="font-size:var(--fs-small);color:var(--c-fg-dim)">空状态提示</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ds-footer">
+      <p>Atelier · 光影几何 · 2026</p>
+    </footer>
+  </main>
+</body>
+</html>
