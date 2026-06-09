@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/nav";
+import { ConditionalNav } from "@/components/conditional-nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body>
-        <Nav />
+        <ConditionalNav />
         <main>{children}</main>
       </body>
     </html>
