@@ -27,10 +27,12 @@ export default async function BlogPage() {
 
   return (
     <BlogClient
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       articles={articles.map((a) => ({
-        ...a,
+        id: a.id, slug: a.slug, title: a.title, excerpt: a.excerpt,
+        coverImage: a.coverImage, tags: a.tags, readingTime: a.readingTime,
         publishedAt: a.publishedAt ? a.publishedAt.toISOString() : null,
-      })) as { id: number; slug: string; title: string; excerpt: string; tags: string[]; readingTime: number; publishedAt: string | null }[]}
+      }))}
       allTags={allTags}
       archives={archives}
     />
