@@ -27,10 +27,10 @@ export default async function BlogPage() {
 
   return (
     <BlogClient
-      articles={articles.map((a: { publishedAt: Date | null; tags: string[]; [key: string]: unknown }) => ({
+      articles={articles.map((a) => ({
         ...a,
         publishedAt: a.publishedAt ? a.publishedAt.toISOString() : null,
-      }))}
+      })) as { id: number; slug: string; title: string; excerpt: string; tags: string[]; readingTime: number; publishedAt: string | null }[]}
       allTags={allTags}
       archives={archives}
     />
