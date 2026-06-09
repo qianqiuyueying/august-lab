@@ -45,25 +45,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       >
         {/* Cover image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-background">
-          {article.cover_image ? (
-            <img
-              src={cover}
-              alt={article.title}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            />
-          ) : (
-            <div
-              className="flex h-full w-full items-center justify-center text-[clamp(30px,5vw,50px)]"
-              style={{
-                background: 'linear-gradient(135deg, rgba(59,165,196,.06), rgba(200,132,60,.04))',
-                color: 'rgba(59,165,196,.2)',
-              }}
-            >
-              {article.tags[0]?.name?.charAt(0) || '?'}
-            </div>
-          )}
+          <img
+            src={cover}
+            alt={article.cover_image ? article.title : ''}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            aria-hidden={!article.cover_image}
+          />
         </div>
 
         {/* Body */}
