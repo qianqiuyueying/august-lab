@@ -1,0 +1,80 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master, main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 构建 & 部署
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装 & 构建
+        run: |
+          npm ci --no-audit
+          npm run build
+
+      - name: 配置 SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 添加服务器到已知主机
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 192.144.154.17 >> ~/.ssh/known_hosts
+
+      - name: 同步文件到服务器
+        run: |
+          SERVER="root@192.144.154.17"
+          SSH_OPTS="-o ServerAliveInterval=30"
+
+          echo "::group::准备目录"
+          ssh ${SSH_OPTS} "${SERVER}" "mkdir -p /opt/august-lab"
+          echo "::endgroup::"
+
+          echo "::group::同步项目文件"
+          rsync -az --delete --timeout=60 --info=progress2 \
+            -e "ssh ${SSH_OPTS}" \
+            --exclude '.git/' \
+            --exclude 'node_modules/' \
+            --exclude '.next/' \
+            --exclude 'atelier/' \
+            --exclude 'docs/' \
+            --exclude '.env' \
+            --exclude '.env.local' \
+            ./ "${SERVER}:/opt/august-lab/"
+          echo "::endgroup::"
+
+      - name: 部署到 Docker
+        run: |
+          ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
+            set -e
+            cd /opt/august-lab
+
+            echo "=== 停止旧容器 ==="
+            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
+
+            echo "=== 构建并启动 ==="
+            docker compose up -d --build --force-recreate
+
+            echo "=== 运行数据库迁移 ==="
+            docker compose exec -T app npx prisma migrate deploy || true
+
+            echo "=== 状态 ==="
+            docker compose ps
+            sleep 3
+            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 || echo "等待启动..."
+          REMOTE_SCRIPT
