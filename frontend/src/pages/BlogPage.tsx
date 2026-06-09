@@ -56,7 +56,7 @@ export default function BlogPage() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 text-center px-4 py-[clamp(60px,12vh,100px)]">
+        <div className="relative z-10 text-center py-[clamp(60px,12vh,100px)]">
           <p className="text-xs font-extrabold text-accent tracking-wider uppercase mb-2">Notebook</p>
           <h1 className="text-paper mb-3">{title}</h1>
           <p className="text-text-muted max-w-md mx-auto text-sm sm:text-base">技术探索的记录，慢慢成形的想法</p>

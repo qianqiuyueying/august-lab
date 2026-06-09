@@ -37,7 +37,7 @@ export default function Layout() {
             className={
               isProductRuntimePage
                 ? 'relative z-10'
-                : 'relative z-10 px-4 py-10 sm:px-6 sm:py-14 lg:px-8'
+                : 'relative z-10'
             }
             style={{ originX: 0.5, originY: 0 }}
           >

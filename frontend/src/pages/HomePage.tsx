@@ -117,7 +117,7 @@ export default function HomePage() {
           <img src="/images/preview/s01_compass_v2_00001_.webp" alt="" className="w-full h-auto" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-3xl w-full px-4 pt-[clamp(60px,12vh,100px)] sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-3xl w-full pt-[clamp(60px,12vh,100px)]">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <SectionNumber number="001" label="首页" />
           </motion.div>
@@ -183,7 +183,7 @@ export default function HomePage() {
           <img src="/images/preview/s02_leaf_00001_.webp" alt="" className="w-full h-auto" />
         </motion.div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-[clamp(40px,8vh,80px)] sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl py-[clamp(24px,4vh,48px)]">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -250,7 +250,7 @@ export default function HomePage() {
           <img src="/images/preview/s03_scroll_00001_.webp" alt="" className="w-full h-auto" />
         </motion.div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-[clamp(40px,8vh,80px)] sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl py-[clamp(24px,4vh,48px)]">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -297,7 +297,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* ===== Signature ===== */}
-      <motion.section className="signature-block mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+      <motion.section className="signature-block mx-auto max-w-7xl"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}
