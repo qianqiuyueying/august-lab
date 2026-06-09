@@ -12,17 +12,21 @@ import TickDivider from '../components/ui/TickDivider';
 import StatusDot from '../components/ui/StatusDot';
 import TiltCard from '../components/ui/TiltCard';
 
-/* ===== Section Parallax Hook ===== */
-function useSectionParallax() {
+/* ===== Combined hook: parallax + section transition ===== */
+function useSectionEffects() {
   const ref = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref as React.RefObject<HTMLElement>,
     offset: ['start end', 'end start'],
   });
+  // Parallax
   const bgY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%']);
   const fgFastY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%']);
   const fgSlowY = useTransform(scrollYProgress, [0, 1], ['4%', '-4%']);
-  return { ref, bgY, fgFastY, fgSlowY };
+  // Section transition (entering → entered → leaving)
+  const opacity = useTransform(scrollYProgress, [0.00, 0.06, 0.13, 0.85, 1.00], [0.00, 0.00, 1.00, 1.00, 0.30]);
+  const y = useTransform(scrollYProgress, [0.00, 0.06, 0.13, 0.85, 1.00], [40.0, 40.0, 0.00, 0.00, -20.0]);
+  return { ref, bgY, fgFastY, fgSlowY, opacity, y };
 }
 
 export default function HomePage() {
@@ -37,8 +41,8 @@ export default function HomePage() {
       .finally(() => setProductsLoading(false));
   }, []);
 
-  const s2 = useSectionParallax();
-  const s3 = useSectionParallax();
+  const s2 = useSectionEffects();
+  const s3 = useSectionEffects();
 
   return (
     <>
@@ -110,11 +114,7 @@ export default function HomePage() {
       <motion.section
         ref={s2.ref as React.RefObject<HTMLElement>}
         className="relative overflow-hidden"
-        style={{ minHeight: '90vh' }}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.06, margin: '0px 0px -80px 0px' }}
-        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+        style={{ minHeight: '90vh', opacity: s2.opacity, y: s2.y }}
       >
         <motion.div className="absolute inset-0 z-0" style={{ margin: '-8%', y: s2.bgY }}>
           <img src="/images/preview/s02_desk_bg_00001_.webp" alt="" loading="lazy"
@@ -180,11 +180,7 @@ export default function HomePage() {
       <motion.section
         ref={s3.ref as React.RefObject<HTMLElement>}
         className="relative overflow-hidden"
-        style={{ minHeight: '90vh' }}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.06, margin: '0px 0px -80px 0px' }}
-        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+        style={{ minHeight: '90vh', opacity: s3.opacity, y: s3.y }}
       >
         <motion.div className="absolute inset-0 z-0" style={{ margin: '-8%', y: s3.bgY }}>
           <img src="/images/preview/s03_shelf_bg_00001_.webp" alt="" loading="lazy"
