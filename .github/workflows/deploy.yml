@@ -58,11 +58,18 @@ jobs:
             ./ "${SERVER}:/opt/august-lab/"
           echo "::endgroup::"
 
-      - name: 部署到 Docker
+      - name: 生成 .env 并部署
         run: |
           ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
             cd /opt/august-lab
+
+            echo "=== 写入环境变量 ==="
+            cat > .env << 'ENVEOF'
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            ENVEOF
 
             echo "=== 停止旧容器 ==="
             docker compose down --remove-orphans --timeout 30 2>/dev/null || true
