@@ -24,6 +24,7 @@ jobs:
       - name: 安装 & 构建
         run: |
           npm ci --no-audit
+          npx prisma generate
           npm run build
 
       - name: 配置 SSH
