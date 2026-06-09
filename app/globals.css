@@ -3,10 +3,10 @@
    统一设计系统 · 深色基底 · 中文优先
    ============================================ */
 
-@import "tailwindcss";
-
-/* Google Fonts */
+/* Google Fonts — @import 必须在最前面 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Prata&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
 
 /* ==========================================
    CSS Custom Properties
