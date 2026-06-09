@@ -1,0 +1,107 @@
+/* ==========================================
+   Product Detail — 1:1 复刻原型 product-detail.html
+   作品运行时 · 光影几何
+   ========================================== */
+
+.pd-body { height: 100%; overflow: hidden; background: #000; }
+
+.runtime-frame { position: fixed; inset: 0; z-index: 1; }
+
+.runtime-frame iframe { width: 100%; height: 100%; border: 0; }
+
+.runtime-toolbar {
+  position: fixed; top: var(--sp-md); left: 50%; transform: translateX(-50%);
+  z-index: 10; display: flex; align-items: center; gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md);
+  background: oklch(0.08 0.01 270 / 0.85);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--c-border); border-radius: var(--radius-lg);
+  font-size: var(--fs-meta); font-family: var(--ff-body); color: var(--c-fg);
+}
+
+.runtime-toolbar__back {
+  display: flex; align-items: center; gap: var(--sp-2xs);
+  padding: var(--sp-2xs) var(--sp-sm); background: none; border: none;
+  color: var(--c-fg-dim); cursor: pointer;
+  font-family: var(--ff-mono); font-size: var(--fs-meta); transition: color 0.3s ease;
+}
+
+.runtime-toolbar__back:hover { color: var(--c-fg); }
+
+.runtime-toolbar__divider { width: 1px; height: 16px; background: var(--c-border); }
+
+.runtime-toolbar__title { font-weight: 400; font-size: var(--fs-small); }
+
+.runtime-toolbar__actions { display: flex; gap: var(--sp-xs); margin-left: auto; }
+
+.runtime-toolbar__action {
+  padding: var(--sp-2xs) var(--sp-sm); background: none;
+  border: 1px solid var(--c-border); border-radius: var(--radius-sm);
+  color: var(--c-fg-dim); cursor: pointer; font-family: var(--ff-body);
+  font-size: var(--fs-meta); transition: all 0.3s ease;
+}
+
+.runtime-toolbar__action:hover { border-color: var(--c-border-l); color: var(--c-fg); }
+
+/* 信息面板 (抽屉) */
+.info-panel {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  transform: translateY(calc(100% - 48px));
+  transition: transform 0.5s var(--ease-expo);
+  background: oklch(0.06 0.008 270 / 0.92);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--c-border);
+}
+
+.info-panel--open { transform: translateY(0); }
+
+.info-panel__handle {
+  display: flex; align-items: center; justify-content: center;
+  height: 48px; cursor: pointer; user-select: none;
+}
+
+.info-panel__handle-bar {
+  width: 32px; height: 3px; border-radius: 2px; background: var(--c-muted);
+  transition: background 0.3s ease;
+}
+
+.info-panel__handle:hover .info-panel__handle-bar { background: var(--c-fg-dim); }
+
+.info-panel__body {
+  padding: 0 var(--sp-xl) var(--sp-xl); max-height: 50vh; overflow-y: auto;
+  display: grid; grid-template-columns: 200px 1fr; gap: var(--sp-xl);
+}
+
+.info-panel__cover {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  filter: saturate(0.5) contrast(1.15); border-radius: var(--radius-sm);
+}
+
+.info-panel__content { display: flex; flex-direction: column; gap: var(--sp-md); }
+
+.info-panel__title { font-family: var(--ff-display); font-size: var(--fs-h2); font-weight: 400; }
+
+.info-panel__desc { color: var(--c-fg-dim); font-size: var(--fs-body); line-height: 1.7; }
+
+.info-panel__meta { display: flex; gap: var(--sp-lg); font-family: var(--ff-mono); font-size: var(--fs-small); color: var(--c-fg-dim); }
+
+.info-panel__meta-item { display: flex; flex-direction: column; gap: var(--sp-2xs); }
+
+.info-panel__meta-label { font-size: var(--fs-meta); color: var(--c-muted); letter-spacing: 0.05em; }
+
+.pd-state-override { display: none; }
+body[data-state="loading"] .pd-state-default { display: none; }
+body[data-state="loading"] .pd-state-loading { display: flex; }
+body[data-state="error"] .pd-state-default { display: none; }
+body[data-state="error"] .pd-state-error { display: flex; }
+body[data-state="empty"] .pd-state-default .runtime-frame iframe { display: none; }
+body[data-state="empty"] .pd-state-empty { display: flex; }
+
+@media (max-width: 768px) {
+  .runtime-toolbar {
+    top: auto; bottom: var(--sp-md); width: min(92%, 400px);
+    flex-wrap: wrap; justify-content: center;
+  }
+  .info-panel__body { grid-template-columns: 1fr; padding: 0 var(--sp-lg) var(--sp-lg); }
+  .info-panel__cover { max-width: 160px; }
+}

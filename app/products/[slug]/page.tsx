@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { ProductDetailClient } from "./product-detail-client";
+import "./product-detail.css";
 
 interface Props { params: Promise<{ slug: string }>; }
 
