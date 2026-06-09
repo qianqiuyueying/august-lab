@@ -164,6 +164,8 @@ jobs:
           ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
             cd /opt/blog
+            # 先清理掉可能残留的旧容器（防止上次取消/失败留下的孤儿容器）
+            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
             docker compose up -d --build --force-recreate backend
             # 运行数据库迁移
             docker compose exec -T backend alembic upgrade head
