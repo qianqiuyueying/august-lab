@@ -170,14 +170,18 @@ jobs:
           ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
             cd /opt/blog
-            # 先清理掉可能残留的旧容器（防止上次取消/失败留下的孤儿容器）
+            # 先清理掉可能残留的旧容器
             docker compose down --remove-orphans --timeout 30 2>/dev/null || true
-            docker compose up -d --build --force-recreate backend
+            # 一次性重建所有服务（backend + frontend），不再分开启动
+            docker compose up -d --build --force-recreate
             # 运行数据库迁移
             docker compose exec -T backend alembic upgrade head
-            # 强制重建前端容器以确保加载新静态文件
-            docker compose up -d --force-recreate --no-deps frontend
-            sleep 5
+            # 验证两个容器都在运行
+            echo "=== Container status ==="
+            docker compose ps
+            # 确认 frontend 容器存在
+            docker compose ps frontend | grep -q "Up" || { echo "ERROR: frontend container not running"; exit 1; }
+            sleep 3
             curl -sf http://localhost/api/health && echo " | Backend OK" || echo " | Backend NOT READY"
             curl -sf -o /dev/null -w "HTTP %{http_code} | Frontend" http://localhost/ || echo " | Frontend NOT READY"
           REMOTE_SCRIPT
