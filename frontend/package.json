@@ -13,6 +13,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@fontsource-variable/noto-sans-sc": "^5.2.10",
+    "@fontsource-variable/noto-serif-sc": "^5.2.10",
     "axios": "^1.15.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",

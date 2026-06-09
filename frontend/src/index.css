@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@fontsource-variable/noto-sans-sc";
+@import "@fontsource-variable/noto-serif-sc";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -80,7 +82,7 @@
     min-width: 320px;
     background: #0a0f1a;
     color: #f6f4ee;
-    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, sans-serif;
+    font-family: "Noto Sans SC Variable", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, sans-serif;
     font-size: 15px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -90,7 +92,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     color: inherit;
-    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, sans-serif;
+    font-family: "Noto Sans SC Variable", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, sans-serif;
     letter-spacing: 0;
   }
 
@@ -297,7 +299,7 @@
   }
 
   .signature-block blockquote {
-    font-family: "Noto Serif SC", serif;
+    font-family: "Noto Serif SC Variable", "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-size: clamp(1.4rem, 3vw, 2rem);
     font-weight: 300;
     color: #f6f4ee;
@@ -427,7 +429,7 @@
     background: rgba(200, 132, 60, 0.08);
     padding: 1rem 1.25rem;
     color: #f6f4ee;
-    font-family: "Noto Serif SC", serif;
+    font-family: "Noto Serif SC Variable", "Noto Serif SC", "Songti SC", "SimSun", serif;
   }
 
   .markdown-body code, .prose code {
