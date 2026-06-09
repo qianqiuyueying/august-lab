@@ -13,7 +13,7 @@ export default async function BlogPage() {
   });
 
   // Aggregate all tags
-  const allTags = Array.from(new Set(articles.flatMap((a: { tags: string[] }) => a.tags || [])));
+  const allTags: string[] = Array.from(new Set(articles.flatMap((a: { tags: string[] }) => a.tags || [])));
 
   // Monthly archive
   const monthMap = new Map<string, number>();
@@ -23,7 +23,7 @@ export default async function BlogPage() {
       monthMap.set(key, (monthMap.get(key) || 0) + 1);
     }
   });
-  const archives = Array.from(monthMap.entries()).map(([label, count]: [string, number]) => ({ label, count }));
+  const archives: { label: string; count: number }[] = Array.from(monthMap.entries()).map(([label, count]: [string, number]) => ({ label, count }));
 
   return (
     <BlogClient
