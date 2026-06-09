@@ -60,11 +60,9 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
             echo "=== 写入环境变量 ==="
-            cat > .env << 'ENVEOF'
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            ENVEOF
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
             echo "=== 拉取最新镜像 ==="
             docker compose pull app
