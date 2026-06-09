@@ -602,6 +602,24 @@
     background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(10, 15, 26, 0.5) 100%);
   }
 
+  /* ===== Section entrance transitions (exact replica of preview) ===== */
+  [data-section] {
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform, opacity;
+  }
+  .section-entering {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .section-entered {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-leaving {
+    opacity: 0.3;
+    transform: translateY(-20px);
+  }
+
   /* ===== prefers-reduced-motion ===== */
   @media (prefers-reduced-motion: reduce) {
     .text-gradient,

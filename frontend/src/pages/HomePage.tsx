@@ -12,21 +12,61 @@ import TickDivider from '../components/ui/TickDivider';
 import StatusDot from '../components/ui/StatusDot';
 import TiltCard from '../components/ui/TiltCard';
 
-/* ===== Combined hook: parallax + section transition ===== */
-function useSectionEffects() {
+/* ===== Parallax hook (kept for bg/fg elements) ===== */
+function useSectionParallax() {
   const ref = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref as React.RefObject<HTMLElement>,
     offset: ['start end', 'end start'],
   });
-  // Parallax
   const bgY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%']);
   const fgFastY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%']);
   const fgSlowY = useTransform(scrollYProgress, [0, 1], ['4%', '-4%']);
-  // Section transition (entering → entered → leaving)
-  const opacity = useTransform(scrollYProgress, [0.00, 0.06, 0.13, 0.85, 1.00], [0.00, 0.00, 1.00, 1.00, 0.30]);
-  const y = useTransform(scrollYProgress, [0.00, 0.06, 0.13, 0.85, 1.00], [40.0, 40.0, 0.00, 0.00, -20.0]);
-  return { ref, bgY, fgFastY, fgSlowY, opacity, y };
+  return { ref, bgY, fgFastY, fgSlowY };
+}
+
+/* ===== Section state observer: exact replica of preview's updateSectionEntrances ===== */
+function useSectionState(sectionIndex: number) {
+  // 'entering' | 'entered' | 'leaving'
+  const [state, setState] = useState<'entering' | 'entered' | 'leaving'>('entering');
+
+  useEffect(() => {
+    let prevActiveIndex = -1;
+
+    function tick() {
+      const vh = window.innerHeight;
+      const sections = document.querySelectorAll('[data-section]');
+      let activeIndex = -1;
+      sections.forEach((section, i) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < vh * 0.5 && rect.bottom > 0) activeIndex = i;
+      });
+
+      if (activeIndex !== prevActiveIndex) {
+        sections.forEach((section, i) => {
+          if (i === activeIndex) {
+            section.classList.add('section-entered');
+            section.classList.remove('section-entering', 'section-leaving');
+          } else if (i < activeIndex) {
+            section.classList.add('section-leaving');
+            section.classList.remove('section-entering', 'section-entered');
+          } else {
+            section.classList.add('section-entering');
+            section.classList.remove('section-entered', 'section-leaving');
+          }
+        });
+        prevActiveIndex = activeIndex;
+        setState(activeIndex === sectionIndex ? 'entered' : sectionIndex < activeIndex ? 'leaving' : 'entering');
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    const raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [sectionIndex]);
+
+  return state;
 }
 
 export default function HomePage() {
@@ -41,13 +81,15 @@ export default function HomePage() {
       .finally(() => setProductsLoading(false));
   }, []);
 
-  const s2 = useSectionEffects();
-  const s3 = useSectionEffects();
+  const s2 = useSectionParallax();
+  const s3 = useSectionParallax();
+  useSectionState(1); // section 02
+  useSectionState(2); // section 03
 
   return (
     <>
       {/* ===== Section 01 — Hero ===== */}
-      <section className="relative flex min-h-screen items-start overflow-hidden">
+      <section data-section="0" className="relative flex min-h-screen items-start overflow-hidden section-entered">
         <div className="absolute inset-0 z-0" style={{ margin: '-5%' }}>
           <img
             src="/images/preview/hero_bg_00001_.webp"
@@ -113,8 +155,9 @@ export default function HomePage() {
       {/* ===== Section 02 — 最新笔记 ===== */}
       <motion.section
         ref={s2.ref as React.RefObject<HTMLElement>}
-        className="relative overflow-hidden"
-        style={{ minHeight: '90vh', opacity: s2.opacity, y: s2.y }}
+        data-section="1"
+        className="relative overflow-hidden section-entering"
+        style={{ minHeight: '90vh' }}
       >
         <motion.div className="absolute inset-0 z-0" style={{ margin: '-8%', y: s2.bgY }}>
           <img src="/images/preview/s02_desk_bg_00001_.webp" alt="" loading="lazy"
@@ -179,8 +222,9 @@ export default function HomePage() {
       {/* ===== Section 03 — 作品 ===== */}
       <motion.section
         ref={s3.ref as React.RefObject<HTMLElement>}
-        className="relative overflow-hidden"
-        style={{ minHeight: '90vh', opacity: s3.opacity, y: s3.y }}
+        data-section="2"
+        className="relative overflow-hidden section-entering"
+        style={{ minHeight: '90vh' }}
       >
         <motion.div className="absolute inset-0 z-0" style={{ margin: '-8%', y: s3.bgY }}>
           <img src="/images/preview/s03_shelf_bg_00001_.webp" alt="" loading="lazy"
