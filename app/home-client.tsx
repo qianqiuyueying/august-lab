@@ -240,7 +240,7 @@ export function HomeClient({
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
               <div>
-                <p className="home-section__number">/ 博客</p>
+                <p className="home-section__number">/ 01</p>
                 <h2 className="home-section__heading">博客</h2>
               </div>
               <Link href="/blog" className="home-section__link">查看全部 →</Link>
@@ -287,7 +287,7 @@ export function HomeClient({
           <div className="home-section__content home-anim-content">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "var(--sp-xl)" }}>
               <div>
-                <p className="home-section__number">/ 产品</p>
+                <p className="home-section__number">/ 02</p>
                 <h2 className="home-section__heading">产品</h2>
               </div>
               <Link href="/products" className="home-section__link">查看全部 →</Link>
