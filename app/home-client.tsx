@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import { BgImage } from "@/components/bg-image";
 
 /* ==========================================
    Atelier Home — 1:1 复刻原型 home.html
@@ -159,10 +160,10 @@ export function HomeClient({
   ];
 
   const secImages = [
-    "/uploads/venetian-blind-shadow.png",
-    "/uploads/perforated-metal-shadow.png",
-    "/uploads/plaster-geometric.png",
-    "/uploads/glass-shadow.png",
+    "/uploads/venetian-blind-shadow.webp",
+    "/uploads/perforated-metal-shadow.webp",
+    "/uploads/plaster-geometric.webp",
+    "/uploads/glass-shadow.webp",
   ];
 
   const secIds = ["hero", "articles", "works", "quote"];
@@ -199,9 +200,7 @@ export function HomeClient({
           ref={(el) => { sectionsRef.current[0] = el; }}
           className="home-section" data-section="hero"
         >
-          <div className="home-section__bg" data-parallax="0.3">
-            <img src={secImages[0]} alt="百叶窗光影" loading="eager" />
-          </div>
+          <BgImage src={secImages[0]} alt="百叶窗光影" priority parallax="0.3" />
           <div className="home-section__overlay home-hero__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
@@ -229,9 +228,7 @@ export function HomeClient({
           ref={(el) => { sectionsRef.current[1] = el; }}
           className="home-section" data-section="articles"
         >
-          <div className="home-section__bg" data-parallax="0.3">
-            <img src={secImages[1]} alt="穿孔金属板光影" loading="lazy" />
-          </div>
+          <BgImage src={secImages[1]} alt="穿孔金属板光影" parallax="0.3" />
           <div className="home-section__overlay home-articles__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
@@ -276,9 +273,7 @@ export function HomeClient({
           ref={(el) => { sectionsRef.current[2] = el; }}
           className="home-section" data-section="works"
         >
-          <div className="home-section__bg" data-parallax="0.25">
-            <img src={secImages[2]} alt="几何石膏体" loading="lazy" />
-          </div>
+          <BgImage src={secImages[2]} alt="几何石膏体" parallax="0.25" />
           <div className="home-section__overlay home-works__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
@@ -319,9 +314,7 @@ export function HomeClient({
           ref={(el) => { sectionsRef.current[3] = el; }}
           className="home-section" data-section="quote"
         >
-          <div className="home-section__bg" data-parallax="0.2">
-            <img src={secImages[3]} alt="玻璃杯阴影" loading="lazy" />
-          </div>
+          <BgImage src={secImages[3]} alt="玻璃杯阴影" parallax="0.2" />
           <div className="home-section__overlay home-quote__overlay"></div>
           <div className="home-section__spot"></div>
           <div className="home-section__scrim"></div>
