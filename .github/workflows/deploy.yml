@@ -12,45 +12,36 @@ jobs:
   deploy:
     name: 部署
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: 安装依赖 & 类型检查
-        uses: actions/setup-node@v4
+      - name: 登录 GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: 22
-          cache: npm
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npm ci --no-audit --registry=https://registry.npmmirror.com
-      - run: npx prisma generate
-      - run: npx tsc --noEmit
+      - name: 构建 & 推送镜像
+        run: |
+          docker build -t ghcr.io/qianqiuyueying/august-lab:latest .
+          docker push ghcr.io/qianqiuyueying/august-lab:latest
 
       - name: 配置 SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: rsync 源码到服务器
+      - name: 服务器部署
         run: |
-          SERVER="root@192.144.154.17"
-          SSH_OPTS="-o StrictHostKeyChecking=no -o ServerAliveInterval=30"
-
-          ssh ${SSH_OPTS} ${SERVER} "mkdir -p /opt/august-lab"
-
-          rsync -az --delete --timeout=60 -e "ssh ${SSH_OPTS}" \
-            --exclude 'node_modules/' \
-            --exclude '.next/' \
-            --exclude '.git/' \
-            --exclude 'atelier/' \
-            --exclude 'docs/' \
-            --exclude '.env' \
-            ./ "${SERVER}:/opt/august-lab/"
-
-      - name: Docker Compose 部署
-        run: |
-          ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
+          ssh -o StrictHostKeyChecking=no root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
             set -e
+            mkdir -p /opt/august-lab
             cd /opt/august-lab
+
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u qianqiuyueying --password-stdin
 
             # 写入环境变量（仅首次）
             if [ ! -f .env ]; then
@@ -59,9 +50,48 @@ jobs:
               echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             fi
 
+            # 创建 docker-compose.yml（仅首次）
+            if [ ! -f docker-compose.yml ]; then
+              cat > docker-compose.yml << 'COMPOSE'
+            services:
+              app:
+                image: ghcr.io/qianqiuyueying/august-lab:latest
+                container_name: august-lab
+                restart: unless-stopped
+                ports:
+                  - "3000:3000"
+                env_file:
+                  - .env
+                environment:
+                  - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-postgres}@db:5432/augustlab
+                depends_on:
+                  db:
+                    condition: service_healthy
+
+              db:
+                image: postgres:16-alpine
+                container_name: august-lab-db
+                restart: unless-stopped
+                environment:
+                  - POSTGRES_USER=postgres
+                  - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+                  - POSTGRES_DB=augustlab
+                volumes:
+                  - pgdata:/var/lib/postgresql/data
+                healthcheck:
+                  test: ["CMD-SHELL", "pg_isready -U postgres"]
+                  interval: 5s
+                  timeout: 5s
+                  retries: 5
+
+            volumes:
+              pgdata:
+            COMPOSE
+            fi
+
+            docker compose pull app
             docker compose down --remove-orphans --timeout 30 2>/dev/null || true
-            docker network rm august-lab-net 2>/dev/null || true
-            docker compose up -d --build --force-recreate
+            docker compose up -d
 
             echo "=== 数据库迁移 ==="
             docker compose exec -T app npx prisma migrate deploy || true
