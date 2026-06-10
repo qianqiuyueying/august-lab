@@ -10,94 +10,52 @@ concurrency:
 
 jobs:
   deploy:
-    name: 部署
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: 登录 GHCR
-        uses: docker/login-action@v3
+      - uses: actions/setup-node@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 22
+          cache: npm
 
-      - name: 构建 & 推送镜像
-        run: |
-          docker build -t ghcr.io/qianqiuyueying/august-lab:latest .
-          docker push ghcr.io/qianqiuyueying/august-lab:latest
+      - run: npm ci --no-audit --registry=https://registry.npmmirror.com
+      - run: npx prisma generate
+      - run: npm run build
 
-      - name: 配置 SSH
-        uses: webfactory/ssh-agent@v0.9.0
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 服务器部署
-        run: |
-          ssh -o StrictHostKeyChecking=no root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
+      - run: |
+          SERVER="root@192.144.154.17"
+          SSH="ssh -o StrictHostKeyChecking=no"
+
+          $SSH ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
+
+          rsync -az --delete --exclude node_modules -e "$SSH" .next/standalone/ ${SERVER}:/opt/august-lab/
+          rsync -az --delete -e "$SSH" .next/static/       ${SERVER}:/opt/august-lab/.next/static/
+          rsync -az -e "$SSH" --exclude uploads/ --exclude mascot/ public/ ${SERVER}:/opt/august-lab/public/
+          rsync -az          -e "$SSH" prisma/              ${SERVER}:/opt/august-lab/prisma/
+
+          $SSH ${SERVER} 'bash -s' << 'ENDSCRIPT'
             set -e
-            mkdir -p /opt/august-lab
             cd /opt/august-lab
 
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u qianqiuyueying --password-stdin
-
-            # 写入环境变量（仅首次）
             if [ ! -f .env ]; then
               echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
               echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
-              echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             fi
 
-            # 创建 docker-compose.yml（仅首次）
-            if [ ! -f docker-compose.yml ]; then
-              cat > docker-compose.yml << 'COMPOSE'
-            services:
-              app:
-                image: ghcr.io/qianqiuyueying/august-lab:latest
-                container_name: august-lab
-                restart: unless-stopped
-                ports:
-                  - "3000:3000"
-                env_file:
-                  - .env
-                environment:
-                  - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-postgres}@db:5432/augustlab
-                depends_on:
-                  db:
-                    condition: service_healthy
+            which pm2 || npm i -g pm2 --registry=https://registry.npmmirror.com
+            npm ci --production --no-audit --registry=https://registry.npmmirror.com
 
-              db:
-                image: postgres:16-alpine
-                container_name: august-lab-db
-                restart: unless-stopped
-                environment:
-                  - POSTGRES_USER=postgres
-                  - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
-                  - POSTGRES_DB=augustlab
-                volumes:
-                  - pgdata:/var/lib/postgresql/data
-                healthcheck:
-                  test: ["CMD-SHELL", "pg_isready -U postgres"]
-                  interval: 5s
-                  timeout: 5s
-                  retries: 5
+            npx prisma migrate deploy
 
-            volumes:
-              pgdata:
-            COMPOSE
-            fi
+            pm2 delete august-lab 2>/dev/null || true
+            pm2 start server.js --name august-lab
+            pm2 save
 
-            docker compose pull app
-            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
-            docker compose up -d
-
-            echo "=== 数据库迁移 ==="
-            docker compose exec -T app npx prisma migrate deploy || true
-
-            echo "=== 状态 ==="
-            docker compose ps
-            sleep 3
-            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 || echo "等待启动..."
-          REMOTE_SCRIPT
+            sleep 2
+            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 && echo "OK" || echo "..."
+          ENDSCRIPT
