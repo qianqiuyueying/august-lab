@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/qianqiuyueying/august-lab:latest
+    build: .
     container_name: august-lab
     restart: unless-stopped
     ports:

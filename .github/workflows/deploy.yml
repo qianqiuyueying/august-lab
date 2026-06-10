@@ -10,63 +10,63 @@ concurrency:
 
 jobs:
   deploy:
-    name: 构建 & 部署
+    name: 部署
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: 设置 Node.js
+      - name: 安装依赖 & 类型检查
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - name: 安装依赖 & 构建
-        run: |
-          npm ci --no-audit
-          npx prisma generate
-          npm run build
+      - run: npm ci --no-audit
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
 
       - name: 配置 SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 部署到服务器
+      - name: rsync 源码到服务器
         run: |
           SERVER="root@192.144.154.17"
           SSH_OPTS="-o StrictHostKeyChecking=no -o ServerAliveInterval=30"
 
-          echo "::group::准备目录"
-          ssh ${SSH_OPTS} ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
+          ssh ${SSH_OPTS} ${SERVER} "mkdir -p /opt/august-lab"
 
-          echo "::group::同步构建产物"
-          rsync -az --delete -e "ssh ${SSH_OPTS}" .next/standalone/ ${SERVER}:/opt/august-lab/
-          rsync -az --delete -e "ssh ${SSH_OPTS}" .next/static/ ${SERVER}:/opt/august-lab/.next/static/
-          rsync -az -e "ssh ${SSH_OPTS}" public/ ${SERVER}:/opt/august-lab/public/
-          rsync -az -e "ssh ${SSH_OPTS}" prisma/ ${SERVER}:/opt/august-lab/prisma/
+          rsync -az --delete --timeout=60 -e "ssh ${SSH_OPTS}" \
+            --exclude 'node_modules/' \
+            --exclude '.next/' \
+            --exclude '.git/' \
+            --exclude 'atelier/' \
+            --exclude 'docs/' \
+            --exclude '.env' \
+            ./ "${SERVER}:/opt/august-lab/"
 
-          echo "::group::配置并重启"
-          ssh ${SSH_OPTS} ${SERVER} 'bash -s' << 'ENDSCRIPT'
+      - name: Docker Compose 部署
+        run: |
+          ssh root@192.144.154.17 'bash -s' << 'REMOTE_SCRIPT'
+            set -e
             cd /opt/august-lab
 
-            # 写入环境变量（仅首次，后续不覆盖）
+            # 写入环境变量（仅首次）
             if [ ! -f .env ]; then
               echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
               echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+              echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             fi
 
-            # 安装 PM2（如果还没有）
-            which pm2 || npm i -g pm2
+            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
+            docker compose up -d --build --force-recreate
 
-            # 迁移数据库
-            npx prisma migrate deploy
+            echo "=== 数据库迁移 ==="
+            docker compose exec -T app npx prisma migrate deploy || true
 
-            # 重启应用
-            pm2 delete august-lab 2>/dev/null || true
-            pm2 start server.js --name august-lab
-            pm2 save
-
-            sleep 2
-            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 && echo "OK" || echo "等待..."
-          ENDSCRIPT
+            echo "=== 状态 ==="
+            docker compose ps
+            sleep 3
+            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 || echo "等待启动..."
+          REMOTE_SCRIPT
