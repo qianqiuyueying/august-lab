@@ -60,6 +60,7 @@ jobs:
             fi
 
             docker compose down --remove-orphans --timeout 30 2>/dev/null || true
+            docker network rm august-lab_default 2>/dev/null || true
             docker compose up -d --build --force-recreate
 
             echo "=== 数据库迁移 ==="
