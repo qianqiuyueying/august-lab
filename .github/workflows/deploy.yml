@@ -31,12 +31,18 @@ jobs:
           SERVER="root@192.144.154.17"
           SSH="ssh -o StrictHostKeyChecking=no"
 
-          $SSH ${SERVER} "mkdir -p /opt/august-lab/.next/static /opt/august-lab/public /opt/august-lab/prisma"
+          $SSH ${SERVER} "mkdir -p /opt/august-lab"
 
-          rsync -az --delete --exclude node_modules -e "$SSH" .next/standalone/ ${SERVER}:/opt/august-lab/
-          rsync -az --delete -e "$SSH" .next/static/       ${SERVER}:/opt/august-lab/.next/static/
-          rsync -az -e "$SSH" --exclude uploads/ --exclude mascot/ public/ ${SERVER}:/opt/august-lab/public/
-          rsync -az          -e "$SSH" prisma/              ${SERVER}:/opt/august-lab/prisma/
+          rsync -az --delete --timeout=60 -e "$SSH" \
+            --exclude 'node_modules/' \
+            --exclude '.next/' \
+            --exclude '.git/' \
+            --exclude 'atelier/' \
+            --exclude 'docs/' \
+            --exclude 'public/uploads/' \
+            --exclude 'public/mascot/' \
+            --exclude '.env' \
+            ./ ${SERVER}:/opt/august-lab/
 
           $SSH ${SERVER} 'bash -s' << 'ENDSCRIPT'
             set -e
@@ -45,17 +51,13 @@ jobs:
             if [ ! -f .env ]; then
               echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
               echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+              echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             fi
 
-            which pm2 || npm i -g pm2 --registry=https://registry.npmmirror.com
-            npm ci --production --no-audit --registry=https://registry.npmmirror.com
-
-            npx prisma migrate deploy
-
-            pm2 delete august-lab 2>/dev/null || true
-            pm2 start server.js --name august-lab
-            pm2 save
+            docker compose down --remove-orphans --timeout 30 2>/dev/null || true
+            docker compose up -d --build
+            docker compose exec -T app npx prisma migrate deploy || true
 
             sleep 2
-            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 && echo "OK" || echo "..."
+            curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:3000 || echo "..."
           ENDSCRIPT
