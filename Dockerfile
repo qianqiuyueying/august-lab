@@ -2,13 +2,13 @@ FROM node:22-alpine AS deps
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --production --no-audit
+RUN npm ci --production --no-audit --registry=https://registry.npmmirror.com
 
 FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit
+RUN npm ci --no-audit --registry=https://registry.npmmirror.com
 
 COPY prisma ./prisma
 COPY prisma.config.ts ./
@@ -35,7 +35,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 
-RUN npm i dotenv prisma
+RUN npm i --registry=https://registry.npmmirror.com dotenv prisma
 
 USER nextjs
 EXPOSE 3000
