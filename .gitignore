@@ -1,33 +1,14 @@
-# Backend
-*.db
-__pycache__/
-.venv/
+# Examples 
 
-# Frontend
-frontend/dist/
-frontend/node_modules/
-fish-feast/dist/
-fish-feast/node_modules/
+    Input:
+    ### Added files:
+    [src/main.py, README.md, config.json]
 
-# Docker
-docker-data/
-
-# IDE
-.vscode/
-.idea/
-.superpowers/
-.worktrees/
-.playwright-mcp/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Env
-.env
-.env.local
-
-# Remotion hero video source
-hero-video/
+    ### Deleted files:
+    [old/unused.py]
+    ### Modified files:
+    [utils.py]
+    ###current .gitignore Content
+    (empty)
+    Expected Output:
+    (empty — output nothing)
